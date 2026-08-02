@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tyrehunt — spot real cars, build a verified Registry</title>
+<meta name="description" content="A camera-first game for people who notice cars. Shoot what you find, a verifier names it, and it's filed to your Registry. Old photos don't count.">
+<meta name="theme-color" content="#0A0B0E">
+<meta property="og:title" content="tyrehunt">
+<meta property="og:description" content="Point your camera at real metal. Verified captures build your Registry.">
+<meta property="og:type" content="website">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --carbon:#0A0B0E;
+  --navy:#021A36;
+  --panel:#12141A;
+  --line:rgba(255,255,255,.10);
+  --ink:#F2F3F6;
+  --muted:#98A0AC;
+  --ember:#FF8A1E;
+  --gold:#FFC24B;
+  --cream:#FBF8F3;
+  --disp:'Archivo',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --pad:clamp(20px,5vw,64px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--carbon);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--ember);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:var(--pad)}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(10,11,14,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .row{display:flex;align-items:center;justify-content:space-between;height:62px}
+.lockup{display:flex;align-items:center;gap:9px}
+.lockup .mk{width:28px;height:28px;color:var(--ink);overflow:visible}
+.lockup .wd{height:17px;width:auto;color:var(--ink)}
+nav .links{display:flex;align-items:center;gap:26px;font-size:13px;font-weight:600;color:var(--muted)}
+nav .links a:hover{color:var(--ink)}
+@media(max-width:720px){nav .links a:not(.btn){display:none}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--disp);font-weight:800;font-size:12.5px;letter-spacing:.06em;padding:11px 20px;border-radius:999px;border:1px solid var(--line);color:var(--ink);background:transparent;cursor:pointer;transition:transform .12s ease,border-color .12s ease}
+.btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.28)}
+.btn.hot{background:linear-gradient(180deg,var(--gold),var(--ember));color:#1B0E00;border-color:transparent}
+.btn.lg{font-size:14px;padding:15px 28px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:clamp(48px,9vw,104px) 0 clamp(56px,8vw,96px);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-20% -10% auto -10%;height:70%;background:radial-gradient(60% 70% at 30% 0%,rgba(255,138,30,.14),transparent 70%);pointer-events:none}
+.herogrid{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,64px);align-items:center}
+@media(max-width:880px){.herogrid{grid-template-columns:1fr;gap:40px}}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:var(--ember);text-transform:uppercase;margin-bottom:18px}
+h1{font-size:clamp(38px,6.4vw,68px);font-weight:900;line-height:.98;letter-spacing:-.035em}
+h1 em{font-style:normal;color:var(--gold)}
+.lede{font-size:clamp(15px,1.7vw,18px);line-height:1.6;color:var(--muted);margin-top:20px;max-width:44ch}
+.herocta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+.storerow{margin-top:26px}
+.storelabel{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:11px}
+.storebtns{display:flex;gap:10px;flex-wrap:wrap}
+.storebtn{display:inline-flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:12px;padding:10px 16px;background:var(--panel);min-width:168px;transition:border-color .15s ease,transform .15s ease}
+.storebtn.live:hover{border-color:rgba(255,138,30,.45);transform:translateY(-1px)}
+.storebtn.soon{opacity:.55;cursor:default}
+.storebtn .gl{width:19px;height:19px;flex:0 0 auto;color:var(--ink)}
+.storebtn .tx{display:flex;flex-direction:column;line-height:1.25}
+.storebtn .t1{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.storebtn .t2{font-size:14px;font-weight:800;letter-spacing:-.01em}
+.closing .storerow{display:flex;flex-direction:column;align-items:center;margin-top:28px}
+.trust{display:flex;gap:22px;margin-top:26px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.trust span{display:flex;align-items:center;gap:7px}
+.trust i{width:5px;height:5px;border-radius:50%;background:var(--ember);font-style:normal}
+
+/* ---------- the phone demo (signature) ---------- */
+.stage{display:flex;justify-content:center}
+.phone{position:relative;width:min(300px,82vw);aspect-ratio:9/19;border-radius:38px;background:#000;border:1px solid rgba(255,255,255,.14);box-shadow:0 30px 70px -20px rgba(0,0,0,.9),0 0 0 8px rgba(255,255,255,.02);overflow:hidden}
+.vf{position:absolute;inset:0;background:
+  radial-gradient(120% 80% at 50% 20%,#1a1d24,#0b0d11 70%);
+  display:flex;align-items:center;justify-content:center}
+.carart{width:78%;opacity:.9;filter:drop-shadow(0 18px 26px rgba(0,0,0,.6))}
+.hud{position:absolute;left:0;right:0;top:0;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--muted)}
+.hud .pill{border:1px solid var(--line);border-radius:999px;padding:4px 9px;background:rgba(10,11,14,.6)}
+.brackets span{position:absolute;width:34px;height:34px;border:2px solid rgba(94,151,255,.75);opacity:0;transition:opacity .3s ease}
+.brackets .tl{top:74px;left:22px;border-right:0;border-bottom:0;border-radius:6px 0 0 0}
+.brackets .tr{top:74px;right:22px;border-left:0;border-bottom:0;border-radius:0 6px 0 0}
+.brackets .bl{bottom:150px;left:22px;border-right:0;border-top:0;border-radius:0 0 0 6px}
+.brackets .br{bottom:150px;right:22px;border-left:0;border-top:0;border-radius:0 0 6px 0}
+.phone.scanning .brackets span{opacity:1}
+.scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(94,151,255,.95),transparent);box-shadow:0 0 18px rgba(94,151,255,.8);top:74px;opacity:0}
+.phone.scanning .scanline{opacity:1;animation:sweep 1.5s cubic-bezier(.45,0,.55,1) 2}
+@keyframes sweep{0%{top:76px}100%{top:calc(100% - 156px)}}
+.verdict{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(12,14,19,.94);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:18px;padding:15px 16px 16px;transform:translateY(120%);opacity:0;transition:transform .5s cubic-bezier(.2,.9,.3,1),opacity .4s ease}
+.phone.landed .verdict{transform:none;opacity:1}
+.verdict .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.chip{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;padding:3px 8px;border-radius:999px;color:var(--gold);border:1px solid rgba(255,194,75,.55)}
+.verdict .mk{font-weight:900;font-size:19px;letter-spacing:-.02em;margin-top:9px;line-height:1.1}
+.verdict .yr{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:5px;letter-spacing:.06em}
+.verdict .blurb{font-size:11.5px;line-height:1.5;color:var(--muted);margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+.verdict .stamp{display:flex;align-items:center;gap:7px;margin-top:11px;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--ember)}
+.replay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;background:rgba(10,11,14,.7);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:10px 16px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;cursor:pointer;opacity:0;transition:opacity .3s ease}
+.phone.landed .replay{opacity:1}
+.phone.landed .replay:hover{border-color:var(--ember);color:var(--ember)}
+
+/* ---------- sections ---------- */
+section{padding:clamp(56px,8vw,110px) 0}
+.sechead{font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:var(--ember);text-transform:uppercase;margin-bottom:14px}
+h2{font-size:clamp(28px,4.2vw,46px);font-weight:900;letter-spacing:-.03em;line-height:1.05;max-width:20ch}
+.subhead{color:var(--muted);font-size:clamp(14px,1.5vw,16.5px);line-height:1.6;margin-top:16px;max-width:56ch}
+
+/* steps — a real sequence, so it is numbered */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:44px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
+.step{background:var(--carbon);padding:clamp(22px,3vw,32px)}
+.step .n{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;color:var(--ember)}
+.step h3{font-size:19px;font-weight:800;margin-top:14px;letter-spacing:-.01em}
+.step p{color:var(--muted);font-size:13.5px;line-height:1.6;margin-top:9px}
+
+/* registry — the cream inversion */
+.registry{background:var(--cream);color:var(--navy)}
+.registry .sechead{color:#B4531A}
+.registry h2{color:var(--navy)}
+.registry .subhead{color:#3A4A5E}
+.ledger{margin-top:40px;border:1px solid rgba(2,26,54,.18);border-radius:12px;overflow:hidden;background:#fff}
+.ledger .lhead,.ledger .lrow{display:grid;grid-template-columns:64px 1fr 108px 92px;gap:12px;padding:13px 18px;align-items:center;font-family:var(--mono);font-size:11.5px}
+@media(max-width:700px){
+  .ledger .lhead{display:none}
+  .ledger .lrow{grid-template-columns:56px 1fr;row-gap:4px;padding:14px 16px}
+  .ledger .lrow .rr,.ledger .lrow .dd{grid-column:2;font-size:10.5px}
+}
+.ledger .lhead{background:rgba(2,26,54,.05);letter-spacing:.16em;font-size:9.5px;text-transform:uppercase;color:#5A6B80;border-bottom:1px solid rgba(2,26,54,.14)}
+.ledger .lrow{border-bottom:1px solid rgba(2,26,54,.09)}
+.ledger .lrow:last-child{border-bottom:0}
+.ledger .no{color:#8A99AB}
+.ledger .nm{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:-.01em}
+.ledger .rr{font-weight:700;letter-spacing:.1em;font-size:10px}
+.rr.legendary{color:#B8860B} .rr.classic{color:#C2410C} .rr.rare{color:#1D4ED8} .rr.everyday{color:#64748B}
+.ledger .dd{color:#7C8A9C;letter-spacing:.04em}
+.ledgernote{font-family:var(--mono);font-size:10.5px;color:#7C8A9C;margin-top:14px;letter-spacing:.04em}
+
+/* judge */
+.judge{background:var(--navy);position:relative;overflow:hidden}
+.judge::after{content:"";position:absolute;right:-8%;top:-30%;width:520px;height:520px;background:radial-gradient(circle,rgba(255,138,30,.13),transparent 65%);pointer-events:none}
+.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:40px;position:relative}
+@media(max-width:760px){.rules{grid-template-columns:1fr}}
+.rule{border:1px solid rgba(255,255,255,.13);border-radius:14px;padding:20px 22px;background:rgba(255,255,255,.03)}
+.rule h3{font-size:15px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+.rule h3::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ember);flex:0 0 auto}
+.rule p{color:#9FB0C4;font-size:13px;line-height:1.6;margin-top:8px}
+
+/* features */
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:44px}
+@media(max-width:900px){.feats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.feats{grid-template-columns:1fr}}
+.feat{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--panel);transition:border-color .15s ease,transform .15s ease}
+.feat:hover{border-color:rgba(255,138,30,.4);transform:translateY(-2px)}
+.feat .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
+.feat h3{font-size:17px;font-weight:800;margin-top:11px;letter-spacing:-.01em}
+.feat p{color:var(--muted);font-size:13px;line-height:1.6;margin-top:8px}
+
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:40px;max-width:760px}
+@media(max-width:640px){.plans{grid-template-columns:1fr}}
+.plan{border:1.5px solid var(--line);border-radius:18px;padding:26px;background:var(--panel);position:relative}
+.plan.best{border-color:rgba(255,194,75,.55);background:linear-gradient(180deg,rgba(255,194,75,.09),rgba(255,194,75,.01))}
+.plan .tag{position:absolute;top:-11px;left:24px;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:#1B0E00;background:linear-gradient(180deg,var(--gold),var(--ember));padding:4px 10px;border-radius:999px}
+.plan .nm{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.plan .pr{font-size:38px;font-weight:900;letter-spacing:-.03em;margin-top:10px}
+.plan .pr span{font-size:14px;font-weight:600;color:var(--muted);letter-spacing:0}
+.plan .sub{color:var(--muted);font-size:12.5px;margin-top:6px}
+.plan ul{list-style:none;margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+.plan li{font-size:13.5px;color:var(--muted);padding:7px 0 7px 22px;position:relative;line-height:1.5}
+.plan li::before{content:"◎";position:absolute;left:0;color:var(--gold);font-size:11px;top:8px}
+.plan .btn{width:100%;margin-top:20px}
+.plan.free{border-color:rgba(255,255,255,.18)}
+.planhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.billtoggle{display:inline-flex;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:3px}
+.billtoggle button{font-family:var(--mono);font-weight:700;font-size:9.5px;letter-spacing:.12em;padding:6px 12px;border-radius:999px;border:0;background:transparent;color:var(--muted);cursor:pointer;transition:color .12s ease}
+.billtoggle button:hover{color:var(--ink)}
+.billtoggle button.on{background:linear-gradient(180deg,var(--gold),var(--ember));color:#1B0E00}
+.saveline{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--gold);margin-top:7px;min-height:13px}
+.freetag{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--ember);border:1px solid rgba(255,138,30,.5);padding:4px 9px;border-radius:999px}
+
+/* closing */
+.closing{text-align:center;border-top:1px solid var(--line)}
+.closing .mk{width:56px;height:56px;margin:0 auto 22px;color:var(--ink);overflow:visible}
+.closing h2{max-width:22ch;margin:0 auto}
+.countdown{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--gold);margin-top:18px;text-transform:uppercase}
+
+footer{border-top:1px solid var(--line);padding:36px 0 48px;color:var(--muted);font-size:12.5px}
+footer .row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-end}
+footer .wd{height:15px;width:auto;color:var(--muted);margin-bottom:10px}
+footer a:hover{color:var(--ink)}
+footer .lks{display:flex;gap:18px;flex-wrap:wrap}
+.fine{margin-top:8px;font-size:11.5px;line-height:1.6}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .verdict{transform:none;opacity:1}
+  .brackets span{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap row">
+    <a class="lockup" href="#top" aria-label="tyrehunt home">
+      <svg class="mk" viewBox="0 0 97.8 100" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M42.83 99.45C31.81 97.71 23.95 93.86 16.03 86.34C5.89 76.71 0.39 63.90 0.41 50.00C0.42 41.74 1.87 35.29 5.34 28.06C13.33 11.37 28.24 1.28 46.47 0.20C59.51 -0.58 72.04 3.98 81.65 13.00C88.72 19.64 93.12 26.74 95.99 36.18C97.33 40.59 97.47 41.83 97.48 49.73C97.49 60.06 96.62 63.98 92.43 72.55C87.74 82.16 80.06 89.85 70.38 94.62C67.39 96.09 63.06 97.77 60.75 98.35C55.76 99.60 47.15 100.13 42.83 99.45ZM57.07 82.83C66.94 79.90 74.58 72.89 78.34 63.32C79.76 59.71 80.10 58.00 80.31 53.25C80.61 46.51 79.79 42.52 76.86 36.54C73.19 29.02 65.17 22.61 56.72 20.43C52.46 19.33 44.65 19.32 40.47 20.41C25.78 24.22 16.04 36.81 16.11 51.90C16.13 57.38 17.09 61.32 19.75 66.82C21.83 71.12 27.71 77.31 32.07 79.75C34.84 81.31 40.27 83.29 43.48 83.90C45.94 84.37 54.02 83.74 57.07 82.83ZM43.48 76.07C34.83 74.53 28.45 69.60 24.51 61.41C22.61 57.46 22.55 57.15 22.55 51.09C22.55 44.99 22.60 44.74 24.59 40.57C28.93 31.47 37.35 26.11 47.30 26.09C51.66 26.09 56.53 27.30 59.78 29.20C63.09 31.14 67.74 35.61 69.41 38.46C72.69 44.06 73.67 51.44 71.98 57.90C69.68 66.75 62.08 73.88 52.86 75.83C48.84 76.68 47.18 76.73 43.48 76.07ZM60.51 66.79C62.76 65.76 63.78 62.14 62.35 60.28C61.45 59.11 59.56 58.15 58.15 58.15C56.67 58.15 53.80 60.98 53.80 62.43C53.80 66.13 57.17 68.31 60.51 66.79ZM12.74 34.21C16.38 28.56 24.74 20.46 30.17 17.34C32.56 15.96 35.49 14.44 36.68 13.95L38.86 13.06L35.87 13.39C31.77 13.83 25.81 15.86 21.93 18.14C13.46 23.10 7.36 33.22 6.33 44.02L5.99 47.55L8.06 42.91C9.20 40.35 11.30 36.44 12.74 34.21ZM38.71 42.54C41.00 40.27 41.85 39.04 41.85 37.96C41.85 36.36 40.15 34.78 38.43 34.78C37.87 34.78 35.97 36.16 34.20 37.85C30.76 41.14 30.19 42.79 31.88 44.66C33.51 46.46 35.32 45.90 38.71 42.54Z"/><circle cx="58.2" cy="62.5" r="4.6" fill="var(--ember)"/></svg>
+      <svg class="wd" viewBox="0 0 490.9 100" role="img" aria-label="tyrehunt"><path fill="currentColor" fill-rule="evenodd" d="M67.88 92.76L68.18 85.35L83.33 84.85L98.48 84.34L98.79 80.62L99.10 76.91L82.63 76.58C67.13 76.28 65.96 76.12 62.76 73.84C56.37 69.28 55.60 65.85 55.58 41.67L55.56 20.20L63.64 20.20L71.72 20.20L71.72 40.20C71.72 54.41 72.07 60.55 72.93 61.41C73.74 62.23 78.31 62.63 86.85 62.63L99.56 62.63L99.72 45.71C99.80 36.40 99.90 26.86 99.94 24.49L100.00 20.20L107.58 20.20L115.15 20.20L115.13 53.28C115.11 83.35 114.94 86.74 113.23 90.50C112.07 93.05 109.85 95.57 107.44 97.07C103.76 99.35 102.48 99.51 85.56 99.83L67.58 100.16L67.88 92.76ZM21.38 76.04C17.94 75.39 11.53 68.53 10.76 64.68C10.40 62.86 10.10 55.28 10.10 47.85L10.10 34.34L5.05 34.34L0.00 34.34L0.00 27.27L0.00 20.20L5.05 20.20L10.10 20.20L10.10 10.61L10.10 1.01L17.68 1.01L25.25 1.01L25.25 10.61L25.25 20.20L35.35 20.20L45.45 20.20L45.45 27.27L45.45 34.34L35.35 34.34L25.25 34.34L25.25 46.90C25.25 62.73 25.17 62.63 37.45 62.63L46.46 62.63L46.46 69.70L46.46 76.77L35.10 76.63C28.85 76.55 22.68 76.29 21.38 76.04ZM125.25 54.51C125.25 34.19 125.43 31.89 127.29 28.26C128.60 25.69 130.74 23.54 133.31 22.24C136.74 20.48 139.26 20.20 151.47 20.20L165.66 20.20L165.66 27.27L165.66 34.34L154.62 34.34C145.93 34.34 143.24 34.68 141.99 35.93C140.66 37.26 140.40 40.65 140.40 57.14L140.40 76.77L132.83 76.77L125.25 76.77L125.25 54.51ZM182.32 75.34C178.25 73.53 174.91 69.74 173.71 65.57C173.17 63.68 172.73 55.19 172.73 46.69C172.73 29.15 173.66 25.51 178.98 22.21C182.09 20.29 183.65 20.16 201.52 20.43C219.76 20.69 220.87 20.82 224.01 23.06C229.27 26.82 230.27 29.84 230.55 42.91L230.81 54.61L215.15 55.00C206.54 55.22 197.11 55.43 194.19 55.48C189.35 55.55 188.89 55.76 188.89 57.88C188.89 62.35 190.18 62.63 210.81 62.63L230.30 62.63L230.30 69.70L230.30 76.77L207.83 76.73C191.36 76.70 184.54 76.33 182.32 75.34ZM241.08 76.09C240.71 75.72 240.40 58.73 240.40 38.33L240.40 1.24L245.82 0.57C248.79 0.19 252.43 0.19 253.90 0.56C256.54 1.22 256.57 1.30 256.57 10.72L256.57 20.20L271.46 20.22C289.38 20.25 293.53 21.55 296.91 28.17C298.82 31.92 298.99 34.02 298.99 54.51L298.99 76.77L291.41 76.77L283.84 76.77L283.84 57.51C283.84 46.17 283.41 37.45 282.79 36.30C281.84 34.53 280.57 34.34 269.16 34.34L256.57 34.34L256.57 55.56L256.57 76.77L249.16 76.77C245.08 76.77 241.45 76.46 241.08 76.09ZM317.73 74.48C315.54 73.24 312.81 70.63 311.67 68.69C309.78 65.46 309.57 63.20 309.27 42.68L308.95 20.20L317.10 20.20L325.25 20.20L325.25 40.20C325.25 54.41 325.60 60.55 326.46 61.41C327.28 62.23 331.85 62.63 340.38 62.63L353.08 62.63L353.11 41.67L353.14 20.71L360.91 20.41L368.69 20.12L368.69 48.44L368.69 76.77L345.20 76.75C322.78 76.74 321.54 76.63 317.73 74.48ZM378.79 48.43L378.79 20.10L402.96 20.40C425.54 20.69 427.31 20.84 429.92 22.79C436.28 27.55 436.83 29.18 437.37 45.27C437.65 53.43 437.72 63.85 437.52 68.43L437.17 76.77L429.69 76.77L422.22 76.77L422.22 56.77C422.22 42.56 421.87 36.42 421.01 35.56C420.20 34.74 415.69 34.34 407.37 34.34L394.95 34.34L394.95 55.56L394.95 76.77L386.87 76.77L378.79 76.77L378.79 48.43ZM462.61 74.45C455.42 70.65 454.11 66.94 453.70 49.24L453.35 34.34L448.90 34.34L444.44 34.34L444.44 27.27L444.44 20.20L448.99 20.20L453.54 20.20L453.54 10.61L453.54 1.01L461.62 1.01L469.70 1.01L469.70 10.61L469.70 20.20L479.29 20.20L488.89 20.20L488.89 27.27L488.89 34.34L479.29 34.34L469.70 34.34L469.70 47.44C469.70 63.03 469.36 62.63 482.26 62.63L490.91 62.63L490.91 69.70L490.91 76.77L478.95 76.77C468.43 76.77 466.46 76.49 462.61 74.45ZM214.96 38.13L214.65 34.85L201.77 34.57L188.89 34.28L188.89 37.85L188.89 41.41L202.08 41.41L215.28 41.41L214.96 38.13Z"/></svg>
+    </a>
+    <div class="links">
+      <a href="#how">How it works</a>
+      <a href="#registry">The Registry</a>
+      <a href="#edition">Hunter's Edition</a>
+      <a class="btn hot" href="APP_URL">Start hunting</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap herogrid">
+    <div>
+      <div class="eyebrow">Camera-first · verified captures</div>
+      <h1>Point your camera<br>at <em>real metal</em>.</h1>
+      <p class="lede">Shoot a car you actually found. A verifier names it, grades the shot, and files it to your Registry. Old photos don't count. Screens and prints get caught. You have to be there.</p>
+      <div class="herocta">
+        <a class="btn hot lg" href="APP_URL">Start hunting — free</a>
+        <a class="btn lg" href="#how">See how it works</a>
+      </div>
+      <div class="trust">
+        <span><i></i>Play in your browser today</span>
+        <span><i></i>Works on any phone</span>
+        <span><i></i>Free to play</span>
+      </div>
+      <div class="storerow">
+        <div class="storelabel" id="storeLabel">Native apps — coming soon</div>
+        <div class="storebtns">
+          <a class="storebtn soon" id="iosBtn" aria-disabled="true">
+            <svg class="gl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M10.5 18.4h3"/>
+            </svg>
+            <span class="tx"><span class="t1" data-t1>Coming soon to</span><span class="t2">App Store</span></span>
+          </a>
+          <a class="storebtn soon" id="androidBtn" aria-disabled="true">
+            <svg class="gl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M5 3.5v17a1 1 0 0 0 1.5.87l14-8.5a1 1 0 0 0 0-1.74l-14-8.5A1 1 0 0 0 5 3.5Z"/>
+            </svg>
+            <span class="tx"><span class="t1" data-t1>Coming soon to</span><span class="t2">Google Play</span></span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="stage">
+      <div class="phone" id="phone">
+        <div class="vf">
+          <svg class="carart" viewBox="0 0 400 150" aria-hidden="true">
+            <defs>
+              <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#39404d"/><stop offset="55%" stop-color="#232932"/><stop offset="100%" stop-color="#15191f"/>
+              </linearGradient>
+              <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#5b6675"/><stop offset="100%" stop-color="#2b323c"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="200" cy="132" rx="168" ry="10" fill="#000" opacity=".55"/>
+            <path d="M18 104 L30 78 Q40 60 66 54 L150 36 Q186 28 226 32 L300 44 Q346 52 368 74 L380 92 Q384 100 376 106 L338 108 L62 108 L22 106 Z" fill="url(#body)"/>
+            <path d="M78 56 L152 42 Q188 35 222 39 L286 50 L258 70 L98 70 Z" fill="url(#glass)" opacity=".92"/>
+            <path d="M22 96 L378 92" stroke="#0e1116" stroke-width="2" opacity=".7"/>
+            <rect x="356" y="72" width="22" height="7" rx="3" fill="#ffb562" opacity=".9"/>
+            <rect x="22" y="80" width="16" height="6" rx="3" fill="#c8563a" opacity=".85"/>
+            <g fill="#0d1015"><circle cx="104" cy="106" r="30"/><circle cx="306" cy="106" r="30"/></g>
+            <g fill="#2c333d"><circle cx="104" cy="106" r="18"/><circle cx="306" cy="106" r="18"/></g>
+            <g fill="#4a5563"><circle cx="104" cy="106" r="7"/><circle cx="306" cy="106" r="7"/></g>
+          </svg>
+        </div>
+        <div class="hud">
+          <span class="pill">12 / 60</span>
+          <span class="pill">ROOKIE</span>
+        </div>
+        <div class="brackets"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
+        <div class="scanline"></div>
+        <button class="replay" id="replay">↻ RUN IT AGAIN</button>
+        <div class="verdict">
+          <div class="top">
+            <span class="chip">CLASSIC</span>
+            <span class="chip" style="color:var(--muted);border-color:var(--line)">88% CONFIDENT</span>
+          </div>
+          <div class="mk">Pontiac Fiero</div>
+          <div class="yr">1984–1988 · WEDGE ERA · MID-ENGINE</div>
+          <div class="blurb">Plastic body panels over a spaceframe — the only mid-engine car Pontiac ever built. This one's been parked a while.</div>
+          <div class="stamp">◎ FILED TO REGISTRY · No. 042</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="how">
+  <div class="wrap">
+    <div class="sechead">The loop</div>
+    <h2>Four seconds from windshield to Registry.</h2>
+    <p class="subhead">No forms, no typing, no guessing what you're looking at. The whole game is one tap and the thing that happens after it.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="n">STEP 01</div>
+        <h3>Spot it</h3>
+        <p>Something interesting rolls past or sits under a tarp. Open the app — it lands on the camera, because that's the only screen that matters in the moment.</p>
+      </div>
+      <div class="step">
+        <div class="n">STEP 02</div>
+        <h3>Shoot it</h3>
+        <p>One tap. The photo goes to a vision model that identifies make, model, and era, judges rarity, and grades your framing with a note on how to shoot it better.</p>
+      </div>
+      <div class="step">
+        <div class="n">STEP 03</div>
+        <h3>File it</h3>
+        <p>The verdict lands with a chime and the car enters your Registry — numbered, dated, and yours. Miss the ID? Correct it in the dossier. The record is still yours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="registry" id="registry">
+  <div class="wrap">
+    <div class="sechead">The Registry</div>
+    <h2>Collectors have kept registries for a century.</h2>
+    <p class="subhead">Marque registries track every known example of a car — chassis by chassis, owner by owner. TYRE HUNT builds the street version: a running record of the metal you personally found, in the wild, on the day you found it.</p>
+
+    <div class="ledger" role="table" aria-label="Example Registry entries">
+      <div class="lhead" role="row"><span>Entry</span><span>Vehicle</span><span>Class</span><span>Filed</span></div>
+      <div class="lrow" role="row"><span class="no">No. 042</span><span class="nm">Pontiac Fiero</span><span class="rr classic">CLASSIC</span><span class="dd">Cle Elum, WA</span></div>
+      <div class="lrow" role="row"><span class="no">No. 041</span><span class="nm">Lamborghini Miura</span><span class="rr legendary">LEGENDARY</span><span class="dd">Monterey, CA</span></div>
+      <div class="lrow" role="row"><span class="no">No. 040</span><span class="nm">Datsun 240Z</span><span class="rr rare">RARE</span><span class="dd">Ellensburg, WA</span></div>
+      <div class="lrow" role="row"><span class="no">No. 039</span><span class="nm">Porsche 911 SC</span><span class="rr classic">CLASSIC</span><span class="dd">Seattle, WA</span></div>
+      <div class="lrow" role="row"><span class="no">No. 038</span><span class="nm">Ford F-100</span><span class="rr everyday">EVERYDAY</span><span class="dd">Roslyn, WA</span></div>
+    </div>
+    <p class="ledgernote">Entries are numbered in the order you find them. Nobody can buy their way onto this list.</p>
+  </div>
+</section>
+
+<section class="judge">
+  <div class="wrap">
+    <div class="sechead">Why it counts</div>
+    <h2>A collection is only worth something if it's honest.</h2>
+    <p class="subhead">Anyone can screenshot a supercar. The rules below are what make a Registry entry mean you were standing there.</p>
+    <div class="rules">
+      <div class="rule">
+        <h3>Live camera only</h3>
+        <p>Gallery imports don't count. The shutter opens your camera, and that's the only path to a counted capture.</p>
+      </div>
+      <div class="rule">
+        <h3>Screens and prints get caught</h3>
+        <p>The verifier flags photos of monitors, magazines, and press shots. Flagged captures still save to your garage — they just don't count.</p>
+      </div>
+      <div class="rule">
+        <h3>Duplicates are detected</h3>
+        <p>Every photo gets a fingerprint computed on the server and checked against every other hunter's. The same car photographed twice is one entry.</p>
+      </div>
+      <div class="rule">
+        <h3>The judge runs server-side</h3>
+        <p>Identification happens on our servers, not in your phone where it could be edited. Rate limits are enforced there too.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sechead">What you can do with it</div>
+    <h2>Built for the way people actually chase cars.</h2>
+    <div class="feats">
+      <div class="feat">
+        <div class="k">Documentation</div>
+        <h3>Full dossiers</h3>
+        <p>Go beyond one photo — interior, badge, rear, engine, detail. Each angle is graded, and badge shots get their script read back to you. Three verified angles makes it a full dossier.</p>
+      </div>
+      <div class="feat">
+        <div class="k">Owners</div>
+        <h3>Bounties</h3>
+        <p>Own something people want to see? Post a bounty on your own car and hunters who spot it in the wild get credit. You see who found you.</p>
+      </div>
+      <div class="feat">
+        <div class="k">Barn finds</div>
+        <h3>Sleeping cars</h3>
+        <p>Flat tyres, moss, a tarp and a decade of dust. Dormant metal gets its own classification and its own title to chase.</p>
+      </div>
+      <div class="feat">
+        <div class="k">Lost to history</div>
+        <h3>Most Wanted</h3>
+        <p>Cars the record says were built but nobody can find — Bugatti's missing Atlantic, a Ferrari 375 MM, Dean's Spyder. Spot something that fits and you file a lead.</p>
+      </div>
+      <div class="feat">
+        <div class="k">Share</div>
+        <h3>Reels</h3>
+        <p>Turn an expedition into a vertical video — your finds, your rarities, your stats — rendered on your phone and ready for the platform of your choice.</p>
+      </div>
+      <div class="feat">
+        <div class="k">Together</div>
+        <h3>Crews and live lobbies</h3>
+        <p>At a show, everyone joins one lobby code and the leaderboard moves in real time as people file finds around you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="edition">
+  <div class="wrap">
+    <div class="sechead">Pricing</div>
+    <h2>Free to play. Free to keep playing.</h2>
+    <p class="subhead">Everything that makes the game a game — the Registry, dossiers, reels, crews, live lobbies — is free, with no trial clock and no card required. Hunt hard enough to want more, and there's one upgrade.</p>
+    <div class="plans">
+
+      <div class="plan free">
+        <div class="planhead">
+          <div class="nm">Free hunt</div>
+          <span class="freetag">NO CARD NEEDED</span>
+        </div>
+        <div class="pr">$0<span> forever</span></div>
+        <div class="saveline">Start in about four seconds</div>
+        <ul>
+          <li>30 verified captures a day</li>
+          <li>The full Registry, numbered and dated</li>
+          <li>Full dossiers — interior, badge, rear, engine, detail</li>
+          <li>Reels and share cards</li>
+          <li>Crews, live lobbies, and duels</li>
+          <li>One active bounty on a car you own</li>
+        </ul>
+        <a class="btn hot" href="APP_URL">Start hunting</a>
+      </div>
+
+      <div class="plan best">
+        <div class="planhead">
+          <div class="nm">Hunter's Edition</div>
+          <div class="billtoggle" id="billToggle" role="group" aria-label="Billing period">
+            <button type="button" data-bill="month" class="on" aria-pressed="true">MONTHLY</button>
+            <button type="button" data-bill="year" aria-pressed="false">YEARLY</button>
+          </div>
+        </div>
+        <div class="pr" id="planPrice">$4.99<span> / month</span></div>
+        <div class="saveline" id="planSave">Cancel whenever</div>
+        <ul>
+          <li>150 verified captures a day — five times free</li>
+          <li>Unlimited bounties on your own cars</li>
+          <li>Gold Registry cards on everything you share</li>
+          <li>New features before anyone else</li>
+          <li>Support a solo-built app and keep it shipping</li>
+        </ul>
+        <a class="btn" href="APP_URL" id="premCta">Get Hunter's Edition</a>
+      </div>
+
+    </div>
+    <p class="ledgernote" style="color:var(--muted);margin-top:20px">Verification limits are what a subscription pays for. Nobody buys their way past the judge.</p>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap">
+    <svg class="mk" viewBox="0 0 97.8 100" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M42.83 99.45C31.81 97.71 23.95 93.86 16.03 86.34C5.89 76.71 0.39 63.90 0.41 50.00C0.42 41.74 1.87 35.29 5.34 28.06C13.33 11.37 28.24 1.28 46.47 0.20C59.51 -0.58 72.04 3.98 81.65 13.00C88.72 19.64 93.12 26.74 95.99 36.18C97.33 40.59 97.47 41.83 97.48 49.73C97.49 60.06 96.62 63.98 92.43 72.55C87.74 82.16 80.06 89.85 70.38 94.62C67.39 96.09 63.06 97.77 60.75 98.35C55.76 99.60 47.15 100.13 42.83 99.45ZM57.07 82.83C66.94 79.90 74.58 72.89 78.34 63.32C79.76 59.71 80.10 58.00 80.31 53.25C80.61 46.51 79.79 42.52 76.86 36.54C73.19 29.02 65.17 22.61 56.72 20.43C52.46 19.33 44.65 19.32 40.47 20.41C25.78 24.22 16.04 36.81 16.11 51.90C16.13 57.38 17.09 61.32 19.75 66.82C21.83 71.12 27.71 77.31 32.07 79.75C34.84 81.31 40.27 83.29 43.48 83.90C45.94 84.37 54.02 83.74 57.07 82.83ZM43.48 76.07C34.83 74.53 28.45 69.60 24.51 61.41C22.61 57.46 22.55 57.15 22.55 51.09C22.55 44.99 22.60 44.74 24.59 40.57C28.93 31.47 37.35 26.11 47.30 26.09C51.66 26.09 56.53 27.30 59.78 29.20C63.09 31.14 67.74 35.61 69.41 38.46C72.69 44.06 73.67 51.44 71.98 57.90C69.68 66.75 62.08 73.88 52.86 75.83C48.84 76.68 47.18 76.73 43.48 76.07ZM60.51 66.79C62.76 65.76 63.78 62.14 62.35 60.28C61.45 59.11 59.56 58.15 58.15 58.15C56.67 58.15 53.80 60.98 53.80 62.43C53.80 66.13 57.17 68.31 60.51 66.79ZM12.74 34.21C16.38 28.56 24.74 20.46 30.17 17.34C32.56 15.96 35.49 14.44 36.68 13.95L38.86 13.06L35.87 13.39C31.77 13.83 25.81 15.86 21.93 18.14C13.46 23.10 7.36 33.22 6.33 44.02L5.99 47.55L8.06 42.91C9.20 40.35 11.30 36.44 12.74 34.21ZM38.71 42.54C41.00 40.27 41.85 39.04 41.85 37.96C41.85 36.36 40.15 34.78 38.43 34.78C37.87 34.78 35.97 36.16 34.20 37.85C30.76 41.14 30.19 42.79 31.88 44.66C33.51 46.46 35.32 45.90 38.71 42.54Z"/><circle cx="58.2" cy="62.5" r="4.6" fill="var(--ember)"/></svg>
+    <h2>The next good car you see is worth something.</h2>
+    <p class="subhead" style="margin-inline:auto">Open the camera. Point it at metal. Find out what you're looking at.</p>
+    <div class="herocta" style="justify-content:center">
+      <a class="btn hot lg" href="APP_URL">Start hunting — free</a>
+    </div>
+      <div class="storerow">
+        <div class="storelabel" id="storeLabel2">Native apps — coming soon</div>
+        <div class="storebtns">
+          <a class="storebtn soon" id="iosBtn2" aria-disabled="true">
+            <svg class="gl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M10.5 18.4h3"/>
+            </svg>
+            <span class="tx"><span class="t1" data-t1>Coming soon to</span><span class="t2">App Store</span></span>
+          </a>
+          <a class="storebtn soon" id="androidBtn2" aria-disabled="true">
+            <svg class="gl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M5 3.5v17a1 1 0 0 0 1.5.87l14-8.5a1 1 0 0 0 0-1.74l-14-8.5A1 1 0 0 0 5 3.5Z"/>
+            </svg>
+            <span class="tx"><span class="t1" data-t1>Coming soon to</span><span class="t2">Google Play</span></span>
+          </a>
+        </div>
+      </div>
+
+    <div class="countdown" id="countdown"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap row">
+    <div>
+      <svg class="wd" viewBox="0 0 490.9 100" role="img" aria-label="tyrehunt"><path fill="currentColor" fill-rule="evenodd" d="M67.88 92.76L68.18 85.35L83.33 84.85L98.48 84.34L98.79 80.62L99.10 76.91L82.63 76.58C67.13 76.28 65.96 76.12 62.76 73.84C56.37 69.28 55.60 65.85 55.58 41.67L55.56 20.20L63.64 20.20L71.72 20.20L71.72 40.20C71.72 54.41 72.07 60.55 72.93 61.41C73.74 62.23 78.31 62.63 86.85 62.63L99.56 62.63L99.72 45.71C99.80 36.40 99.90 26.86 99.94 24.49L100.00 20.20L107.58 20.20L115.15 20.20L115.13 53.28C115.11 83.35 114.94 86.74 113.23 90.50C112.07 93.05 109.85 95.57 107.44 97.07C103.76 99.35 102.48 99.51 85.56 99.83L67.58 100.16L67.88 92.76ZM21.38 76.04C17.94 75.39 11.53 68.53 10.76 64.68C10.40 62.86 10.10 55.28 10.10 47.85L10.10 34.34L5.05 34.34L0.00 34.34L0.00 27.27L0.00 20.20L5.05 20.20L10.10 20.20L10.10 10.61L10.10 1.01L17.68 1.01L25.25 1.01L25.25 10.61L25.25 20.20L35.35 20.20L45.45 20.20L45.45 27.27L45.45 34.34L35.35 34.34L25.25 34.34L25.25 46.90C25.25 62.73 25.17 62.63 37.45 62.63L46.46 62.63L46.46 69.70L46.46 76.77L35.10 76.63C28.85 76.55 22.68 76.29 21.38 76.04ZM125.25 54.51C125.25 34.19 125.43 31.89 127.29 28.26C128.60 25.69 130.74 23.54 133.31 22.24C136.74 20.48 139.26 20.20 151.47 20.20L165.66 20.20L165.66 27.27L165.66 34.34L154.62 34.34C145.93 34.34 143.24 34.68 141.99 35.93C140.66 37.26 140.40 40.65 140.40 57.14L140.40 76.77L132.83 76.77L125.25 76.77L125.25 54.51ZM182.32 75.34C178.25 73.53 174.91 69.74 173.71 65.57C173.17 63.68 172.73 55.19 172.73 46.69C172.73 29.15 173.66 25.51 178.98 22.21C182.09 20.29 183.65 20.16 201.52 20.43C219.76 20.69 220.87 20.82 224.01 23.06C229.27 26.82 230.27 29.84 230.55 42.91L230.81 54.61L215.15 55.00C206.54 55.22 197.11 55.43 194.19 55.48C189.35 55.55 188.89 55.76 188.89 57.88C188.89 62.35 190.18 62.63 210.81 62.63L230.30 62.63L230.30 69.70L230.30 76.77L207.83 76.73C191.36 76.70 184.54 76.33 182.32 75.34ZM241.08 76.09C240.71 75.72 240.40 58.73 240.40 38.33L240.40 1.24L245.82 0.57C248.79 0.19 252.43 0.19 253.90 0.56C256.54 1.22 256.57 1.30 256.57 10.72L256.57 20.20L271.46 20.22C289.38 20.25 293.53 21.55 296.91 28.17C298.82 31.92 298.99 34.02 298.99 54.51L298.99 76.77L291.41 76.77L283.84 76.77L283.84 57.51C283.84 46.17 283.41 37.45 282.79 36.30C281.84 34.53 280.57 34.34 269.16 34.34L256.57 34.34L256.57 55.56L256.57 76.77L249.16 76.77C245.08 76.77 241.45 76.46 241.08 76.09ZM317.73 74.48C315.54 73.24 312.81 70.63 311.67 68.69C309.78 65.46 309.57 63.20 309.27 42.68L308.95 20.20L317.10 20.20L325.25 20.20L325.25 40.20C325.25 54.41 325.60 60.55 326.46 61.41C327.28 62.23 331.85 62.63 340.38 62.63L353.08 62.63L353.11 41.67L353.14 20.71L360.91 20.41L368.69 20.12L368.69 48.44L368.69 76.77L345.20 76.75C322.78 76.74 321.54 76.63 317.73 74.48ZM378.79 48.43L378.79 20.10L402.96 20.40C425.54 20.69 427.31 20.84 429.92 22.79C436.28 27.55 436.83 29.18 437.37 45.27C437.65 53.43 437.72 63.85 437.52 68.43L437.17 76.77L429.69 76.77L422.22 76.77L422.22 56.77C422.22 42.56 421.87 36.42 421.01 35.56C420.20 34.74 415.69 34.34 407.37 34.34L394.95 34.34L394.95 55.56L394.95 76.77L386.87 76.77L378.79 76.77L378.79 48.43ZM462.61 74.45C455.42 70.65 454.11 66.94 453.70 49.24L453.35 34.34L448.90 34.34L444.44 34.34L444.44 27.27L444.44 20.20L448.99 20.20L453.54 20.20L453.54 10.61L453.54 1.01L461.62 1.01L469.70 1.01L469.70 10.61L469.70 20.20L479.29 20.20L488.89 20.20L488.89 27.27L488.89 34.34L479.29 34.34L469.70 34.34L469.70 47.44C469.70 63.03 469.36 62.63 482.26 62.63L490.91 62.63L490.91 69.70L490.91 76.77L478.95 76.77C468.43 76.77 466.46 76.49 462.61 74.45ZM214.96 38.13L214.65 34.85L201.77 34.57L188.89 34.28L188.89 37.85L188.89 41.41L202.08 41.41L215.28 41.41L214.96 38.13Z"/></svg>
+      <div class="fine">Spot real cars. Build a verified Registry.<br>Operated by Curators of Speed LLC · Washington, USA</div>
+    </div>
+    <div class="lks">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="APP_URL">Open the app</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ---------------------------------------------------------------
+     STORE LINKS
+     Leave blank while the app is browser-only. Paste the listing URLs
+     here when they go live and the buttons activate automatically.
+
+     NOTE: Apple and Google both require their OFFICIAL badge artwork,
+     unmodified. When you have listings, download the real badges from
+     Apple's Marketing Resources and Google Play's Brand Guidelines and
+     swap them in for these placeholders.
+  --------------------------------------------------------------- */
+  var IOS_URL = "";
+  var ANDROID_URL = "";
+
+  function wireStore(btnId, url){
+    var el = document.getElementById(btnId);
+    if (!el) return false;
+    if (!url){ return false; }
+    el.classList.remove('soon');
+    el.classList.add('live');
+    el.setAttribute('href', url);
+    el.setAttribute('target', '_blank');
+    el.setAttribute('rel', 'noopener');
+    el.removeAttribute('aria-disabled');
+    var t1 = el.querySelector('[data-t1]');
+    if (t1) t1.textContent = 'Download on';
+    return true;
+  }
+  var anyLive = false;
+  ['iosBtn','iosBtn2'].forEach(function(id){ if (wireStore(id, IOS_URL)) anyLive = true; });
+  ['androidBtn','androidBtn2'].forEach(function(id){ if (wireStore(id, ANDROID_URL)) anyLive = true; });
+  if (anyLive){
+    ['storeLabel','storeLabel2'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.textContent = 'Also available on';
+    });
+  }
+
+  var phone = document.getElementById('phone');
+  var replay = document.getElementById('replay');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function run(){
+    phone.classList.remove('landed');
+    phone.classList.remove('scanning');
+    void phone.offsetWidth;
+    if (reduce){ phone.classList.add('landed'); return; }
+    phone.classList.add('scanning');
+    setTimeout(function(){
+  /* ---------------------------------------------------------------
+     STORE LINKS
+     Leave blank while the app is browser-only. Paste the listing URLs
+     here when they go live and the buttons activate automatically.
+
+     NOTE: Apple and Google both require their OFFICIAL badge artwork,
+     unmodified. When you have listings, download the real badges from
+     Apple's Marketing Resources and Google Play's Brand Guidelines and
+     swap them in for these placeholders.
+  --------------------------------------------------------------- */
+  var IOS_URL = "";
+  var ANDROID_URL = "";
+
+  function wireStore(btnId, url){
+    var el = document.getElementById(btnId);
+    if (!el) return false;
+    if (!url){ return false; }
+    el.classList.remove('soon');
+    el.classList.add('live');
+    el.setAttribute('href', url);
+    el.setAttribute('target', '_blank');
+    el.setAttribute('rel', 'noopener');
+    el.removeAttribute('aria-disabled');
+    var t1 = el.querySelector('[data-t1]');
+    if (t1) t1.textContent = 'Download on';
+    return true;
+  }
+  var anyLive = false;
+  ['iosBtn','iosBtn2'].forEach(function(id){ if (wireStore(id, IOS_URL)) anyLive = true; });
+  ['androidBtn','androidBtn2'].forEach(function(id){ if (wireStore(id, ANDROID_URL)) anyLive = true; });
+  if (anyLive){
+    ['storeLabel','storeLabel2'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.textContent = 'Also available on';
+    });
+  }
+
+      phone.classList.remove('scanning');
+      phone.classList.add('landed');
+    }, 3000);
+  }
+
+  var started = false;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting && !started){ started = true; setTimeout(run, 500); }
+    });
+  }, { threshold: .4 });
+  io.observe(phone);
+  replay.addEventListener('click', run);
+
+  // billing period pill
+  var bill = document.getElementById('billToggle');
+  if (bill){
+    bill.addEventListener('click', function(e){
+      var b = e.target.closest('button');
+      if (!b) return;
+      var year = b.dataset.bill === 'year';
+      bill.querySelectorAll('button').forEach(function(x){
+        var on = x === b;
+        x.classList.toggle('on', on);
+        x.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      document.getElementById('planPrice').innerHTML = year
+        ? '$39<span> / year</span>'
+        : '$4.99<span> / month</span>';
+      document.getElementById('planSave').textContent = year
+        ? '$3.25 a month · save 35%'
+        : 'Cancel whenever';
+    });
+  }
+
+  // days until Monterey Car Week (3rd Sunday of August, wrapping to next year after)
+  function nthDow(y,m,nth,dow){
+    var first=new Date(y,m-1,1);
+    var off=(dow-first.getDay()+7)%7;
+    return new Date(y,m-1,1+off+(nth-1)*7);
+  }
+  var el=document.getElementById('countdown');
+  if(el){
+    var now=new Date(), y=now.getFullYear();
+    var end=nthDow(y,8,3,0);
+    if(now>end){ end=nthDow(y+1,8,3,0); }
+    var start=new Date(end); start.setDate(end.getDate()-6);
+    var d=Math.ceil((start-now)/864e5);
+    el.textContent = d>0 ? ('Monterey Car Week · ' + d + ' days out')
+                         : (now<=end ? 'Monterey Car Week · happening now' : '');
+  }
+})();
+</script>
+</body>
+</html>
