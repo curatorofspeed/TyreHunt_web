@@ -143,6 +143,24 @@ h2{font-size:clamp(28px,4.2vw,46px);font-weight:900;letter-spacing:-.03em;line-h
 .ledger .dd{color:#7C8A9C;letter-spacing:.04em}
 .ledgernote{font-family:var(--mono);font-size:10.5px;color:#7C8A9C;margin-top:14px;letter-spacing:.04em}
 
+/* live leaderboard */
+.lbcard{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel);margin-top:36px}
+.lbhead{display:grid;grid-template-columns:44px 1fr 90px;gap:12px;padding:12px 18px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--line);font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.lbr{display:grid;grid-template-columns:44px 1fr 90px;gap:12px;padding:13px 18px;align-items:center;border-bottom:1px solid var(--line)}
+.lbr:last-child{border-bottom:0}
+.lbr .rk{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--muted);text-align:center}
+.lbr:nth-child(2) .rk{color:var(--gold)}
+.lbr:nth-child(3) .rk{color:var(--ink)}
+.lbr:nth-child(4) .rk{color:var(--ember)}
+.lbr .hd{font-family:var(--mono);font-size:13.5px;color:var(--ink)}
+.lbr .ti{font-size:10px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-top:2px}
+.lbr .sc{text-align:right;font-weight:900;font-size:17px;letter-spacing:-.02em}
+.lbr .sc small{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--muted);font-weight:400;margin-top:2px}
+.lbstate{padding:26px 18px;text-align:center;color:var(--muted);font-size:13px}
+.lbtabs{display:inline-flex;gap:3px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:3px;margin-top:20px}
+.lbtabs button{font-family:var(--mono);font-weight:700;font-size:9.5px;letter-spacing:.12em;padding:7px 14px;border-radius:999px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.lbtabs button.on{background:linear-gradient(180deg,var(--gold),var(--ember));color:#1B0E00}
+
 /* judge */
 .judge{background:var(--navy);position:relative;overflow:hidden}
 .judge::after{content:"";position:absolute;right:-8%;top:-30%;width:520px;height:520px;background:radial-gradient(circle,rgba(255,138,30,.13),transparent 65%);pointer-events:none}
@@ -343,6 +361,23 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
       <div class="lrow" role="row"><span class="no">No. 038</span><span class="nm">Ford F-100</span><span class="rr everyday">EVERYDAY</span><span class="dd">Roslyn, WA</span></div>
     </div>
     <p class="ledgernote">Entries are numbered in the order you find them. Nobody can buy their way onto this list.</p>
+  </div>
+</section>
+
+<section id="board">
+  <div class="wrap">
+    <div class="sechead">Live board</div>
+    <h2>Who's ahead right now.</h2>
+    <p class="subhead">Every hunter's Registry, updating as people file finds around the world. No way to buy a place on it.</p>
+    <div class="lbtabs" id="lbTabs" role="group" aria-label="Sort the board">
+      <button type="button" data-lb="models" class="on">REGISTRY</button>
+      <button type="button" data-lb="legends">LEGENDARY</button>
+      <button type="button" data-lb="streak">STREAK</button>
+    </div>
+    <div class="lbcard">
+      <div class="lbhead"><span>#</span><span>Hunter</span><span style="text-align:right">Score</span></div>
+      <div id="lbBody"><div class="lbstate">Loading the board…</div></div>
+    </div>
   </div>
 </section>
 
@@ -605,6 +640,60 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   }, { threshold: .4 });
   io.observe(phone);
   replay.addEventListener('click', run);
+
+  /* ---------------- live leaderboard ----------------
+     Reads the public 'leaderboard' view. The anon key is designed to be
+     public; row-level security decides what it can reach. */
+  var SUPA_URL = "https://kokxlzygppakgcebkygc.supabase.co";
+  var SUPA_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtva3hsenlncHBha2djZWJreWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTM5ODgsImV4cCI6MjA5OTg4OTk4OH0.c8N8aevxB-etS_b8HhG3M4BNlV3lM2gX3BO12vJRQCo";
+  var lbSort = "models";
+  var LB_LABEL = { models: "MODELS", legends: "LEGENDARY", streak: "DAY STREAK" };
+
+  function lbPaint(rows){
+    var body = document.getElementById('lbBody');
+    if (!rows || !rows.length){
+      body.innerHTML = '<div class="lbstate">The board fills up as hunters file finds. Yours could be first.</div>';
+      return;
+    }
+    body.innerHTML = rows.map(function(r, i){
+      var val = r[lbSort] || 0;
+      return '<div class="lbr">' +
+        '<span class="rk">' + (i + 1) + '</span>' +
+        '<span><span class="hd">@' + String(r.handle).replace(/[<>&]/g, '') + '</span>' +
+        (r.title ? '<span class="ti">' + String(r.title).replace(/[<>&]/g, '') + '</span>' : '') + '</span>' +
+        '<span class="sc">' + val + '<small>' + LB_LABEL[lbSort] + '</small></span>' +
+      '</div>';
+    }).join('');
+  }
+  function lbLoad(){
+    var body = document.getElementById('lbBody');
+    if (!body) return;
+    body.innerHTML = '<div class="lbstate">Loading the board…</div>';
+    var done = false;
+    var giveUp = setTimeout(function(){
+      if (!done){ done = true; body.innerHTML = '<div class="lbstate">Board is taking a breather — check back shortly.</div>'; }
+    }, 8000);
+    fetch(SUPA_URL + '/rest/v1/leaderboard?select=handle,title,models,legends,streak&order=' + lbSort + '.desc&limit=10', {
+      headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON }
+    })
+      .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function(rows){ if (done) return; done = true; clearTimeout(giveUp); lbPaint(rows); })
+      .catch(function(){
+        if (done) return; done = true; clearTimeout(giveUp);
+        body.innerHTML = '<div class="lbstate">Board is taking a breather — check back shortly.</div>';
+      });
+  }
+  var lbTabs = document.getElementById('lbTabs');
+  if (lbTabs){
+    lbTabs.addEventListener('click', function(e){
+      var b = e.target.closest('button');
+      if (!b) return;
+      lbSort = b.dataset.lb;
+      lbTabs.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
+      lbLoad();
+    });
+    lbLoad();
+  }
 
   // billing period pill
   var bill = document.getElementById('billToggle');
