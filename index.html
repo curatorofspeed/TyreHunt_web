@@ -3,15 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>tyrehunt — spot real cars, build a verified Registry</title>
-<meta name="description" content="A camera-first game for people who notice cars. Shoot what you find, a verifier names it, and it's filed to your Registry. Old photos don't count.">
+<title>tyrehunt — spot real cars and bikes, build a verified Registry</title>
+<meta name="description" content="A camera-first game for people who notice cars and bikes. Shoot what you find, a verifier names it, and it's filed to your Registry. Old photos don't count.">
 <meta name="theme-color" content="#0A0B0E">
-<meta property="og:title" content="tyrehunt">
-<meta property="og:description" content="Point your camera at real metal. Verified captures build your Registry.">
+<meta property="og:title" content="tyrehunt — spot real cars and bikes, build a verified Registry">
+<meta property="og:description" content="Point your camera at real metal — cars or bikes. Verified captures build your Registry.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://tyrehunt.app">
-<link rel="canonical" href="https://tyrehunt.app">
+<meta property="og:url" content="https://www.tyrehunt.app">
+  <meta property="og:site_name" content="tyrehunt">
+  <!-- Without these, every link shared to iMessage, Slack or X renders as
+       bare text. For a product about photographs, that's the worst possible
+       first impression. 1200x630 is the size all of them crop to. -->
+  <meta property="og:image" content="https://www.tyrehunt.app/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="tyrehunt — point your camera at real metal">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="tyrehunt — spot real cars and bikes">
+  <meta name="twitter:description" content="Shoot what you actually find. A verifier names it and files it to your Registry. Old photos don't count.">
+  <meta name="twitter:image" content="https://www.tyrehunt.app/og.png">
+<link rel="canonical" href="https://www.tyrehunt.app">
 <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -246,7 +259,7 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
     <div>
       <div class="eyebrow">Camera-first · verified captures</div>
       <h1>Point your camera<br>at <em>real metal</em>.</h1>
-      <p class="lede">Shoot a car you actually found. A verifier names it, grades the shot, and files it to your Registry. Old photos don't count. Screens and prints get caught. You have to be there.</p>
+      <p class="lede">Shoot a car or bike you actually found. A verifier names it, grades the shot, and files it to your Registry. Old photos don't count. Screens and prints get caught. You have to be there.</p>
       <div class="herocta">
         <a class="btn hot lg" href="https://hunt.tyrehunt.app">Start hunting — free</a>
         <a class="btn lg" href="#how">See how it works</a>
@@ -350,7 +363,7 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   <div class="wrap">
     <div class="sechead">The Registry</div>
     <h2>Collectors have kept registries for a century.</h2>
-    <p class="subhead">Marque registries track every known example of a car — chassis by chassis, owner by owner. TYRE HUNT builds the street version: a running record of the metal you personally found, in the wild, on the day you found it.</p>
+    <p class="subhead">Marque registries track every known example of a car, chassis by chassis. This is the street version — a numbered record of the metal you found yourself, on the day you found it. Cars and bikes keep separate books.</p>
 
     <div class="ledger" role="table" aria-label="Example Registry entries">
       <div class="lhead" role="row"><span>Entry</span><span>Vehicle</span><span>Class</span><span>Filed</span></div>
@@ -368,7 +381,11 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   <div class="wrap">
     <div class="sechead">Live board</div>
     <h2>Who's ahead right now.</h2>
-    <p class="subhead">Every hunter's Registry, updating as people file finds around the world. No way to buy a place on it.</p>
+    <p class="subhead">Every hunter's Registry, updating as people file finds around the world. Cars and bikes are ranked separately — and there's no way to buy a place on either.</p>
+    <div class="lbtabs" id="lbLane" role="group" aria-label="Choose a board" style="margin-bottom:10px">
+      <button type="button" data-lane="car" class="on">CARS</button>
+      <button type="button" data-lane="moto">BIKES</button>
+    </div>
     <div class="lbtabs" id="lbTabs" role="group" aria-label="Sort the board">
       <button type="button" data-lb="models" class="on">REGISTRY</button>
       <button type="button" data-lb="legends">LEGENDARY</button>
@@ -385,23 +402,19 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   <div class="wrap">
     <div class="sechead">Why it counts</div>
     <h2>A collection is only worth something if it's honest.</h2>
-    <p class="subhead">Anyone can screenshot a supercar. The rules below are what make a Registry entry mean you were standing there.</p>
+    <p class="subhead">Anyone can screenshot a supercar. These are the rules that make an entry mean you were standing there.</p>
     <div class="rules">
       <div class="rule">
-        <h3>Live camera only</h3>
-        <p>Gallery imports don't count. The shutter opens your camera, and that's the only path to a counted capture.</p>
-      </div>
-      <div class="rule">
-        <h3>Screens and prints get caught</h3>
-        <p>The verifier flags photos of monitors, magazines, and press shots. Flagged captures still save to your garage — they just don't count.</p>
+        <h3>You have to be there</h3>
+        <p>The shutter opens your camera — gallery imports don't count. The verifier flags photos of screens, magazines and press shots. Flagged captures still save to your garage, they just don't score.</p>
       </div>
       <div class="rule">
         <h3>Duplicates are detected</h3>
-        <p>Every photo gets a fingerprint computed on the server and checked against every other hunter's. The same car photographed twice is one entry.</p>
+        <p>Every photo gets a fingerprint on the server, checked against every other hunter's. The same car shot twice is one entry.</p>
       </div>
       <div class="rule">
         <h3>The judge runs server-side</h3>
-        <p>Identification happens on our servers, not in your phone where it could be edited. Rate limits are enforced there too.</p>
+        <p>Identification happens on our servers, not on your phone where it could be edited. Rate limits live there too.</p>
       </div>
     </div>
   </div>
@@ -410,37 +423,37 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
 <section>
   <div class="wrap">
     <div class="sechead">What you can do with it</div>
-    <h2>Built for the way people actually chase cars.</h2>
+    <h2>Built for the way people actually chase metal.</h2>
     <div class="feats">
       <div class="feat">
         <div class="k">Documentation</div>
         <h3>Full dossiers</h3>
-        <p>Go beyond one photo — interior, badge, rear, engine, detail. Each angle is graded, and badge shots get their script read back to you. Three verified angles makes it a full dossier.</p>
+        <p>One photo names it. Five angles — interior, badge, rear, engine, detail — make it a dossier. Each is graded, and badge shots get the script read back to you.</p>
       </div>
       <div class="feat">
         <div class="k">Owners</div>
         <h3>Bounties</h3>
-        <p>Own something people want to see? Post a bounty on your own car and hunters who spot it in the wild get credit. You see who found you.</p>
+        <p>Own something people want to see? Add it to your Stable and post a bounty. Hunters who spot it in the wild get credit, and you see who found you.</p>
       </div>
       <div class="feat">
         <div class="k">Barn finds</div>
         <h3>Sleeping cars</h3>
-        <p>Flat tyres, moss, a tarp and a decade of dust. Dormant metal gets its own classification and its own title to chase.</p>
+        <p>Flat tyres, moss, a decade of dust. Dormant metal gets its own classification and a title to chase.</p>
       </div>
       <div class="feat">
         <div class="k">Lost to history</div>
         <h3>Most Wanted</h3>
-        <p>Cars the record says were built but nobody can find — Bugatti's missing Atlantic, a Ferrari 375 MM, Dean's Spyder. Spot something that fits and you file a lead.</p>
+        <p>Machines the record says were built but nobody can find — Bugatti's missing Atlantic, a Ferrari 375 MM, Dean's Spyder. Spot something that fits and you file a lead.</p>
       </div>
       <div class="feat">
         <div class="k">Share</div>
         <h3>Reels</h3>
-        <p>Turn an expedition into a vertical video — your finds, your rarities, your stats — rendered on your phone and ready for the platform of your choice.</p>
+        <p>Turn an expedition into a vertical video — your finds, your rarities, your stats — rendered on your phone.</p>
       </div>
       <div class="feat">
         <div class="k">Together</div>
         <h3>Crews and live lobbies</h3>
-        <p>At a show, everyone joins one lobby code and the leaderboard moves in real time as people file finds around you.</p>
+        <p>At a show, everyone joins one lobby code and the board moves in real time as people file finds around you.</p>
       </div>
     </div>
   </div>
@@ -647,12 +660,18 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   var SUPA_URL = "https://kokxlzygppakgcebkygc.supabase.co";
   var SUPA_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtva3hsenlncHBha2djZWJreWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTM5ODgsImV4cCI6MjA5OTg4OTk4OH0.c8N8aevxB-etS_b8HhG3M4BNlV3lM2gX3BO12vJRQCo";
   var lbSort = "models";
+  /* Two separate public views rather than one with a lane column: this page
+     is already deployed querying `leaderboard` unfiltered, and adding lane
+     rows there would list a hunter twice. */
+  var lbView = "leaderboard";
   var LB_LABEL = { models: "MODELS", legends: "LEGENDARY", streak: "DAY STREAK" };
 
   function lbPaint(rows){
     var body = document.getElementById('lbBody');
     if (!rows || !rows.length){
-      body.innerHTML = '<div class="lbstate">The board fills up as hunters file finds. Yours could be first.</div>';
+      body.innerHTML = '<div class="lbstate">' + (lbView === 'leaderboard_bikes'
+        ? 'No bikes filed yet. The first one on the board sets the pace.'
+        : 'The board fills up as hunters file finds. Yours could be first.') + '</div>';
       return;
     }
     body.innerHTML = rows.map(function(r, i){
@@ -673,7 +692,7 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
     var giveUp = setTimeout(function(){
       if (!done){ done = true; body.innerHTML = '<div class="lbstate">Board is taking a breather — check back shortly.</div>'; }
     }, 8000);
-    fetch(SUPA_URL + '/rest/v1/leaderboard?select=handle,title,models,legends,streak&order=' + lbSort + '.desc&limit=10', {
+    fetch(SUPA_URL + '/rest/v1/' + lbView + '?select=handle,title,models,legends,streak&order=' + lbSort + '.desc&limit=10', {
       headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON }
     })
       .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
@@ -683,6 +702,17 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
         body.innerHTML = '<div class="lbstate">Board is taking a breather — check back shortly.</div>';
       });
   }
+  var lbLane = document.getElementById('lbLane');
+  if (lbLane){
+    lbLane.addEventListener('click', function(e){
+      var b = e.target.closest('button');
+      if (!b) return;
+      lbView = b.dataset.lane === 'moto' ? 'leaderboard_bikes' : 'leaderboard';
+      lbLane.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
+      lbLoad();
+    });
+  }
+
   var lbTabs = document.getElementById('lbTabs');
   if (lbTabs){
     lbTabs.addEventListener('click', function(e){
