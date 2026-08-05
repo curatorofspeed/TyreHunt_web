@@ -236,6 +236,36 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   .brackets span{opacity:1}
 }
 </style>
+  <!-- Tells search engines what this is and what it costs. Deliberately no
+       aggregateRating — inventing review counts is the fastest way to get
+       structured data ignored or penalised. Add it once reviews are real. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "tyrehunt",
+    "url": "https://www.tyrehunt.app",
+    "applicationCategory": "GameApplication",
+    "applicationSubCategory": "Camera game",
+    "operatingSystem": "Web browser — iOS, Android, desktop",
+    "browserRequirements": "Requires a camera and a modern browser. No install.",
+    "image": "https://www.tyrehunt.app/og.png",
+    "description": "A camera-first game for people who notice cars and bikes. Shoot what you find, a verifier names it, and it is filed to your numbered Registry. Old photos do not count.",
+    "featureList": [
+      "Live camera capture with server-side verification",
+      "Numbered Registry of cars and motorcycles",
+      "Full dossiers from five documented angles",
+      "Owner bounties",
+      "Live leaderboards"
+    ],
+    "offers": [
+      { "@type": "Offer", "name": "Free hunt", "price": "0", "priceCurrency": "USD",
+        "description": "30 verified captures a day, the full Registry, no card required." },
+      { "@type": "Offer", "name": "Hunter's Edition", "price": "4.99", "priceCurrency": "USD",
+        "description": "150 verified captures a day, unlimited bounties. $39 billed yearly." }
+    ]
+  }
+  </script>
 </head>
 <body>
 
