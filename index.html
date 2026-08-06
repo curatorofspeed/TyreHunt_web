@@ -370,11 +370,11 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
 
     <div class="ledger" role="table" aria-label="Example Registry entries">
       <div class="lhead" role="row"><span role="columnheader">Entry</span><span role="columnheader">Vehicle</span><span role="columnheader">Class</span><span role="columnheader">Filed</span></div>
-      <div class="lrow" role="row"><span class="no" role="cell">No. 042</span><span class="nm" role="cell">Holden Torana GTR XU-1</span><span class="rr rare" role="cell">RARE</span><span class="dd" role="cell">Pacific Raceways, WA</span></div>
-      <div class="lrow" role="row"><span class="no" role="cell">No. 041</span><span class="nm" role="cell">Lamborghini Miura</span><span class="rr legendary" role="cell">LEGENDARY</span><span class="dd" role="cell">Monterey, CA</span></div>
-      <div class="lrow" role="row"><span class="no" role="cell">No. 040</span><span class="nm" role="cell">Datsun 240Z</span><span class="rr rare" role="cell">RARE</span><span class="dd" role="cell">Ellensburg, WA</span></div>
-      <div class="lrow" role="row"><span class="no" role="cell">No. 039</span><span class="nm" role="cell">Porsche 911 SC</span><span class="rr classic" role="cell">CLASSIC</span><span class="dd" role="cell">Seattle, WA</span></div>
-      <div class="lrow" role="row"><span class="no" role="cell">No. 038</span><span class="nm" role="cell">Ford F-100</span><span class="rr everyday" role="cell">EVERYDAY</span><span class="dd" role="cell">Roslyn, WA</span></div>
+      <div class="lrow" role="row"><span class="no" role="cell">No. 042</span><span class="nm" role="cell">Holden Torana GTR XU-1</span><span class="rr rare" role="cell">RARE</span><span class="dd" role="cell">02 AUG 2026</span></div>
+      <div class="lrow" role="row"><span class="no" role="cell">No. 041</span><span class="nm" role="cell">Porsche 911 Targa</span><span class="rr rare" role="cell">RARE</span><span class="dd" role="cell">27 JUL 2026</span></div>
+      <div class="lrow" role="row"><span class="no" role="cell">No. 040</span><span class="nm" role="cell">Cadillac Fleetwood Brougham</span><span class="rr classic" role="cell">CLASSIC</span><span class="dd" role="cell">19 JUL 2026</span></div>
+      <div class="lrow" role="row"><span class="no" role="cell">No. 039</span><span class="nm" role="cell">Lykan HyperSport</span><span class="rr legendary" role="cell">LEGENDARY</span><span class="dd" role="cell">11 JUL 2026</span></div>
+      <div class="lrow" role="row"><span class="no" role="cell">No. 038</span><span class="nm" role="cell">Subaru GL</span><span class="rr everyday" role="cell">EVERYDAY</span><span class="dd" role="cell">04 JUL 2026</span></div>
     </div>
     <p class="ledgernote">Entries are numbered in the order you find them. Nobody can buy their way onto this list.</p>
   </div>
@@ -650,7 +650,12 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
       chip:'LEGENDARY', conf:96, mk:'Lykan HyperSport',
       yr:'2013–2016 · W MOTORS · 3.7L FLAT-SIX TWIN-TURBO',
       blurb:'Seven were built. One of them jumped between two towers in Abu Dhabi and the other six have barely been seen since.',
-      no:'039' }
+      no:'039' },
+    { img:'car-subaru', alt:'A white Subaru GL three-door parked under a flowering tree',
+      chip:'EVERYDAY',  conf:87, mk:'Subaru GL',
+      yr:'1980–1984 · LEONE · 1.8L FLAT-FOUR',
+      blurb:'Four-wheel drive a decade before every crossover had it. Most were driven into the ground — this one just kept going.',
+      no:'038' }
   ];
 
   var vSource = document.querySelector('.vf picture source');
