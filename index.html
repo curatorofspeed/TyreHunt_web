@@ -631,21 +631,26 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
      broken frame, never a mismatched photo. Both cars are already in
      the Registry ledger below, so the reel and the Registry agree. */
   var VERDICTS = [
-    { img:'car-hero',  alt:'A red Holden Torana GTR XU-1 in Ron Hodgson Motors racing livery, number 7',
+    { img:'car-hero',  webp:1, alt:'A red Holden Torana GTR XU-1 in Ron Hodgson Motors racing livery, number 7',
       chip:'RARE',      conf:88, mk:'Holden Torana GTR XU-1',
       yr:'1972–1974 · LJ · 202ci TRIPLE-CARB SIX',
       blurb:"Three Strombergs on a 3.3 six — the little Holden that took Bathurst off the V8s. This one's still wearing Ron Hodgson colours.",
       no:'042' },
-    { img:'car-miura', alt:'An orange Lamborghini Miura on a coastal road',
-      chip:'LEGENDARY', conf:94, mk:'Lamborghini Miura',
-      yr:'1966–1973 · P400 · 3.9L TRANSVERSE V12',
-      blurb:'The car that invented the supercar — engine behind the driver, mounted sideways, howling. Gandini was 25 when he drew it.',
+    { img:'car-911targa', alt:'A slate-grey Porsche 911 Targa parked outside a derelict cinema',
+      chip:'RARE',      conf:93, mk:'Porsche 911 Targa',
+      yr:'1970–1973 · CHROME BUMPER · 2.4L FLAT-SIX',
+      blurb:'Long-hood Targa with the fixed rear glass — parked outside a shuttered movie house like it never left 1973.',
       no:'041' },
-    { img:'car-240z',  alt:'A silver Datsun 240Z on a gravel road',
-      chip:'RARE',      conf:91, mk:'Datsun 240Z',
-      yr:'1969–1973 · S30 · 2.4L INLINE-SIX',
-      blurb:'The Z that ended the British sports-car era on price and reliability alone. Clean S30s are getting very hard to find.',
-      no:'040' }
+    { img:'car-cadillac', alt:'A white Cadillac Fleetwood Brougham on a gravel road at dusk',
+      chip:'CLASSIC',   conf:89, mk:'Cadillac Fleetwood Brougham',
+      yr:'1980–1992 · D-BODY · 5.0L V8',
+      blurb:'Wire wheels, a padded roof and eighteen feet of Detroit. They stopped making rooms this comfortable on wheels.',
+      no:'040' },
+    { img:'car-lykan',  alt:'A red Lykan HyperSport in a showroom',
+      chip:'LEGENDARY', conf:96, mk:'Lykan HyperSport',
+      yr:'2013–2016 · W MOTORS · 3.7L FLAT-SIX TWIN-TURBO',
+      blurb:'Seven were built. One of them jumped between two towers in Abu Dhabi and the other six have barely been seen since.',
+      no:'039' }
   ];
 
   var vSource = document.querySelector('.vf picture source');
@@ -675,7 +680,9 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   var vi = 0;
 
   function paintVerdict(v){
-    if (vSource) vSource.srcset = v.img + '.webp';
+    // A <source type="image/webp"> that 404s does NOT fall back to the <img> —
+    // it just breaks. So only offer webp for entries that actually have one.
+    if (vSource) vSource.srcset = v.webp ? (v.img + '.webp') : '';
     if (vImg){ vImg.src = v.img + '.jpg'; vImg.alt = v.alt; }
     if (vChip)  vChip.textContent = v.chip;
     if (vMk)    vMk.textContent = v.mk;
