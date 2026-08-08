@@ -100,6 +100,31 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
 .seg button{font:800 9.5px var(--disp);letter-spacing:.12em;color:var(--muted);padding:8px 13px;border-radius:999px}
 .seg button.on{background:rgba(24,183,220,.14);color:var(--ember)}
 
+/* ---------- pulse: galleries / hunters / lightbox ---------- */
+.secrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:26px 0 11px}
+.secrow h2.sec{margin:0}
+.live{display:inline-flex;align-items:center;gap:7px;font:700 9px var(--mono);color:var(--ok);letter-spacing:.14em;text-transform:uppercase}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:lpulse 2s infinite}
+@keyframes lpulse{0%,100%{opacity:1}50%{opacity:.25}}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.shotcard{position:relative;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--panel);cursor:pointer;padding:0;text-align:left;display:block;width:100%}
+.shotcard:hover{border-color:rgba(255,255,255,.3)}
+.shotcard .ph{aspect-ratio:4/3;background:#000 center/cover no-repeat}
+.shotcard .sc{position:absolute;top:8px;right:8px;font:800 11px var(--mono);color:var(--ink);background:rgba(8,9,12,.85);border:1px solid var(--line);border-radius:999px;padding:4px 8px}
+.shotcard .sc.gold{color:var(--gold);border-color:rgba(255,194,75,.5)}
+.shotcard .in{padding:9px 11px 10px}
+.shotcard .nm{font-weight:800;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shotcard .by{font:600 10px var(--mono);color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.medal{font:900 15px var(--mono);width:24px;text-align:center;flex:0 0 auto}
+.row.hrow:hover{border-color:rgba(255,255,255,.28)}
+.tile[data-goto]{cursor:pointer}
+.tile[data-goto]:hover{border-color:rgba(255,255,255,.3)}
+#lightbox{position:fixed;inset:0;z-index:70;background:rgba(5,6,8,.92);display:none;align-items:center;justify-content:center;padding:18px}
+#lightbox.on{display:flex}
+.lbcard{max-width:720px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:auto;max-height:94vh}
+#lbImg{width:100%;max-height:58vh;object-fit:contain;background:#000;display:block}
+.lbin{padding:14px 16px 16px}
+
 /* ---------- map ---------- */
 #mapc{width:100%;aspect-ratio:2/1.05;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);display:block;cursor:grab;touch-action:none}
 #mapc:active{cursor:grabbing}
@@ -147,6 +172,18 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
     <!-- OVERVIEW -->
     <section class="view on" id="v-overview">
       <div class="tiles" id="tiles"></div>
+      <div class="secrow"><h2 class="sec">Latest captures</h2><span class="live"><i></i><span id="liveAgo">syncing</span></span></div>
+      <div id="latest" class="gal"></div>
+      <div class="secrow"><h2 class="sec">Top shots · judge-scored</h2>
+        <div class="seg" id="tsSeg">
+          <button data-h="168">7 DAYS</button>
+          <button data-h="720" class="on">30 DAYS</button>
+          <button data-h="0">ALL TIME</button>
+        </div>
+      </div>
+      <div id="topShots" class="gal"></div>
+      <h2 class="sec">Top hunters · by captures</h2>
+      <div id="topHunters"></div>
       <h2 class="sec">Last 30 days</h2>
       <div class="card">
         <div class="chead">
@@ -212,6 +249,27 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
       <p class="note">Exact capture coordinates are operator-only. Regular accounts cannot read them — they see the aggregated world map instead.</p>
     </section>
   </main>
+</div>
+
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Capture detail">
+  <div class="lbcard">
+    <img id="lbImg" alt="Capture photo">
+    <div class="lbin">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-weight:900;font-size:17px" id="lbTitle"></div>
+          <div id="lbBy" style="font:600 11px var(--mono);color:var(--muted);margin-top:4px"></div>
+        </div>
+        <button class="btn sm" id="lbClose">CLOSE</button>
+      </div>
+      <div id="lbMeta" style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"></div>
+      <p id="lbNote" style="font:600 11px var(--mono);color:#6FA5FF;margin-top:10px;line-height:1.6"></p>
+      <div style="display:flex;gap:8px;margin-top:13px;flex-wrap:wrap">
+        <a class="btn sm" id="lbOpen" target="_blank" rel="noopener">PUBLIC PAGE ↗</a>
+        <button class="btn sm danger" id="lbDel">DELETE CAPTURE</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -288,15 +346,18 @@ async function afterAuth(){
 })();
 
 /* ================= NAV ================= */
+function gotoTab(v){
+  document.querySelectorAll("nav.tabs button").forEach(x => x.classList.toggle("on", x.dataset.v===v));
+  document.querySelectorAll(".view").forEach(vw => vw.classList.toggle("on", vw.id === "v-"+v));
+  if(v === "map") drawMap();
+  if(v === "errors") loadErrors();
+}
 document.querySelector("nav.tabs").addEventListener("click", e => {
   const b = e.target.closest("button"); if(!b) return;
-  document.querySelectorAll("nav.tabs button").forEach(x => x.classList.toggle("on", x===b));
-  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "v-"+b.dataset.v));
-  if(b.dataset.v === "map") drawMap();
-  if(b.dataset.v === "errors") loadErrors();
+  gotoTab(b.dataset.v);
 });
 $("refresh").addEventListener("click", loadAll);
-function loadAll(){ loadOverview(); loadMod(); loadUsers(); loadMap(); loadErrors(); }
+function loadAll(){ loadOverview(); loadStrips(); loadMod(); loadUsers(); loadMap(); loadErrors(); }
 
 /* ================= OVERVIEW ================= */
 const TILES = [
@@ -310,9 +371,12 @@ async function loadOverview(){
   try{
     const { data } = await sb.rpc("admin_overview");
     const o = data || {};
+    const GOTO = { open_reports:"moderation", new_leads:"moderation", disputes:"moderation", flagged_24h:"moderation",
+                   errors_24h:"errors", hunters:"users", suspended:"users", premium:"users", located:"map", hotspots:"map" };
     $("tiles").innerHTML = TILES.map(([k,label,cls]) => {
       const v = o[k]; const dim = (!v && cls) ? "" : cls;
-      return '<div class="tile '+(v?dim:"")+'"><b>'+(v==null?"—":v)+'</b><span>'+label+'</span></div>';
+      const go = GOTO[k] ? ' data-goto="'+GOTO[k]+'" role="button" tabindex="0"' : "";
+      return '<div class="tile '+(v?dim:"")+'"'+go+'><b>'+(v==null?"—":v)+'</b><span>'+label+'</span></div>';
     }).join("");
   }catch(e){ $("tiles").innerHTML = '<div class="empty">Stats unavailable.</div>'; }
   try{
@@ -506,6 +570,124 @@ $("errClear").addEventListener("click", async () => {
   try{ await sb.from("client_errors").delete().gte("created_at","1970-01-01"); toast("Error log cleared"); loadErrors(); loadOverview(); }
   catch(e){ toast("Clear failed"); }
 });
+
+/* ================= PULSE: latest / top shots / top hunters ================= */
+const CAP_COLS = "id,img_path,make,model,cx_name,rarity,shot_score,shot_note,user_id,created_at,event,flagged";
+const RCHIP = { everyday:"#8B93A1", classic:"#FF8A1E", rare:"#5E97FF", legendary:"#FFC24B" };
+let handleCache = {}, tsHours = 720, lbCap = null, lastPulse = 0;
+let pulseCache = { latest: [], top: [] };
+async function handlesFor(rows){
+  const need = [...new Set(rows.map(r=>r.user_id).filter(id=>id && handleCache[id]==null))];
+  if(!need.length) return;
+  try{
+    const { data } = await sb.from("profiles").select("id,handle").in("id", need);
+    (data||[]).forEach(pr=>{ handleCache[pr.id] = pr.handle || ""; });
+  }catch(e){}
+}
+function capName(c){ return esc(c.cx_name || ((c.make||"")+" "+(c.model||"")).trim() || "Capture"); }
+function shotCard(c){
+  const sc = c.shot_score;
+  return '<button class="shotcard" data-lb="'+c.id+'">'+
+    '<div class="ph" style="background-image:url(\''+esc(imgUrl(c.img_path))+'\')"></div>'+
+    (sc!=null ? '<span class="sc'+(sc>=80?' gold':'')+'">'+sc+'</span>' : '')+
+    (c.flagged ? '<span class="sc" style="left:8px;right:auto;color:var(--bad);border-color:rgba(255,93,93,.5)">FLAG</span>' : '')+
+    '<div class="in"><div class="nm">'+capName(c)+'</div>'+
+    '<div class="by">@'+esc(handleCache[c.user_id]||"—")+' · '+ago(c.created_at)+'</div></div></button>';
+}
+async function loadStrips(){
+  try{
+    const q1 = sb.from("captures").select(CAP_COLS).not("img_path","is",null)
+      .order("created_at",{ascending:false}).limit(8);
+    let q2 = sb.from("captures").select(CAP_COLS).not("img_path","is",null).not("shot_score","is",null)
+      .order("shot_score",{ascending:false}).order("created_at",{ascending:false}).limit(9);
+    if(tsHours) q2 = q2.gte("created_at", new Date(Date.now()-tsHours*3600e3).toISOString());
+    const [r1, r2] = await Promise.all([q1, q2]);
+    const latest = r1.data||[], top = r2.data||[];
+    await handlesFor(latest.concat(top));
+    pulseCache = { latest, top };
+    $("latest").innerHTML = latest.length ? latest.map(shotCard).join("")
+      : '<div class="empty" style="grid-column:1/-1">Nothing filed yet.</div>';
+    $("topShots").innerHTML = top.length ? top.map(shotCard).join("")
+      : '<div class="empty" style="grid-column:1/-1">No judge-scored shots in this window.</div>';
+    lastPulse = Date.now(); tickLive();
+  }catch(e){
+    $("latest").innerHTML = $("topShots").innerHTML =
+      '<div class="empty" style="grid-column:1/-1">Couldn\'t load captures — refresh, or check you\'re signed in as an operator.</div>';
+  }
+  try{
+    const { data } = await sb.rpc("admin_users", { q: "", lim: 50 });
+    const rows = (data||[]).filter(u=>u.captures>0).sort((a,b)=>b.captures-a.captures).slice(0,8);
+    $("topHunters").innerHTML = rows.length ? rows.map((u,i)=>{
+      const mcol = i===0 ? "var(--gold)" : i===1 ? "#C9CFD8" : i===2 ? "#C9834A" : "var(--dim)";
+      return '<div class="row hrow" data-hunter="'+esc(u.handle||"")+'" role="button" tabindex="0" style="cursor:pointer">'+
+        '<span class="medal" style="color:'+mcol+'">'+(i+1)+'</span>'+
+        '<div class="grow"><div class="t">@'+esc(u.handle||"—")+
+          (u.premium?' <span class="pill good">PREMIUM</span>':'')+
+          (u.suspended?' <span class="pill bad">SUSPENDED</span>':'')+'</div>'+
+        '<div class="d">'+u.captures+' captures'+(u.flagged>0?' · '+u.flagged+' flagged':'')+' · last seen '+ago(u.last_seen)+'</div></div>'+
+        '<span class="pill">VIEW</span></div>';
+    }).join("") : '<div class="empty">No hunters with captures yet.</div>';
+  }catch(e){}
+}
+$("tsSeg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if(!b) return;
+  tsHours = +b.dataset.h || 0;
+  document.querySelectorAll("#tsSeg button").forEach(x=>x.classList.toggle("on",x===b));
+  loadStrips();
+});
+$("topHunters").addEventListener("click", e => {
+  const r = e.target.closest("[data-hunter]"); if(!r) return;
+  $("uSearch").value = r.dataset.hunter;
+  gotoTab("users"); loadUsers();
+});
+$("tiles").addEventListener("click", e => {
+  const t = e.target.closest("[data-goto]"); if(t) gotoTab(t.dataset.goto);
+});
+/* ---- lightbox ---- */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-lb]"); if(!b) return;
+  const c = pulseCache.latest.concat(pulseCache.top).find(x=>x.id===+b.dataset.lb);
+  if(!c) return;
+  lbCap = c;
+  $("lbImg").src = imgUrl(c.img_path);
+  $("lbTitle").textContent = c.cx_name || ((c.make||"")+" "+(c.model||"")).trim() || "Capture";
+  $("lbBy").textContent = "@"+(handleCache[c.user_id]||"—")+" · "+ago(c.created_at);
+  $("lbMeta").innerHTML =
+    '<span class="pill" style="color:'+(RCHIP[c.rarity]||RCHIP.everyday)+'">'+esc((c.rarity||"everyday").toUpperCase())+'</span>'+
+    (c.shot_score!=null?' <span class="pill'+(c.shot_score>=80?' gold':'')+'">SHOT '+c.shot_score+'</span>':'')+
+    (c.flagged?' <span class="pill bad">'+esc(c.flagged)+'</span>':'')+
+    (c.event?' <span class="pill">'+esc(c.event)+'</span>':'');
+  $("lbNote").textContent = c.shot_note ? "JUDGE — " + c.shot_note : "";
+  $("lbOpen").href = "https://www.tyrehunt.app/spot.html?c=" + c.id;
+  $("lbDel").textContent = "DELETE CAPTURE";
+  $("lightbox").classList.add("on");
+});
+$("lightbox").addEventListener("click", e => {
+  if(e.target.id === "lightbox" || e.target.closest("#lbClose")) $("lightbox").classList.remove("on");
+});
+document.addEventListener("keydown", e => { if(e.key === "Escape") $("lightbox").classList.remove("on"); });
+$("lbDel").addEventListener("click", async () => {
+  const b = $("lbDel");
+  if(b.textContent !== "TAP AGAIN"){ b.textContent = "TAP AGAIN"; setTimeout(()=>{ b.textContent = "DELETE CAPTURE"; }, 3500); return; }
+  try{
+    await sb.from("captures").delete().eq("id", lbCap.id);
+    toast("Capture deleted"); $("lightbox").classList.remove("on");
+    loadStrips(); loadOverview();
+  }catch(e){ toast("Delete failed"); }
+});
+/* ---- heartbeat: overview refreshes itself while you watch ---- */
+function tickLive(){
+  if(!lastPulse) return;
+  const s = Math.round((Date.now()-lastPulse)/1000);
+  $("liveAgo").textContent = s<5 ? "just now" : s<60 ? s+"s ago" : Math.floor(s/60)+"m ago";
+}
+setInterval(tickLive, 5000);
+setInterval(() => {
+  if(document.hidden) return;
+  if(!$("v-overview").classList.contains("on")) return;
+  if(!me || !me.is_admin) return;
+  loadOverview(); loadStrips();
+}, 45000);
 
 /* ================= MAP (exact locations — operator only) ================= */
 let locs = [], land = null, landTried = false, mv = null, mapHours = 168, hit = [];
