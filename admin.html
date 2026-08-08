@@ -138,6 +138,7 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
       <button data-v="moderation">Moderation</button>
       <button data-v="users">Hunters</button>
       <button data-v="map">Map</button>
+      <button data-v="errors">Errors</button>
     </nav>
     <div class="who"><span id="whoami"></span><button class="btn sm" id="refresh">↻ REFRESH</button><button class="btn sm" id="signout">SIGN OUT</button></div>
   </header>
@@ -184,6 +185,15 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
         <button class="btn" id="uGo">SEARCH</button>
       </div>
       <div id="userList"><div class="empty">Loading…</div></div>
+    </section>
+
+    <!-- ERRORS -->
+    <section class="view" id="v-errors">
+      <div class="tools">
+        <span class="pill" id="errCount">—</span>
+        <button class="btn sm danger" id="errClear">CLEAR ALL</button>
+      </div>
+      <div id="errList"><div class="empty">Loading…</div></div>
     </section>
 
     <!-- MAP -->
@@ -283,9 +293,10 @@ document.querySelector("nav.tabs").addEventListener("click", e => {
   document.querySelectorAll("nav.tabs button").forEach(x => x.classList.toggle("on", x===b));
   document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "v-"+b.dataset.v));
   if(b.dataset.v === "map") drawMap();
+  if(b.dataset.v === "errors") loadErrors();
 });
 $("refresh").addEventListener("click", loadAll);
-function loadAll(){ loadOverview(); loadMod(); loadUsers(); loadMap(); }
+function loadAll(){ loadOverview(); loadMod(); loadUsers(); loadMap(); loadErrors(); }
 
 /* ================= OVERVIEW ================= */
 const TILES = [
@@ -293,7 +304,7 @@ const TILES = [
   ["captures_24h","Captures 24h",""],["flagged_24h","Flagged 24h","warn"],["premium","Premium","good"],
   ["open_reports","Open reports","bad"],["new_leads","New leads","warn"],
   ["disputes","Disputes","warn"],["suspended","Suspended","bad"],
-  ["located","Located",""],["hotspots","Map hotspots",""]
+  ["located","Located",""],["hotspots","Map hotspots",""],["errors_24h","Errors 24h","bad"]
 ];
 async function loadOverview(){
   try{
@@ -467,6 +478,33 @@ $("userList").addEventListener("click", async e => {
     toast(sus ? "Hunter suspended — they can't file captures" : "Hunter reinstated");
     loadUsers(); loadOverview();
   }catch(err){ toast("Couldn't update that hunter"); }
+});
+
+/* ================= ERRORS (client telemetry) ================= */
+async function loadErrors(){
+  const box = $("errList"); if(!box) return;
+  try{
+    const { data } = await sb.from("client_errors").select("*")
+      .order("created_at",{ascending:false}).limit(50);
+    $("errCount").textContent = (data ? data.length : 0) + " recent";
+    if(!data || !data.length){ box.innerHTML = '<div class="empty">No client errors recorded. Quiet is good.</div>'; return; }
+    box.innerHTML = data.map(r=>{
+      const dev = /iPhone|iPad/.test(r.ua||"") ? "iOS" : /Android/.test(r.ua||"") ? "Android" : "desktop/other";
+      return '<div class="row"><div class="grow">'+
+        '<div class="t">'+esc(r.message)+'</div>'+
+        '<div class="d">'+esc(r.view||"?")+' · '+dev+' · build '+esc(r.ver||"?")+
+          (r.src?' · '+esc(r.src):'')+(r.user_id?' · signed in':' · anon')+' · '+ago(r.created_at)+'</div>'+
+        (r.stack?'<div class="d" style="white-space:pre-wrap;max-height:88px;overflow:auto;opacity:.8">'+esc(r.stack)+'</div>':'')+
+      '</div></div>';
+    }).join("");
+  }catch(e){ box.innerHTML = '<div class="empty">Couldn\'t load errors.</div>'; }
+}
+$("errClear").addEventListener("click", async () => {
+  const btn = $("errClear");
+  if (btn.textContent !== "TAP AGAIN"){ btn.textContent = "TAP AGAIN"; setTimeout(()=>{ btn.textContent="CLEAR ALL"; }, 3500); return; }
+  btn.textContent = "CLEAR ALL";
+  try{ await sb.from("client_errors").delete().gte("created_at","1970-01-01"); toast("Error log cleared"); loadErrors(); loadOverview(); }
+  catch(e){ toast("Clear failed"); }
 });
 
 /* ================= MAP (exact locations — operator only) ================= */
