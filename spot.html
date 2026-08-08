@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A verified capture — Tyre Hunt</title>
+<meta name="description" content="Spotted in the wild and verified on the spot. Every capture on Tyre Hunt is filed to a numbered Registry — old photos don't count.">
+<meta name="theme-color" content="#0A0B0E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tyre Hunt">
+<meta property="og:title" content="A verified capture — Tyre Hunt">
+<meta property="og:description" content="Spotted in the wild and verified on the spot. You have to be there.">
+<meta property="og:image" content="https://www.tyrehunt.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://kokxlzygppakgcebkygc.supabase.co" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Sora:wght@800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --carbon:#0A0B0E; --panel:#12141A; --line:rgba(255,255,255,.10);
+  --ink:#F2F3F6; --muted:#98A0AC; --miami:#18B7DC; --miami-hi:#5BD8F0;
+  --judge:#6FA5FF; --gold:#FFC24B;
+  --disp:'Archivo',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--carbon);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--miami);outline-offset:3px;border-radius:4px}
+header{display:flex;align-items:center;justify-content:center;padding:22px 16px 6px}
+.wd{font:800 20px 'Sora',var(--disp);letter-spacing:-.02em}
+.sub{font:700 9px var(--mono);letter-spacing:.4em;color:var(--miami);text-transform:uppercase;text-align:center;margin-top:5px}
+main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:22px 16px 40px}
+.card{width:100%;max-width:440px;background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.ph{aspect-ratio:4/3;background:#000 center/cover no-repeat;border-bottom:1px solid var(--line)}
+.in{padding:20px 20px 22px}
+.mk{font-size:24px;font-weight:900;letter-spacing:-.01em;line-height:1.15}
+.yr{font:600 12px var(--mono);color:var(--muted);margin-top:5px;letter-spacing:.06em}
+.row{display:flex;align-items:center;gap:9px;margin-top:13px;flex-wrap:wrap}
+.chip{font:800 9px var(--mono);letter-spacing:.16em;text-transform:uppercase;padding:4px 10px;border-radius:999px;border:1px solid}
+.chip.everyday{color:#8B93A1;border-color:rgba(139,147,161,.5)}
+.chip.classic{color:#FF8A1E;border-color:rgba(255,138,30,.5)}
+.chip.rare{color:#5E97FF;border-color:rgba(94,151,255,.5)}
+.chip.legendary{color:var(--gold);border-color:rgba(255,194,75,.55);background:rgba(255,194,75,.08)}
+.conf{font:600 11px var(--mono);color:var(--judge);letter-spacing:.06em}
+.meta{font:600 11.5px var(--mono);color:var(--muted);margin-top:13px;letter-spacing:.04em;line-height:1.7}
+.meta b{color:var(--ink);font-weight:700}
+.claim{border-top:1px solid var(--line);margin-top:17px;padding-top:15px;font-size:13px;color:var(--muted);line-height:1.6}
+.btns{display:flex;flex-direction:column;gap:9px;margin-top:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px;letter-spacing:.06em;padding:14px 20px;border-radius:999px;border:1px solid var(--line);min-height:46px}
+.btn.hot{background:linear-gradient(180deg,var(--miami-hi),var(--miami));color:#04222A;border-color:transparent}
+.state{max-width:440px;width:100%;text-align:center;padding:60px 24px;border:1px dashed var(--line);border-radius:20px;color:var(--muted);font-size:13.5px;line-height:1.6}
+.state b{display:block;color:var(--ink);font-weight:800;letter-spacing:.1em;font-size:13px;text-transform:uppercase;margin-bottom:8px}
+footer{text-align:center;padding:0 16px 30px;font-size:11.5px;color:var(--muted)}
+footer a{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<header aria-label="Tyre Hunt">
+  <div>
+    <div class="wd">Tyre Hunt</div>
+    <div class="sub">Verified sighting</div>
+  </div>
+</header>
+
+<main>
+  <div class="state" id="loading"><b>Pulling the record</b>One moment.</div>
+
+  <div class="state" id="missing" style="display:none"><b>No record here</b>
+    This capture isn't public, was removed, or the link is off.
+    <div class="btns" style="margin-top:18px"><a class="btn hot" href="https://hunt.tyrehunt.app">Start your Registry — free</a></div>
+  </div>
+
+  <article class="card" id="card" style="display:none">
+    <div class="ph" id="photo" role="img"></div>
+    <div class="in">
+      <h1 class="mk" id="name"></h1>
+      <div class="yr" id="year"></div>
+      <div class="row">
+        <span class="chip" id="chip"></span>
+        <span class="conf" id="conf"></span>
+      </div>
+      <p class="meta" id="meta"></p>
+      <p class="claim">Photographed in the wild and named by the judge on the spot.
+        Gallery uploads don't count — <b style="color:var(--ink)">you have to be there.</b></p>
+      <div class="btns">
+        <a class="btn hot" href="https://hunt.tyrehunt.app">Start your Registry — free</a>
+        <a class="btn" id="openApp" href="https://hunt.tyrehunt.app">Open in the app</a>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer>A <a href="https://www.tyrehunt.app">Tyre Hunt</a> record · numbered, dated, and verified</footer>
+
+<script>
+(function(){
+"use strict";
+var BASE = "https://kokxlzygppakgcebkygc.supabase.co";
+var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtva3hsenlncHBha2djZWJreWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTM5ODgsImV4cCI6MjA5OTg4OTk4OH0.c8N8aevxB-etS_b8HhG3M4BNlV3lM2gX3BO12vJRQCo";
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function show(id){ ["loading","missing","card"].forEach(function(x){
+  document.getElementById(x).style.display = x===id ? "" : "none"; }); }
+
+var id = parseInt(new URLSearchParams(location.search).get("c"), 10);
+if (!id){ show("missing"); return; }
+
+fetch(BASE + "/rest/v1/rpc/public_capture", {
+  method: "POST",
+  headers: { "Content-Type":"application/json", apikey: ANON, Authorization: "Bearer " + ANON },
+  body: JSON.stringify({ cid: id })
+})
+.then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+.then(function(rows){
+  var c = rows && rows[0];
+  if (!c){ show("missing"); return; }
+  var nm = c.cx_name || ((c.make||"") + " " + (c.model||"")).trim() || "A find";
+  document.title = nm + " — verified on Tyre Hunt";
+  document.getElementById("name").textContent = nm;
+  document.getElementById("year").textContent = c.year_range || "";
+  var chip = document.getElementById("chip");
+  chip.textContent = (c.rarity || "everyday").toUpperCase();
+  chip.className = "chip " + (c.rarity || "everyday");
+  document.getElementById("conf").textContent =
+    "VERIFIED" + (c.confidence != null ? " · " + c.confidence + "%" : "");
+  var ph = document.getElementById("photo");
+  ph.style.backgroundImage = "url('" + BASE + "/storage/v1/object/public/captures/" + esc(c.img_path) + "')";
+  ph.setAttribute("aria-label", "Photo of " + nm);
+  var d = new Date(c.created_at);
+  var MON = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  var when = String(d.getDate()).padStart(2,"0") + " " + MON[d.getMonth()] + " " + d.getFullYear();
+  document.getElementById("meta").innerHTML =
+    "Spotted by <b>@" + esc(c.handle || "a hunter") + "</b> · filed " + when +
+    (c.shot_score != null ? "<br>Shot graded <b>" + c.shot_score + " / 100</b> by the judge" : "");
+  document.getElementById("openApp").href = "https://hunt.tyrehunt.app/?c=" + id;
+  show("card");
+})
+.catch(function(){ show("missing"); });
+})();
+</script>
+</body>
+</html>
