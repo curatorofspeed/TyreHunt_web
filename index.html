@@ -55,6 +55,8 @@ a{color:inherit;text-decoration:none}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .wrap{max-width:1120px;margin:0 auto;padding-inline:var(--pad)}
 
+
+#brandSplash{position:fixed;inset:0;z-index:9000;background:#050505;display:none;opacity:1;transition:opacity .32s ease}#brandSplash.on{display:block}#brandSplash.out{opacity:0}#brandSplash video{width:100%;height:100%;object-fit:cover;display:block}
 /* ---------- nav ---------- */
 nav{position:sticky;top:0;z-index:50;background:rgba(10,11,14,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 nav .row{display:flex;align-items:center;justify-content:space-between;height:62px}
@@ -285,15 +287,16 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   </script>
 </head>
 <body>
+<div id="brandSplash" aria-hidden="true"><video id="splashV" muted playsinline preload="auto" src="logo-anim.mp4"></video></div>
 
 <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
-  <symbol id="th-mark" viewBox="0 0 97.8 100"><path fill="currentColor" fill-rule="evenodd" d="M42.83 99.45C31.81 97.71 23.95 93.86 16.03 86.34C5.89 76.71 0.39 63.90 0.41 50.00C0.42 41.74 1.87 35.29 5.34 28.06C13.33 11.37 28.24 1.28 46.47 0.20C59.51 -0.58 72.04 3.98 81.65 13.00C88.72 19.64 93.12 26.74 95.99 36.18C97.33 40.59 97.47 41.83 97.48 49.73C97.49 60.06 96.62 63.98 92.43 72.55C87.74 82.16 80.06 89.85 70.38 94.62C67.39 96.09 63.06 97.77 60.75 98.35C55.76 99.60 47.15 100.13 42.83 99.45ZM57.07 82.83C66.94 79.90 74.58 72.89 78.34 63.32C79.76 59.71 80.10 58.00 80.31 53.25C80.61 46.51 79.79 42.52 76.86 36.54C73.19 29.02 65.17 22.61 56.72 20.43C52.46 19.33 44.65 19.32 40.47 20.41C25.78 24.22 16.04 36.81 16.11 51.90C16.13 57.38 17.09 61.32 19.75 66.82C21.83 71.12 27.71 77.31 32.07 79.75C34.84 81.31 40.27 83.29 43.48 83.90C45.94 84.37 54.02 83.74 57.07 82.83ZM43.48 76.07C34.83 74.53 28.45 69.60 24.51 61.41C22.61 57.46 22.55 57.15 22.55 51.09C22.55 44.99 22.60 44.74 24.59 40.57C28.93 31.47 37.35 26.11 47.30 26.09C51.66 26.09 56.53 27.30 59.78 29.20C63.09 31.14 67.74 35.61 69.41 38.46C72.69 44.06 73.67 51.44 71.98 57.90C69.68 66.75 62.08 73.88 52.86 75.83C48.84 76.68 47.18 76.73 43.48 76.07ZM60.51 66.79C62.76 65.76 63.78 62.14 62.35 60.28C61.45 59.11 59.56 58.15 58.15 58.15C56.67 58.15 53.80 60.98 53.80 62.43C53.80 66.13 57.17 68.31 60.51 66.79ZM12.74 34.21C16.38 28.56 24.74 20.46 30.17 17.34C32.56 15.96 35.49 14.44 36.68 13.95L38.86 13.06L35.87 13.39C31.77 13.83 25.81 15.86 21.93 18.14C13.46 23.10 7.36 33.22 6.33 44.02L5.99 47.55L8.06 42.91C9.20 40.35 11.30 36.44 12.74 34.21ZM38.71 42.54C41.00 40.27 41.85 39.04 41.85 37.96C41.85 36.36 40.15 34.78 38.43 34.78C37.87 34.78 35.97 36.16 34.20 37.85C30.76 41.14 30.19 42.79 31.88 44.66C33.51 46.46 35.32 45.90 38.71 42.54Z"/><circle cx="58.2" cy="62.5" r="4.6" fill="var(--ember)"/></symbol>
+  <symbol id="th-mark" viewBox="-110 -110 220 220"><mask id="thmcut" maskUnits="userSpaceOnUse" x="-110" y="-110" width="220" height="220"><rect x="-110" y="-110" width="220" height="220" fill="#fff"/><path d="M96.02 16.93L100.94 17.8M92.19 31.74L96.92 33.37M67.73 70.14L71.2 73.73M55.92 79.87L58.79 83.96M13.57 96.55L14.27 101.5M-45.77 86.09L-48.12 90.5M-58.68 77.87L-61.69 81.86M-87.63 42.74L-92.13 44.93M-93.24 28.51L-98.02 29.97M-96.02 -16.93L-100.94 -17.8M-92.19 -31.74L-96.92 -33.37M-67.73 -70.14L-71.2 -73.73M-55.92 -79.87L-58.79 -83.96M-13.57 -96.55L-14.27 -101.5M45.77 -86.09L48.12 -90.5M58.68 -77.87L61.69 -81.86M87.63 -42.74L92.13 -44.93M93.24 -28.51L98.02 -29.97" fill="none" stroke="#000" stroke-width="4"/><path d="M-86.15 -12.11A75.9 75.9 0 0 1 -18.09 -85.1A104.4 104.4 0 0 0 -86.15 -12.11Z" fill="#000"/></mask><circle r="86" fill="none" stroke="currentColor" stroke-width="28" mask="url(#thmcut)"/><circle r="58.5" fill="none" stroke="currentColor" stroke-width="7"/><path d="M42 0H110M-42 0H-110M0 42V110M0 -42V-110" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/><circle r="15" fill="#1FA8FF"/></symbol>
 </svg>
 
 <nav>
   <div class="wrap row">
     <a class="lockup" href="#top" aria-label="Tyre Hunt home">
-      <svg class="mk" viewBox="0 0 97.8 100" aria-hidden="true"><use href="#th-mark"/></svg>
+      <svg class="mk" viewBox="-110 -110 220 220" aria-hidden="true"><use href="#th-mark"/></svg>
       <span class="wd">Tyre Hunt</span>
     </a>
     <div class="links">
@@ -529,7 +532,7 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
 
 <section class="closing">
   <div class="wrap">
-    <svg class="mk" viewBox="0 0 97.8 100" aria-hidden="true"><use href="#th-mark"/></svg>
+    <svg class="mk" viewBox="-110 -110 220 220" aria-hidden="true"><use href="#th-mark"/></svg>
     <h2>The next good car you see is worth something.</h2>
     <p class="subhead" style="margin-inline:auto">Open the camera. Point it at metal. Find out what you're looking at.</p>
     <div class="herocta" style="justify-content:center">
@@ -887,6 +890,27 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
     el.textContent = d>0 ? ('Monterey Car Week · ' + d + ' days out')
                          : (now<=end ? 'Monterey Car Week · happening now' : '');
   }
+})();
+</script>
+
+<script>
+(function(){
+  try{
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (sessionStorage.getItem('th:splashed')) return;
+    var sp = document.getElementById('brandSplash');
+    var sv = document.getElementById('splashV');
+    if (!sp || !sv) return;
+    var shown = false, killed = false;
+    function kill(){ if (killed) return; killed = true; sp.classList.add('out'); setTimeout(function(){ sp.classList.remove('on','out'); try{ sv.pause(); }catch(e){} }, 340); }
+    function show(){ if (shown || killed) return; shown = true; try{ sessionStorage.setItem('th:splashed','1'); }catch(e){} sp.classList.add('on'); var p = sv.play(); if (p && p.catch) p.catch(kill); }
+    if (sv.readyState >= 4) show(); else sv.addEventListener('canplaythrough', show, { once:true });
+    sv.addEventListener('ended', kill);
+    sv.addEventListener('error', kill);
+    sp.addEventListener('click', kill);
+    setTimeout(function(){ if (!shown) killed = true; }, 900);
+    setTimeout(kill, 5600);
+  }catch(e){}
 })();
 </script>
 </body>
