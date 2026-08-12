@@ -904,6 +904,7 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
     function go(){ if (fired || !dest) return; fired = true; window.location.href = dest; }
     document.querySelectorAll('a[href="https://hunt.tyrehunt.app"]').forEach(function(a){
       a.addEventListener('click', function(ev){
+        if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || ev.button !== 0) return; // new-tab etc
         if (reduced || sv.readyState < 4 || sv.error) return; // straight through
         ev.preventDefault();
         dest = a.href; fired = false;
@@ -913,6 +914,10 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
         if (p && p.catch) p.catch(go);
         setTimeout(go, 5600);
       });
+    });
+    window.addEventListener('pageshow', function(ev){
+      // back-button (bfcache) restore: never strand the splash overlay
+      if (ev.persisted){ fired = false; dest = null; sp.classList.remove('on','out'); try{ sv.pause(); }catch(e){} }
     });
     sv.addEventListener('ended', go);
     sp.addEventListener('click', go);
