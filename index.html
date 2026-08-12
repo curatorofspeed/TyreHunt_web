@@ -56,7 +56,7 @@ a{color:inherit;text-decoration:none}
 .wrap{max-width:1120px;margin:0 auto;padding-inline:var(--pad)}
 
 
-#brandSplash{position:fixed;inset:0;z-index:9000;background:#050505;display:none;opacity:1;transition:opacity .32s ease}#brandSplash.on{display:block}#brandSplash.out{opacity:0}#brandSplash video{width:100%;height:100%;object-fit:cover;display:block}
+#brandSplash{position:fixed;inset:0;z-index:9000;background:#050505;display:none;opacity:1;transition:opacity .32s ease}#brandSplash.on{display:block}#brandSplash.out{opacity:0}#brandSplash video{width:100%;height:100%;object-fit:contain;display:block}
 /* ---------- nav ---------- */
 nav{position:sticky;top:0;z-index:50;background:rgba(10,11,14,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 nav .row{display:flex;align-items:center;justify-content:space-between;height:62px}
@@ -296,7 +296,7 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
 <nav>
   <div class="wrap row">
     <a class="lockup" href="#top" aria-label="Tyre Hunt home">
-      <svg class="mk" viewBox="-110 -110 220 220" aria-hidden="true"><use href="#th-mark"/></svg>
+      <svg class="mk" viewBox="-110 -110 220 220" aria-hidden="true"><use href="#th-mark" x="-110" y="-110" width="220" height="220"/></svg>
       <span class="wd">Tyre Hunt</span>
     </a>
     <div class="links">
@@ -532,7 +532,7 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
 
 <section class="closing">
   <div class="wrap">
-    <svg class="mk" viewBox="-110 -110 220 220" aria-hidden="true"><use href="#th-mark"/></svg>
+    <svg class="mk" viewBox="-110 -110 220 220" aria-hidden="true"><use href="#th-mark" x="-110" y="-110" width="220" height="220"/></svg>
     <h2>The next good car you see is worth something.</h2>
     <p class="subhead" style="margin-inline:auto">Open the camera. Point it at metal. Find out what you're looking at.</p>
     <div class="herocta" style="justify-content:center">
@@ -896,20 +896,26 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
 <script>
 (function(){
   try{
-    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (sessionStorage.getItem('th:splashed')) return;
     var sp = document.getElementById('brandSplash');
     var sv = document.getElementById('splashV');
     if (!sp || !sv) return;
-    var shown = false, killed = false;
-    function kill(){ if (killed) return; killed = true; sp.classList.add('out'); setTimeout(function(){ sp.classList.remove('on','out'); try{ sv.pause(); }catch(e){} }, 340); }
-    function show(){ if (shown || killed) return; shown = true; try{ sessionStorage.setItem('th:splashed','1'); }catch(e){} sp.classList.add('on'); var p = sv.play(); if (p && p.catch) p.catch(kill); }
-    if (sv.readyState >= 4) show(); else sv.addEventListener('canplaythrough', show, { once:true });
-    sv.addEventListener('ended', kill);
-    sv.addEventListener('error', kill);
-    sp.addEventListener('click', kill);
-    setTimeout(function(){ if (!shown) killed = true; }, 900);
-    setTimeout(kill, 5600);
+    var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var dest = null, fired = false;
+    function go(){ if (fired || !dest) return; fired = true; window.location.href = dest; }
+    document.querySelectorAll('a[href="https://hunt.tyrehunt.app"]').forEach(function(a){
+      a.addEventListener('click', function(ev){
+        if (reduced || sv.readyState < 4 || sv.error) return; // straight through
+        ev.preventDefault();
+        dest = a.href; fired = false;
+        sp.classList.add('on');
+        sv.currentTime = 0;
+        var p = sv.play();
+        if (p && p.catch) p.catch(go);
+        setTimeout(go, 5600);
+      });
+    });
+    sv.addEventListener('ended', go);
+    sp.addEventListener('click', go);
   }catch(e){}
 })();
 </script>
