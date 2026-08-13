@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Registry — every model verified on Tyre Hunt</title>
+<meta name="description" content="A numbered field guide of real metal — every model here was photographed in the wild and verified by the judge. Old photos don't count.">
+<meta property="og:title" content="The Tyre Hunt Registry">
+<meta property="og:description" content="Every model here was photographed in the wild and verified. Old photos don't count.">
+<meta property="og:image" content="https://www.tyrehunt.app/og.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://kokxlzygppakgcebkygc.supabase.co" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Racing+Sans+One&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --carbon:#0A0B0E; --panel:#12151A; --line:rgba(255,255,255,.09);
+  --ink:#F2F3F6; --muted:#98A0AC; --ember:#18B7DC; --gold:#FFC24B;
+  --orange:#FF8A1E; --blue:#5E97FF;
+  --disp:'Archivo',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--carbon);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+nav{position:sticky;top:0;z-index:10;background:rgba(10,11,14,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .row{display:flex;align-items:center;justify-content:space-between;height:60px}
+.lockup{display:flex;align-items:center;gap:9px}
+.lockup svg{width:26px;height:26px;color:var(--ink)}
+.lockup .wd{font:700 16px 'Racing Sans One',var(--disp);letter-spacing:.01em;text-transform:uppercase;white-space:nowrap}
+.cta{font:800 12px var(--disp);letter-spacing:.06em;padding:10px 18px;border-radius:999px;background:linear-gradient(180deg,#5BD8F0,var(--ember));color:#04222A}
+header.page{padding:clamp(28px,5vw,56px) 0 10px}
+.eyebrow{font:700 10px var(--mono);letter-spacing:.34em;color:var(--ember);text-transform:uppercase}
+h1{font-size:clamp(28px,5.5vw,44px);font-weight:900;letter-spacing:.02em;margin-top:6px;text-transform:uppercase}
+.sub{color:var(--muted);margin-top:8px;font-size:14.5px;max-width:640px;line-height:1.55}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 16px;text-align:center;min-width:92px}
+.stat .v{font:800 20px var(--disp)}
+.stat .l{font:700 8.5px var(--mono);letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+.chip{display:inline-block;font:800 10px var(--mono);letter-spacing:.14em;padding:5px 11px;border-radius:999px;border:1px solid;text-transform:uppercase;margin-top:12px}
+.chip.everyday{color:#8B93A1;border-color:rgba(139,147,161,.5)}
+.chip.classic{color:var(--orange);border-color:rgba(255,138,30,.5)}
+.chip.rare{color:var(--blue);border-color:rgba(94,151,255,.5)}
+.chip.legendary{color:var(--gold);border-color:rgba(255,194,75,.55)}
+#search{width:100%;max-width:420px;margin-top:18px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:600 15px var(--disp)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:26px 0 60px}
+.mcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:transform .12s ease,border-color .12s ease;display:block}
+.mcard:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.24)}
+.mimg{aspect-ratio:4/3;background:#0E1013 center/cover no-repeat}
+.mbody{padding:11px 13px 13px}
+.mname{font-weight:800;font-size:14.5px;line-height:1.25}
+.mmeta{font:600 11px var(--mono);color:var(--muted);margin-top:5px;letter-spacing:.04em}
+.shot .sc{position:relative}
+.shot .sc .badge{position:absolute;top:9px;left:9px;font:800 9.5px var(--mono);letter-spacing:.1em;background:rgba(10,11,14,.82);border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--muted)}
+.shot .sc .badge.first{color:var(--gold);border-color:rgba(255,194,75,.5)}
+.note{color:var(--muted);padding:40px 0;text-align:center}
+.cta-band{border-top:1px solid var(--line);padding:44px 0 60px;text-align:center}
+.cta-band .big{font-size:clamp(20px,3.6vw,28px);font-weight:900;text-transform:uppercase;letter-spacing:.02em}
+.cta-band p{color:var(--muted);margin:10px 0 20px;font-size:14px}
+footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:12.5px;text-align:center}
+.crumb{font:700 11px var(--mono);letter-spacing:.1em;color:var(--muted);margin-bottom:10px;display:inline-block}
+.crumb:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<mask id="thmcut" maskUnits="userSpaceOnUse" x="-110" y="-110" width="220" height="220">
+<rect x="-110" y="-110" width="220" height="220" fill="#fff"/>
+<path d="M96.02 16.93L100.94 17.8M92.19 31.74L96.92 33.37M67.73 70.14L71.2 73.73M55.92 79.87L58.79 83.96M13.57 96.55L14.27 101.5M-45.77 86.09L-48.12 90.5M-58.68 77.87L-61.69 81.86M-87.63 42.74L-92.13 44.93M-93.24 28.51L-98.02 29.97M-96.02 -16.93L-100.94 -17.8M-92.19 -31.74L-96.92 -33.37M-67.73 -70.14L-71.2 -73.73M-55.92 -79.87L-58.79 -83.96M-13.57 -96.55L-14.27 -101.5M45.77 -86.09L48.12 -90.5M58.68 -77.87L61.69 -81.86M87.63 -42.74L92.13 -44.93M93.24 -28.51L98.02 -29.97" fill="none" stroke="#000" stroke-width="4"/>
+<path d="M-86.15 -12.11A75.9 75.9 0 0 1 -18.09 -85.1A104.4 104.4 0 0 0 -86.15 -12.11Z" fill="#000"/></mask>
+<symbol id="thm" viewBox="-110 -110 220 220">
+<circle r="86" fill="none" stroke="currentColor" stroke-width="28" mask="url(#thmcut)"/>
+<circle r="58.5" fill="none" stroke="currentColor" stroke-width="7"/>
+<path d="M42 0H110M-42 0H-110M0 42V110M0 -42V-110" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+<circle r="15" fill="#1FA8FF"/></symbol></defs></svg>
+
+<nav><div class="wrap row">
+  <a class="lockup" href="index.html"><svg viewBox="-110 -110 220 220" aria-hidden="true"><use href="#thm" x="-110" y="-110" width="220" height="220"/></svg><span class="wd">Tyre Hunt</span></a>
+  <a class="cta" href="https://hunt.tyrehunt.app">Start hunting</a>
+</div></nav>
+
+<header class="page"><div class="wrap" id="head">
+  <span class="eyebrow">The Registry</span>
+  <h1 id="title">Every model, verified</h1>
+  <div class="sub" id="sub">A numbered field guide of real metal. Every entry below was photographed in the wild and graded by the judge — old photos don't count. You have to be there.</div>
+  <div id="chipRow"></div>
+  <div class="stats" id="stats" style="display:none"></div>
+  <input id="search" type="search" placeholder="Search the registry…" style="display:none">
+</div></header>
+
+<main class="wrap">
+  <div class="note" id="loading">Loading the registry…</div>
+  <div class="grid" id="grid" style="display:none"></div>
+  <div class="note" id="empty" style="display:none">Nothing filed under that name yet. First shot takes the number.</div>
+</main>
+
+<div class="cta-band"><div class="wrap">
+  <div class="big" id="ctaBig">Spot one yourself</div>
+  <p>Point your camera at real metal. The judge names it, grades the shot, and files it to your Registry.</p>
+  <a class="cta" href="https://hunt.tyrehunt.app" style="font-size:13px;padding:13px 26px">Open Tyre Hunt — free</a>
+</div></div>
+
+<footer>A <a href="index.html"><b>Tyre Hunt</b></a> record · numbered, dated, and verified</footer>
+
+<script>
+(function(){
+"use strict";
+var BASE = "https://kokxlzygppakgcebkygc.supabase.co";
+var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtva3hsenlncHBha2djZWJreWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTM5ODgsImV4cCI6MjA5OTg4OTk4OH0.c8N8aevxB-etS_b8HhG3M4BNlV3lM2gX3BO12vJRQCo";
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function rpc(fn, args){
+  return fetch(BASE + "/rest/v1/rpc/" + fn, {
+    method: "POST",
+    headers: { "Content-Type":"application/json", apikey: ANON, Authorization: "Bearer " + ANON },
+    body: JSON.stringify(args || {})
+  }).then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); });
+}
+function img(p){ return BASE + "/storage/v1/object/public/captures/" + p; }
+var MON = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+function when(iso){ var d = new Date(iso); return String(d.getDate()).padStart(2,"0") + " " + MON[d.getMonth()] + " " + d.getFullYear(); }
+var grid = document.getElementById("grid"), loading = document.getElementById("loading");
+
+var key = new URLSearchParams(location.search).get("m");
+
+if (key){
+  /* ---------- one model ---------- */
+  rpc("registry_model", { k: key }).then(function(rows){
+    loading.style.display = "none";
+    if (!rows || !rows.length){ document.getElementById("empty").style.display = ""; return; }
+    var nm = rows[0].cx_name || "Unknown";
+    document.title = nm + " — verified sightings on Tyre Hunt";
+    var mq = document.querySelector('meta[name="description"]');
+    if (mq) mq.setAttribute("content", rows.length + " verified " + nm + " sighting" + (rows.length===1?"":"s") + " on Tyre Hunt, photographed in the wild and graded by the judge.");
+    document.getElementById("head").insertAdjacentHTML("afterbegin", '<a class="crumb" href="registry.html">← THE REGISTRY</a>');
+    document.querySelector("#head .eyebrow").remove();
+    document.getElementById("title").textContent = nm;
+    var best = null, first = rows[0], hunters = {};
+    rows.forEach(function(r){ hunters[r.handle] = 1; if (r.shot_score != null && (!best || r.shot_score > best)) best = r.shot_score; if (new Date(r.created_at) < new Date(first.created_at)) first = r; });
+    var rarity = rows.map(function(r){ return r.rarity; }).sort(function(a,b){
+      var o = { legendary:0, rare:1, classic:2, everyday:3 }; return (o[a] ?? 3) - (o[b] ?? 3); })[0] || "everyday";
+    document.getElementById("chipRow").innerHTML = '<span class="chip ' + esc(rarity) + '">' + esc(rarity) + "</span>";
+    document.getElementById("sub").innerHTML = "First filed by <b>@" + esc(first.handle || "a hunter") + "</b> on " + when(first.created_at) + ". Every shot below was taken in the wild and verified — no screens, no prints, no old photos.";
+    var st = document.getElementById("stats");
+    st.style.display = "";
+    st.innerHTML =
+      '<div class="stat"><div class="v">' + rows.length + '</div><div class="l">Verified spots</div></div>' +
+      '<div class="stat"><div class="v">' + Object.keys(hunters).length + '</div><div class="l">Hunters</div></div>' +
+      (best != null ? '<div class="stat"><div class="v">' + best + '</div><div class="l">Best shot</div></div>' : "");
+    document.getElementById("ctaBig").textContent = "Seen a " + nm + "?";
+    grid.classList.add("shot");
+    grid.style.display = "";
+    grid.innerHTML = rows.map(function(r, i){
+      return '<a class="mcard" href="spot.html?c=' + r.id + '"><div class="sc"><div class="mimg" style="background-image:url(\'' + img(esc(r.img_path)) + '\')"></div>' +
+        (r.id === first.id ? '<span class="badge first">★ FIRST FILED</span>' : (r.shot_score != null && r.shot_score === best ? '<span class="badge">TOP SHOT</span>' : "")) + "</div>" +
+        '<div class="mbody"><div class="mname">@' + esc(r.handle || "hunter") + "</div>" +
+        '<div class="mmeta">' + (r.shot_score != null ? "SHOT " + r.shot_score + " · " : "") + when(r.created_at) + "</div></div></a>";
+    }).join("");
+  }).catch(function(){ loading.textContent = "The registry didn't load — refresh in a moment."; });
+} else {
+  /* ---------- the index ---------- */
+  rpc("registry_models", { lim: 300 }).then(function(rows){
+    loading.style.display = "none";
+    rows = rows || [];
+    var search = document.getElementById("search");
+    search.style.display = "";
+    grid.style.display = "";
+    function paint(q){
+      var list = q ? rows.filter(function(r){ return (r.cx_name || "").toLowerCase().indexOf(q) !== -1; }) : rows;
+      document.getElementById("empty").style.display = list.length ? "none" : "";
+      grid.innerHTML = list.map(function(r){
+        return '<a class="mcard" href="registry.html?m=' + encodeURIComponent(r.cx_key) + '">' +
+          '<div class="mimg" style="background-image:url(\'' + img(esc(r.top_img)) + '\')"></div>' +
+          '<div class="mbody"><div class="mname">' + esc(r.cx_name) + ' <span class="chip ' + esc(r.top_rarity || "everyday") + '" style="margin:0 0 0 2px;padding:3px 8px;font-size:8.5px">' + esc(r.top_rarity || "everyday") + '</span></div>' +
+          '<div class="mmeta">' + r.spots + " SPOT" + (r.spots === 1 ? "" : "S") + " · " + r.hunters + " HUNTER" + (r.hunters === 1 ? "" : "S") + (r.best_shot != null ? " · BEST " + r.best_shot : "") + "</div></div></a>";
+      }).join("");
+    }
+    paint("");
+    search.addEventListener("input", function(){ paint(search.value.trim().toLowerCase()); });
+  }).catch(function(){ loading.textContent = "The registry didn't load — refresh in a moment."; });
+}
+})();
+</script>
+</body>
+</html>
