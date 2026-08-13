@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live lobby — Tyre Hunt</title>
+<meta name="description" content="A live board of verified car spots, filed in real time by hunters on the ground.">
+<meta property="og:title" content="Live lobby — Tyre Hunt">
+<meta property="og:description" content="Verified spots landing in real time. Every car on this board was photographed in the wild.">
+<meta property="og:image" content="https://www.tyrehunt.app/og.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://kokxlzygppakgcebkygc.supabase.co" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Racing+Sans+One&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --carbon:#0A0B0E; --panel:#12151A; --line:rgba(255,255,255,.09);
+  --ink:#F2F3F6; --muted:#98A0AC; --ember:#18B7DC; --gold:#FFC24B;
+  --orange:#FF8A1E; --blue:#5E97FF; --bronze:#C9834A;
+  --disp:'Archivo',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--carbon);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+nav{position:sticky;top:0;z-index:10;background:rgba(10,11,14,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .row{display:flex;align-items:center;justify-content:space-between;height:60px}
+.lockup{display:flex;align-items:center;gap:9px}
+.lockup svg{width:26px;height:26px;color:var(--ink)}
+.lockup .wd{font:700 16px 'Racing Sans One',var(--disp);letter-spacing:.01em;text-transform:uppercase;white-space:nowrap}
+.cta{display:inline-flex;align-items:center;justify-content:center;font:800 12px var(--disp);letter-spacing:.06em;padding:10px 18px;border-radius:999px;background:linear-gradient(180deg,#5BD8F0,var(--ember));color:#04222A;text-align:center}
+header.page{padding:clamp(24px,5vw,48px) 0 4px}
+.eyebrow{font:700 10px var(--mono);letter-spacing:.34em;color:var(--ember);text-transform:uppercase}
+h1{font-size:clamp(28px,6vw,48px);font-weight:900;letter-spacing:.02em;margin-top:8px;text-transform:uppercase;line-height:1.02}
+.where{color:var(--muted);margin-top:10px;font-size:15px}
+.livechip{display:none;align-items:center;gap:7px;margin-top:14px;font:800 11px var(--mono);letter-spacing:.16em;color:var(--ember);border:1px solid rgba(24,183,220,.45);background:rgba(24,183,220,.08);border-radius:999px;padding:7px 14px;width:max-content}
+.livechip.on{display:inline-flex}
+.livechip i{width:8px;height:8px;border-radius:50%;background:var(--ember);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.stat{flex:1 1 0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 10px;text-align:center;min-width:0}
+.stat .v{font:800 22px var(--disp)}
+.stat .l{font:700 8.5px var(--mono);letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+h2.sec{font:800 11px var(--mono);letter-spacing:.26em;color:var(--muted);text-transform:uppercase;margin:38px 0 12px}
+.board{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
+.brow{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.brow:last-child{border-bottom:0}
+.brow .pos{font:800 13px var(--mono);color:var(--muted);width:26px;flex:0 0 auto}
+.brow.p1 .pos{color:var(--gold)}.brow.p2 .pos{color:var(--ink)}.brow.p3 .pos{color:var(--bronze)}
+.brow .hn{font-weight:800;font-size:15px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .sc{font:800 15px var(--mono);color:var(--ember)}
+.brow .sl{font:700 8.5px var(--mono);letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-left:5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:13px;padding-bottom:8px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.cimg{aspect-ratio:4/3;background:#0E1013 center/cover no-repeat}
+.cbody{padding:10px 12px 12px}
+.cname{font-weight:800;font-size:13.5px;line-height:1.25}
+.cmeta{font:600 10.5px var(--mono);color:var(--muted);margin-top:5px;letter-spacing:.04em}
+.chip{display:inline-block;font:800 8.5px var(--mono);letter-spacing:.12em;padding:3px 8px;border-radius:999px;border:1px solid;text-transform:uppercase;margin-left:4px;vertical-align:1px}
+.chip.everyday{color:#8B93A1;border-color:rgba(139,147,161,.5)}
+.chip.classic{color:var(--orange);border-color:rgba(255,138,30,.5)}
+.chip.rare{color:var(--blue);border-color:rgba(94,151,255,.5)}
+.chip.legendary{color:var(--gold);border-color:rgba(255,194,75,.55)}
+.note{color:var(--muted);padding:44px 0;text-align:center}
+main{padding-bottom:12px}
+.joinband{position:sticky;bottom:0;z-index:9;margin-top:44px;background:linear-gradient(180deg,rgba(10,11,14,0),rgba(10,11,14,.96) 24%);padding:26px 0 max(18px,env(safe-area-inset-bottom))}
+.joinband .inner{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:18px;text-align:center}
+.joinband .big{font-size:clamp(17px,3.4vw,22px);font-weight:900;text-transform:uppercase;letter-spacing:.02em}
+.joinband p{color:var(--muted);margin:8px 0 14px;font-size:13.5px}
+.joinband .cta{font-size:14px;padding:14px 30px;width:100%;max-width:340px}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:12.5px;text-align:center}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<mask id="thmcut" maskUnits="userSpaceOnUse" x="-110" y="-110" width="220" height="220">
+<rect x="-110" y="-110" width="220" height="220" fill="#fff"/>
+<path d="M96.02 16.93L100.94 17.8M92.19 31.74L96.92 33.37M67.73 70.14L71.2 73.73M55.92 79.87L58.79 83.96M13.57 96.55L14.27 101.5M-45.77 86.09L-48.12 90.5M-58.68 77.87L-61.69 81.86M-87.63 42.74L-92.13 44.93M-93.24 28.51L-98.02 29.97M-96.02 -16.93L-100.94 -17.8M-92.19 -31.74L-96.92 -33.37M-67.73 -70.14L-71.2 -73.73M-55.92 -79.87L-58.79 -83.96M-13.57 -96.55L-14.27 -101.5M45.77 -86.09L48.12 -90.5M58.68 -77.87L61.69 -81.86M87.63 -42.74L92.13 -44.93M93.24 -28.51L98.02 -29.97" fill="none" stroke="#000" stroke-width="4"/>
+<path d="M-86.15 -12.11A75.9 75.9 0 0 1 -18.09 -85.1A104.4 104.4 0 0 0 -86.15 -12.11Z" fill="#000"/></mask>
+<symbol id="thm" viewBox="-110 -110 220 220">
+<circle r="86" fill="none" stroke="currentColor" stroke-width="28" mask="url(#thmcut)"/>
+<circle r="58.5" fill="none" stroke="currentColor" stroke-width="7"/>
+<path d="M42 0H110M-42 0H-110M0 42V110M0 -42V-110" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+<circle r="15" fill="#1FA8FF"/></symbol></defs></svg>
+
+<nav><div class="wrap row">
+  <a class="lockup" href="index.html"><svg viewBox="-110 -110 220 220" aria-hidden="true"><use href="#thm" x="-110" y="-110" width="220" height="220"/></svg><span class="wd">Tyre Hunt</span></a>
+  <a class="cta" href="registry.html">The Registry</a>
+</div></nav>
+
+<header class="page"><div class="wrap">
+  <span class="eyebrow" id="eyebrow">Live lobby</span>
+  <h1 id="title">Loading…</h1>
+  <div class="where" id="where"></div>
+  <div class="livechip" id="livechip"><i></i><span id="liveTxt">LIVE</span></div>
+  <div class="stats" id="stats" style="display:none"></div>
+</div></header>
+
+<main class="wrap">
+  <div class="note" id="loading">Reading the board…</div>
+  <div class="note" id="missing" style="display:none">
+    That lobby isn't open. Codes are case-insensitive — check the code and try again.
+  </div>
+  <div id="live" style="display:none">
+    <h2 class="sec">Standings · most models</h2>
+    <div class="board" id="board"></div>
+    <h2 class="sec">Landing now</h2>
+    <div class="grid" id="recent"></div>
+  </div>
+</main>
+
+<div class="joinband" id="joinband" style="display:none"><div class="wrap"><div class="inner">
+  <div class="big" id="joinBig">You're standing next to these cars</div>
+  <p>Point your camera at real metal. The judge names it, grades the shot, and puts you on this board.</p>
+  <a class="cta" id="joinCta" href="https://hunt.tyrehunt.app">Join the lobby — free</a>
+</div></div></div>
+
+<footer>A <a href="index.html"><b>Tyre Hunt</b></a> board · every spot verified, numbered, and dated</footer>
+
+<script>
+(function(){
+"use strict";
+var BASE = "https://kokxlzygppakgcebkygc.supabase.co";
+var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtva3hsenlncHBha2djZWJreWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTM5ODgsImV4cCI6MjA5OTg4OTk4OH0.c8N8aevxB-etS_b8HhG3M4BNlV3lM2gX3BO12vJRQCo";
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function img(p){ return BASE + "/storage/v1/object/public/captures/" + p; }
+function ago(iso){
+  var s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60) return "just now";
+  if (s < 3600) return Math.floor(s/60) + "m ago";
+  if (s < 86400) return Math.floor(s/3600) + "h ago";
+  return Math.floor(s/86400) + "d ago";
+}
+var code = (new URLSearchParams(location.search).get("c") || "").trim();
+var first = true;
+
+function show(id){
+  ["loading","missing","live"].forEach(function(x){
+    document.getElementById(x).style.display = x === id ? (x === "live" ? "" : "") : "none";
+  });
+}
+
+function paint(d){
+  document.getElementById("title").textContent = d.name || "Live lobby";
+  document.title = (d.name || "Live lobby") + " — live board on Tyre Hunt";
+  var bits = [];
+  if (d.place) bits.push(d.place);
+  bits.push("Lobby " + d.code);
+  document.getElementById("where").textContent = bits.join(" · ");
+
+  var lc = document.getElementById("livechip");
+  if (d.live > 0){
+    lc.classList.add("on");
+    document.getElementById("liveTxt").textContent = d.live + " HUNTER" + (d.live === 1 ? "" : "S") + " SHOOTING NOW";
+  } else lc.classList.remove("on");
+
+  var st = document.getElementById("stats");
+  st.style.display = "";
+  st.innerHTML =
+    '<div class="stat"><div class="v">' + d.spots + '</div><div class="l">Verified spots</div></div>' +
+    '<div class="stat"><div class="v">' + d.models + '</div><div class="l">Models</div></div>' +
+    '<div class="stat"><div class="v">' + d.hunters + '</div><div class="l">Hunters</div></div>';
+
+  var board = d.board || [];
+  document.getElementById("board").innerHTML = board.length
+    ? board.map(function(b, i){
+        return '<div class="brow p' + (i+1) + '"><span class="pos">' + (i === 0 ? "★" : "#" + (i+1)) + '</span>' +
+          '<span class="hn">@' + esc(b.handle) + '</span>' +
+          '<span class="sc">' + b.models + '<span class="sl">models</span></span></div>';
+      }).join("")
+    : '<div class="brow"><span class="hn" style="color:var(--muted);font-weight:600">Board is empty — the first capture takes the lead.</span></div>';
+
+  var rec = d.recent || [];
+  document.getElementById("recent").innerHTML = rec.length
+    ? rec.map(function(r){
+        return '<div class="card"><div class="cimg" style="background-image:url(\'' + img(esc(r.img_path)) + '\')"></div>' +
+          '<div class="cbody"><div class="cname">' + esc(r.name || "A find") +
+          '<span class="chip ' + esc(r.rarity || "everyday") + '">' + esc(r.rarity || "everyday") + '</span></div>' +
+          '<div class="cmeta">@' + esc(r.handle) + (r.shot != null ? " · SHOT " + r.shot : "") + " · " + ago(r.created_at) + "</div></div></div>";
+      }).join("")
+    : '<div class="note" style="grid-column:1/-1;padding:26px 0">Nothing filed yet. Be the first name on the board.</div>';
+
+  var jb = document.getElementById("joinband");
+  jb.style.display = "";
+  document.getElementById("joinCta").href = "https://hunt.tyrehunt.app/?lobby=" + encodeURIComponent(d.code);
+  document.getElementById("joinBig").textContent = d.spots > 0
+    ? "You're standing next to these cars"
+    : "Take the first spot";
+  show("live");
+}
+
+function load(){
+  return fetch(BASE + "/rest/v1/rpc/public_lobby", {
+    method: "POST",
+    headers: { "Content-Type":"application/json", apikey: ANON, Authorization: "Bearer " + ANON },
+    body: JSON.stringify({ code: code })
+  })
+  .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+  .then(function(d){
+    if (!d){ if (first) show("missing"); return; }
+    paint(d);
+    first = false;
+  })
+  .catch(function(){
+    if (first) document.getElementById("loading").textContent = "The board didn't load — refresh in a moment.";
+  });
+}
+
+if (!code){ show("missing"); }
+else {
+  load();
+  // a board at an event is a live thing; keep it current while the page is open
+  setInterval(function(){ if (!document.hidden) load(); }, 30000);
+  document.addEventListener("visibilitychange", function(){ if (!document.hidden) load(); });
+}
+})();
+</script>
+</body>
+</html>
