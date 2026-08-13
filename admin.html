@@ -212,6 +212,7 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
         <button data-m="reports" class="on">REPORTS</button>
         <button data-m="leads">LEADS</button>
         <button data-m="disputes">DISPUTES</button>
+        <button data-m="anomalies">ANOMALIES</button>
       </div>
       <div id="modList"><div class="empty">Loading…</div></div>
     </section>
@@ -366,13 +367,14 @@ const TILES = [
   ["captures_24h","Captures 24h",""],["flagged_24h","Flagged 24h","warn"],["premium","Premium","good"],
   ["open_reports","Open reports","bad"],["new_leads","New leads","warn"],
   ["disputes","Disputes","warn"],["suspended","Suspended","bad"],
-  ["located","Located",""],["hotspots","Map hotspots",""],["errors_24h","Errors 24h","bad"]
+  ["located","Located",""],["hotspots","Map hotspots",""],["errors_24h","Errors 24h","bad"],
+  ["anomalies_7d","Anomalies 7d","warn"],["duels_active","Live duels",""],["streak_pushes_7d","Streak saves 7d",""]
 ];
 async function loadOverview(){
   try{
     const { data } = await sb.rpc("admin_overview");
     const o = data || {};
-    const GOTO = { open_reports:"moderation", new_leads:"moderation", disputes:"moderation", flagged_24h:"moderation",
+    const GOTO = { open_reports:"moderation", new_leads:"moderation", disputes:"moderation", flagged_24h:"moderation", anomalies_7d:"moderation",
                    errors_24h:"errors", hunters:"users", suspended:"users", premium:"users", located:"map", hotspots:"map" };
     $("tiles").innerHTML = TILES.map(([k,label,cls]) => {
       const v = o[k]; const dim = (!v && cls) ? "" : cls;
@@ -486,6 +488,12 @@ async function loadMod(){
       box.innerHTML = data.map(l=>'<div class="row"><div class="grow"><div class="t">'+esc(l.name||l.target||"Lead")+'</div>'+
         '<div class="d">'+esc(l.note||l.detail||"")+' · '+ago(l.created_at)+'</div></div>'+
         '<button class="btn sm" data-lead="'+l.id+'">MARK REVIEWED</button></div>').join("");
+    } else if(modMode === "anomalies"){
+      const { data } = await sb.rpc("admin_anomalies", { lim: 50 });
+      if(!data || !data.length){ box.innerHTML = '<div class="empty">No anomalies logged. The anti-cheat is watching teleports and shared photos.</div>'; return; }
+      const K = { teleport: "IMPOSSIBLE TRAVEL", cross_dupe: "SHARED PHOTO" };
+      box.innerHTML = data.map(a=>'<div class="row"><div class="grow"><div class="t">@'+esc(a.handle||"unknown")+' · '+esc(K[a.kind]||a.kind)+'</div>'+
+        '<div class="d">'+esc(a.detail||"")+' · '+ago(a.created_at)+'</div></div><span class="pill bad">LOGGED</span></div>').join("");
     } else {
       const { data } = await sb.from("bounty_disputes").select("*").order("created_at",{ascending:false}).limit(50);
       if(!data || !data.length){ box.innerHTML = '<div class="empty">No disputes.</div>'; return; }
