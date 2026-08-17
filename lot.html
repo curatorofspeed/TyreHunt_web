@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Lot — curbside cars for sale, found by hunters — Tyre Hunt</title>
-<meta name="description" content="Cars for sale that never hit the internet: found on the street by Tyre Hunt hunters, verified by the judge, with the price off the sign. Never the seller's number.">
+<meta name="description" content="Cars for sale that never hit the internet: found on the street by Tyre Hunt hunters, verified by the judge, with the seller's own sign so you can read the price and how to reach them.">
 <meta property="og:title" content="The Lot — Tyre Hunt">
-<meta property="og:description" content="Curbside cars for sale, found by hunters. The car, the price, and roughly where — never the seller's number.">
+<meta property="og:description" content="Curbside cars for sale, found by hunters — with the seller's own sign, so you can read the price and how to reach them.">
 <meta property="og:image" content="https://www.tyrehunt.app/og.png">
 <link rel="canonical" href="https://www.tyrehunt.app/lot.html">
 <link rel="icon" href="icon-192.png">
@@ -81,6 +81,8 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);f
 .price{position:absolute;top:10px;left:10px;font:800 12px var(--mono);letter-spacing:.06em;color:#04222A;background:#3ECF8E;border-radius:999px;padding:5px 10px}
 .cwhere{font:600 10.5px var(--mono);color:var(--muted);margin-top:4px;letter-spacing:.04em}
 .cwhere a{color:var(--ember);border-bottom:1px solid rgba(24,183,220,.4)}
+.signlink{display:flex;align-items:center;gap:9px;margin-top:10px;padding:7px 8px;border:1px solid rgba(62,207,142,.4);background:rgba(62,207,142,.06);border-radius:10px;font:800 10.5px var(--mono);letter-spacing:.1em;color:#3ECF8E;text-transform:uppercase}
+.signlink .simg{width:44px;height:32px;border-radius:6px;background:#0E1013 center/cover no-repeat;flex:0 0 auto}
 .grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
 .howto{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
 .how{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
@@ -110,7 +112,7 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);f
   <span class="eyebrow">The Lot</span>
   <h1>Curbside, for sale</h1>
   <p class="sub">The biggest car inventory that never touches the internet: a sign in the window on a side street. Hunters photograph it, the judge names the car and reads the price, and it lands here — dated, located, verified.</p>
-  <div class="pledge">The car · the price · roughly where — never the seller's number</div>
+  <div class="pledge">The car · the price · the sign, as the seller wrote it · roughly where</div>
   <div class="stats" id="stats" style="display:none"></div>
   <div class="filters" id="filters" style="display:none">
     <button class="fbtn on" data-f="all">All</button>
@@ -134,8 +136,8 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);f
   <h2 class="sec">How a car gets on the lot</h2>
   <div class="howto">
     <div class="how"><div class="n">01</div><div class="t">A hunter spots a sign</div><div class="d">Windshield, dash, taped to the door. On a street, at a meet, in a driveway.</div></div>
-    <div class="how"><div class="n">02</div><div class="t">The judge does the reading</div><div class="d">Names the car, grades the shot, reads the asking price off the sign, and blurs the seller's phone number before anything is stored.</div></div>
-    <div class="how"><div class="n">03</div><div class="t">It's filed here</div><div class="d">Dated, roughly located, and public. Selling? Claim your listing in the app and add contact details on your own terms.</div></div>
+    <div class="how"><div class="n">02</div><div class="t">They add a close-up of the sign</div><div class="d">The judge checks it's a real sale sign, reads the asking price, and that photo becomes the listing — the seller's number, as the seller wrote it. We never type it into a database.</div></div>
+    <div class="how"><div class="n">03</div><div class="t">It's filed here</div><div class="d">Dated, roughly located, public. Selling this car and want it gone or updated? Email <a href="mailto:privacy@curatorsofspeed.com" style="color:var(--ember)">privacy@curatorsofspeed.com</a> and we'll act the same day.</div></div>
   </div>
 </main>
 
@@ -145,7 +147,7 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);f
   <a class="cta" href="https://hunt.tyrehunt.app">Open Tyre Hunt — free</a>
 </div></div></div>
 
-<footer>A <a href="index.html"><b>Tyre Hunt</b></a> board · every listing was photographed on the street and verified · sellers' contact details are never stored</footer>
+<footer>A <a href="index.html"><b>Tyre Hunt</b></a> board · every listing was photographed on the street and verified · sellers: <a href="mailto:privacy@curatorsofspeed.com" style="color:var(--ember)">ask us to remove or update a listing</a></footer>
 
 <script>
 (function(){
@@ -195,7 +197,9 @@ function paint(){
       '<div class="cbody"><div class="cname">' + esc(r.name || "A find") +
       '<span class="chip ' + esc(r.rarity || "everyday") + '">' + esc(r.rarity || "everyday") + '</span></div>' +
       '<div class="cmeta">@' + esc(r.handle) + (r.shot_score != null ? " · SHOT " + r.shot_score : "") + " · " + ago(r.created_at) + "</div>" +
-      where + "</div></div>";
+      where +
+      (r.sign_path ? '<a class="signlink" target="_blank" rel="noopener" href="' + img(esc(r.sign_path)) + '"><span class="simg" style="background-image:url(\'' + img(esc(r.sign_path)) + '\')"></span><span>Read the sign ↗</span></a>' : "") +
+      "</div></div>";
   }).join("");
   document.getElementById("loading").style.display = "none";
   document.getElementById("live").style.display = rows.length ? "" : "none";
