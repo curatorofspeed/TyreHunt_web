@@ -298,6 +298,23 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   .brackets span{opacity:1}
   .replay{display:none}
 }
+
+/* lean rhythm */
+section{padding:clamp(28px,4.2vw,56px) 0}
+.finds{padding:0 0 clamp(20px,3vw,36px)}
+h2{font-size:clamp(26px,3.4vw,40px)}
+.subhead{margin-top:12px}
+.sechead{margin-bottom:10px}
+.steps{margin-top:22px;gap:14px;background:transparent;border:0;border-radius:0;overflow:visible}
+.step{display:flex;align-items:flex-start;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 20px}
+.step .num{flex:0 0 auto;width:54px;height:54px;border-radius:50%;border:1.5px solid var(--ember);display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:19px;color:var(--ember)}
+.step h3{margin-top:2px;font-size:16px;letter-spacing:.03em;text-transform:uppercase}
+.step p{font-size:14px;margin-top:6px}
+#board .subhead{max-width:60ch}
+.plans{margin-top:24px}
+.closing{padding:clamp(36px,5vw,64px) 0}
+footer{padding:28px 0 40px}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
 </style>
   <!-- Tells search engines what this is and what it costs. Deliberately no
        aggregateRating — inventing review counts is the fastest way to get
@@ -423,21 +440,18 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
     <h2>Four seconds from windshield to Registry.</h2>
     <p class="subhead">No forms, no typing, no guessing what you're looking at. The whole game is one tap and the thing that happens after it.</p>
     <div class="steps">
-      <div class="step">
-        <div class="n">STEP 01</div>
+      <div class="step"><div class="num">01</div><div>
         <h3>Spot it</h3>
-        <p>Something interesting rolls past or sits under a tarp. Open the app — it lands on the camera, because that's the only screen that matters in the moment.</p>
-      </div>
-      <div class="step">
-        <div class="n">STEP 02</div>
+        <p>Something interesting rolls past or sits under a tarp. Open the app — it lands straight on the camera.</p>
+      </div></div>
+      <div class="step"><div class="num">02</div><div>
         <h3>Shoot it</h3>
-        <p>One tap. The photo goes to the judge — a vision model on our servers — that identifies make, model and era, rates rarity, and grades your framing with a note on how to shoot it better.</p>
-      </div>
-      <div class="step">
-        <div class="n">STEP 03</div>
+        <p>One tap. The judge identifies make, model and era, rates rarity, and grades your framing with a note on how to shoot it better.</p>
+      </div></div>
+      <div class="step"><div class="num">03</div><div>
         <h3>File it</h3>
-        <p>The verdict lands with a chime and the car enters your Registry — numbered, dated, and yours. Miss the ID? Correct it in the dossier. The record is still yours.</p>
-      </div>
+        <p>The verdict lands with a chime and the car enters your Registry — numbered, dated, yours. Miss the ID? Correct it in the dossier.</p>
+      </div></div>
     </div>
   </div>
 </section>
