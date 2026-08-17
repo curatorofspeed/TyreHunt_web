@@ -98,6 +98,50 @@ h1 em{font-style:normal;color:var(--gold)}
 
 /* ---------- the phone demo (signature) ---------- */
 .stage{display:flex;justify-content:center}
+/* lean hero */
+nav .links a:not(.btn){font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+nav .links a:not(.btn):hover{color:var(--ink)}
+nav .links .btn.hot{border-radius:10px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;font-size:11.5px;padding:12px 22px}
+.hero .btn.hot.lg{border-radius:12px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;font-size:12.5px;padding:17px 32px}
+.linkcta{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);padding:6px 0;border-bottom:2px solid var(--ember);align-self:center}
+.heropic{margin:0;position:relative;border-radius:16px;overflow:hidden;background:#0E1013;border:1px solid var(--line)}
+.heropic img{width:100%;height:auto;aspect-ratio:760/410;object-fit:cover;display:block}
+.vbar{display:flex;align-items:center;gap:0;background:var(--panel);border-top:1px solid var(--line);padding:16px 20px}
+.vbar .vr{min-width:0}
+.vbar .mk{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vbar .vl{flex:0 0 auto;text-align:center;padding-right:20px;margin-right:20px;border-right:1px solid var(--line)}
+.vbar .vchip{display:block;font-family:var(--mono);font-weight:700;font-size:20px;letter-spacing:.2em;color:var(--ember);text-transform:uppercase}
+.vbar .vconf{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:4px}
+.vbar .mk{font-weight:800;font-size:16px;letter-spacing:.02em;text-transform:uppercase}
+.vbar .yr{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+.vbar .stamp{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ember);text-transform:uppercase;margin-top:5px}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-top:clamp(28px,4vw,44px)}
+.si{display:flex;align-items:center;gap:16px;padding:22px 24px;border-left:1px solid var(--line)}
+.si:first-child{border-left:0}
+.si .ic{flex:0 0 auto;width:54px;height:54px;border-radius:50%;border:1.5px solid var(--ember);display:grid;place-items:center;color:var(--ember)}
+.si .ic svg{width:24px;height:24px}
+.si .t{font-weight:800;font-size:15px;letter-spacing:.03em;text-transform:uppercase}
+.si .d{color:var(--muted);font-size:13.5px;margin-top:3px}
+.finds{padding:0 0 clamp(40px,6vw,72px)}
+.findsbox{display:grid;grid-template-columns:1fr 2.1fr;gap:24px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.findshead h2{font-size:clamp(20px,2.2vw,32px);line-height:1.02;letter-spacing:-.02em;text-transform:uppercase;max-width:none}
+.findshead .linkcta{margin-top:24px}
+.findsgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.find{display:block;background:var(--carbon);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.find img{width:100%;height:auto;aspect-ratio:760/410;object-fit:cover;display:block}
+.find .fc{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:11px 12px;color:var(--ink)}
+.find .no{color:var(--muted)}
+.find .rr{color:var(--ember)}
+.find .rr.classic{color:#FF8A1E}
+@media(max-width:960px){
+  .strip{grid-template-columns:1fr}
+  .si{border-left:0;border-top:1px solid var(--line)}
+  .si:first-child{border-top:0}
+  .findsbox{grid-template-columns:1fr}
+  .findsgrid{grid-template-columns:1fr}
+  .vbar{padding:12px 14px}
+  .vbar .vchip{font-size:16px}
+}
 .phone{position:relative;width:min(300px,82vw);aspect-ratio:9/19;border-radius:38px;background:#000;border:1px solid rgba(255,255,255,.14);box-shadow:0 30px 70px -20px rgba(0,0,0,.9),0 0 0 8px rgba(255,255,255,.02);overflow:hidden}
 .vf{position:absolute;inset:0;background:
   radial-gradient(120% 80% at 50% 20%,#1a1d24,#0b0d11 70%);
@@ -315,71 +359,61 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
     <div>
       <div class="eyebrow">Verified sightings · cars and bikes</div>
       <h1>A registry of<br><em>real metal</em>.</h1>
-      <p class="lede">Photograph a car or bike you found in the wild. The judge names it, grades the shot, and files it — numbered and dated — to your Registry. Old photos don't count. You have to be there.</p>
+      <p class="lede">Photograph a car or bike you found in the wild. The judge names it, grades the shot, and files it — numbered and dated — to your Registry.</p>
       <div class="herocta">
         <a class="btn hot lg" href="https://hunt.tyrehunt.app">Start your Registry — free</a>
-        <a class="btn lg" href="#registry">See what a Registry is</a>
+        <a class="linkcta" href="#how">See how it works</a>
       </div>
-      <div class="trust">
-        <span><i></i>Verified on the spot, not on the honor system</span>
-        <span><i></i>Numbered, dated, and yours to keep</span>
-        <span><i></i>Free to contribute, no card</span>
-      </div>
-
     </div>
 
-    <div class="stage">
-      <div class="phone" id="phone">
-        <div class="vf">
-          <!-- A real photograph, not an illustration. The page promises
-               "point your camera at real metal" — the viewfinder should
-               show real metal. WebP first, JPEG for anything that can't
-               take it; explicit dimensions so the hero never shifts. -->
-          <picture>
-            <source srcset="car-hero.webp" type="image/webp">
-            <img class="carart" src="car-hero.jpg" width="760" height="410"
-                 decoding="async" fetchpriority="high"
-                 alt="A red Holden Torana GTR XU-1 in Ron Hodgson Motors racing livery, number 7">
-          </picture>
-        <button class="replay" id="replay">↻ RUN IT AGAIN</button>
-        </div>
-        <div class="hud">
-          <span class="pill">12 / 60</span>
-          <span class="pill">ROOKIE</span>
-        </div>
-        <div class="brackets"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
-        <div class="scanline"></div>
-        <div class="verdict">
-          <div class="top">
-            <span class="chip" id="vChip">RARE</span>
-            <span class="chip" id="vConf" style="color:var(--muted);border-color:var(--line)">88% CONFIDENT</span>
-          </div>
+    <figure class="heropic">
+      <picture>
+        <source srcset="car-hero.webp" type="image/webp">
+        <img class="carart" src="car-hero.jpg" width="760" height="410" decoding="async" fetchpriority="high"
+             alt="A red Holden Torana GTR XU-1 in Ron Hodgson Motors racing livery, number 7">
+      </picture>
+      <figcaption class="vbar">
+        <div class="vl"><span class="vchip">Rare</span><span class="vconf">88% confident</span></div>
+        <div class="vr">
           <div class="mk">Holden Torana GTR XU-1</div>
-          <div class="yr">1972–1974 · LJ · 202ci TRIPLE-CARB SIX</div>
-          <div class="blurb">Three Strombergs on a 3.3 six — the little Holden that took Bathurst off the V8s. This one's still wearing Ron Hodgson colours.</div>
-          <div class="stamp">◎ FILED TO REGISTRY · No. 042</div>
+          <div class="yr">1972–1974 · LJ</div>
+          <div class="stamp">Filed to Registry · No. 042</div>
         </div>
-        <div id="vLive" class="sr-only" aria-live="polite" aria-atomic="true"></div>
-      </div>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="wrap">
+    <div class="strip">
+      <div class="si"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3.5 19 6.2v5.3c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9V6.2L12 3.5Z"/><path d="m8.8 12.2 2.2 2.2 4.4-4.6"/></svg></span><div><div class="t">Verified on the spot</div><div class="d">Our judges verify and grade every sighting.</div></div></div>
+      <div class="si"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M9.5 4 8 20M16 4l-1.5 16M4.5 9.5h16M3.5 15h16"/></svg></span><div><div class="t">Numbered, dated, yours</div><div class="d">Every find is filed to your personal Registry.</div></div></div>
+      <div class="si"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3.5 12.5v-8h8L21 14l-8 8-9.5-9.5Z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg></span><div><div class="t">Free — no card</div><div class="d">Start hunting. No fees, no payment details.</div></div></div>
     </div>
   </div>
 </header>
 
-<section class="registry" id="registry">
+<section class="finds" id="registry">
   <div class="wrap">
-    <div class="sechead">The Registry</div>
-    <h2>Collectors have kept registries for a century.</h2>
-    <p class="subhead">Marque registries track every known example of a car, chassis by chassis. This is the street version — a numbered record of the metal you found yourself, on the day you found it. Cars and bikes keep separate books.</p>
-
-    <div class="ledger" role="table" aria-label="Example Registry entries">
-      <div class="lhead" role="row"><span role="columnheader">Entry</span><span role="columnheader">Vehicle</span><span role="columnheader">Class</span><span role="columnheader">Filed</span></div>
-      <div class="lrow" role="row"><span class="no" role="cell">No. 042</span><span class="nm" role="cell">Holden Torana GTR XU-1</span><span class="rr rare" role="cell">RARE</span><span class="dd" role="cell">02 AUG 2026</span></div>
-      <div class="lrow" role="row"><span class="no" role="cell">No. 041</span><span class="nm" role="cell">Porsche 911 Targa</span><span class="rr rare" role="cell">RARE</span><span class="dd" role="cell">27 JUL 2026</span></div>
-      <div class="lrow" role="row"><span class="no" role="cell">No. 040</span><span class="nm" role="cell">Cadillac Fleetwood Brougham</span><span class="rr classic" role="cell">CLASSIC</span><span class="dd" role="cell">19 JUL 2026</span></div>
-      <div class="lrow" role="row"><span class="no" role="cell">No. 039</span><span class="nm" role="cell">Lykan HyperSport</span><span class="rr legendary" role="cell">LEGENDARY</span><span class="dd" role="cell">11 JUL 2026</span></div>
-      <div class="lrow" role="row"><span class="no" role="cell">No. 038</span><span class="nm" role="cell">Subaru GL</span><span class="rr everyday" role="cell">EVERYDAY</span><span class="dd" role="cell">04 JUL 2026</span></div>
+    <div class="findsbox">
+      <div class="findshead">
+        <h2>Your finds.<br>Your Registry.</h2>
+        <a class="linkcta" href="registry.html">View the Registry <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="findsgrid">
+        <a class="find" href="registry.html">
+          <picture><source srcset="car-hero.webp" type="image/webp"><img src="car-hero.jpg" width="760" height="410" loading="lazy" decoding="async" alt="Holden Torana GTR XU-1"></picture>
+          <div class="fc"><span class="no">No. 042</span> · Holden Torana GTR XU-1 · <span class="rr rare">Rare</span></div>
+        </a>
+        <a class="find" href="registry.html">
+          <img src="car-911targa.jpg" width="760" height="410" loading="lazy" decoding="async" alt="Porsche 911 Targa">
+          <div class="fc"><span class="no">No. 041</span> · Porsche 911 Targa · <span class="rr rare">Rare</span></div>
+        </a>
+        <a class="find" href="registry.html">
+          <img src="car-cadillac.jpg" width="760" height="410" loading="lazy" decoding="async" alt="Cadillac Fleetwood Brougham">
+          <div class="fc"><span class="no">No. 040</span> · Cadillac Fleetwood Brougham · <span class="rr classic">Classic</span></div>
+        </a>
+      </div>
     </div>
-    <p class="ledgernote">Entries are numbered in the order you find them. Nobody can buy their way onto this list.</p>
   </div>
 </section>
 
@@ -408,56 +442,9 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   </div>
 </section>
 
-<section class="judge">
-  <div class="wrap">
-    <div class="sechead">Why it counts</div>
-    <h2>A collection is only worth something if it's honest.</h2>
-    <p class="subhead">Anyone can screenshot a supercar. These are the rules that make an entry mean you were standing there.</p>
-    <div class="rules">
-      <div class="rule">
-        <h3>You have to be there</h3>
-        <p>The shutter opens your camera — gallery imports don't count. The judge flags photos of screens, magazines and press shots. Flagged captures still save to your garage, they just don't score.</p>
-      </div>
-      <div class="rule">
-        <h3>Duplicates are detected</h3>
-        <p>Every photo gets a fingerprint on the server, checked against every other hunter's. The same car shot twice is one entry.</p>
-      </div>
-      <div class="rule">
-        <h3>The judge runs server-side</h3>
-        <p>Identification happens on our servers, not on your phone where it could be edited. Rate limits live there too.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section>
-  <div class="wrap">
-    <div class="sechead">What you can do with it</div>
-    <h2>Built for the way people actually chase metal.</h2>
-    <div class="feats">
-      <div class="feat">
-        <div class="k">Documentation</div>
-        <h3>Full dossiers</h3>
-        <p>One photo names it. Five angles — interior, badge, rear, engine, detail — make it a dossier. Each is graded, and badge shots get the script read back to you.</p>
-      </div>
-      <div class="feat">
-        <div class="k">Owners</div>
-        <h3>Bounties</h3>
-        <p>Own something people want to see? Add it to your Stable — the cars you own — and post a bounty. Hunters who spot it in the wild get credit, and you see who found you.</p>
-      </div>
-      <div class="feat">
-        <div class="k">Barn finds</div>
-        <h3>Sleeping cars</h3>
-        <p>Flat tyres, moss, a decade of dust. Dormant metal gets its own classification and a title to chase.</p>
-      </div>
-      <div class="feat">
-        <div class="k">Lost to history</div>
-        <h3>Most Wanted</h3>
-        <p>Machines the record says were built but nobody can find — Bugatti's missing Atlantic, a Ferrari 375 MM, Dean's Spyder. Spot something that fits and you file a lead.</p>
-      </div>
-    </div>
-  </div>
-</section>
+
+
 
 <section id="board" hidden>
   <div class="wrap">
@@ -618,6 +605,7 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   var phone = document.getElementById('phone');
   var replay = document.getElementById('replay');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (phone && replay) {
 
   /* ---------------------------------------------------------------
      THE JUDGE'S REEL
@@ -751,6 +739,7 @@ footer .lks{display:flex;gap:18px;flex-wrap:wrap}
   }, { threshold: .4 });
   io.observe(phone);
   replay.addEventListener('click', run);
+  } /* end reel */
 
   /* ---------------- live leaderboard ----------------
      Reads the public 'leaderboard' view. The anon key is designed to be
