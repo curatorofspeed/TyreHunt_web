@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lot — curbside cars for sale, found by hunters — Tyre Hunt</title>
+<meta name="description" content="Cars for sale that never hit the internet: found on the street by Tyre Hunt hunters, verified by the judge, with the price off the sign. Never the seller's number.">
+<meta property="og:title" content="The Lot — Tyre Hunt">
+<meta property="og:description" content="Curbside cars for sale, found by hunters. The car, the price, and roughly where — never the seller's number.">
+<meta property="og:image" content="https://www.tyrehunt.app/og.png">
+<link rel="canonical" href="https://www.tyrehunt.app/lot.html">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://kokxlzygppakgcebkygc.supabase.co" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Racing+Sans+One&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --carbon:#0A0B0E; --panel:#12151A; --line:rgba(255,255,255,.09);
+  --ink:#F2F3F6; --muted:#98A0AC; --ember:#18B7DC; --gold:#FFC24B;
+  --orange:#FF8A1E; --blue:#5E97FF; --bronze:#C9834A;
+  --disp:'Archivo',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--carbon);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+nav{position:sticky;top:0;z-index:10;background:rgba(10,11,14,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .row{display:flex;align-items:center;justify-content:space-between;height:60px}
+.lockup{display:flex;align-items:center;gap:9px}
+.lockup svg{width:26px;height:26px;color:var(--ink)}
+.lockup .wd{font:700 16px 'Racing Sans One',var(--disp);letter-spacing:.01em;text-transform:uppercase;white-space:nowrap}
+.cta{display:inline-flex;align-items:center;justify-content:center;font:800 12px var(--disp);letter-spacing:.06em;padding:10px 18px;border-radius:999px;background:linear-gradient(180deg,#5BD8F0,var(--ember));color:#04222A;text-align:center}
+header.page{padding:clamp(24px,5vw,48px) 0 4px}
+.eyebrow{font:700 10px var(--mono);letter-spacing:.34em;color:var(--ember);text-transform:uppercase}
+h1{font-size:clamp(28px,6vw,48px);font-weight:900;letter-spacing:.02em;margin-top:8px;text-transform:uppercase;line-height:1.02}
+.where{color:var(--muted);margin-top:10px;font-size:15px}
+.livechip{display:none;align-items:center;gap:7px;margin-top:14px;font:800 11px var(--mono);letter-spacing:.16em;color:var(--ember);border:1px solid rgba(24,183,220,.45);background:rgba(24,183,220,.08);border-radius:999px;padding:7px 14px;width:max-content}
+.livechip.on{display:inline-flex}
+.livechip i{width:8px;height:8px;border-radius:50%;background:var(--ember);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.stat{flex:1 1 0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 10px;text-align:center;min-width:0}
+.stat .v{font:800 22px var(--disp)}
+.stat .l{font:700 8.5px var(--mono);letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+h2.sec{font:800 11px var(--mono);letter-spacing:.26em;color:var(--muted);text-transform:uppercase;margin:38px 0 12px}
+.board{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
+.brow{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.brow:last-child{border-bottom:0}
+.brow .pos{font:800 13px var(--mono);color:var(--muted);width:26px;flex:0 0 auto}
+.brow.p1 .pos{color:var(--gold)}.brow.p2 .pos{color:var(--ink)}.brow.p3 .pos{color:var(--bronze)}
+.brow .hn{font-weight:800;font-size:15px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .sc{font:800 15px var(--mono);color:var(--ember)}
+.brow .sl{font:700 8.5px var(--mono);letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-left:5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:13px;padding-bottom:8px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.cimg{aspect-ratio:4/3;background:#0E1013 center/cover no-repeat}
+.cbody{padding:10px 12px 12px}
+.cname{font-weight:800;font-size:13.5px;line-height:1.25}
+.cmeta{font:600 10.5px var(--mono);color:var(--muted);margin-top:5px;letter-spacing:.04em}
+.chip{display:inline-block;font:800 8.5px var(--mono);letter-spacing:.12em;padding:3px 8px;border-radius:999px;border:1px solid;text-transform:uppercase;margin-left:4px;vertical-align:1px}
+.chip.everyday{color:#8B93A1;border-color:rgba(139,147,161,.5)}
+.chip.classic{color:var(--orange);border-color:rgba(255,138,30,.5)}
+.chip.rare{color:var(--blue);border-color:rgba(94,151,255,.5)}
+.chip.legendary{color:var(--gold);border-color:rgba(255,194,75,.55)}
+.note{color:var(--muted);padding:44px 0;text-align:center}
+main{padding-bottom:12px}
+.joinband{position:sticky;bottom:0;z-index:9;margin-top:44px;background:linear-gradient(180deg,rgba(10,11,14,0),rgba(10,11,14,.96) 24%);padding:26px 0 max(18px,env(safe-area-inset-bottom))}
+.joinband .inner{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:18px;text-align:center}
+.joinband .big{font-size:clamp(17px,3.4vw,22px);font-weight:900;text-transform:uppercase;letter-spacing:.02em}
+.joinband p{color:var(--muted);margin:8px 0 14px;font-size:13.5px}
+.joinband .cta{font-size:14px;padding:14px 30px;width:100%;max-width:340px}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:12.5px;text-align:center}
+
+/* lot page */
+.sub{color:var(--muted);margin-top:12px;font-size:15px;max-width:640px;line-height:1.5}
+.pledge{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font:700 10.5px var(--mono);letter-spacing:.14em;color:#3ECF8E;border:1px solid rgba(62,207,142,.45);background:rgba(62,207,142,.07);border-radius:999px;padding:8px 14px;text-transform:uppercase}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 4px}
+.fbtn{font:800 10.5px var(--mono);letter-spacing:.14em;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted);text-transform:uppercase;cursor:pointer}
+.fbtn.on{color:var(--ember);border-color:rgba(24,183,220,.5);background:rgba(24,183,220,.08)}
+.card{position:relative}
+.price{position:absolute;top:10px;left:10px;font:800 12px var(--mono);letter-spacing:.06em;color:#04222A;background:#3ECF8E;border-radius:999px;padding:5px 10px}
+.cwhere{font:600 10.5px var(--mono);color:var(--muted);margin-top:4px;letter-spacing:.04em}
+.cwhere a{color:var(--ember);border-bottom:1px solid rgba(24,183,220,.4)}
+.grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.howto{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+.how{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.how .n{font:800 22px var(--mono);color:var(--ember)}
+.how .t{font-weight:800;margin-top:6px}
+.how .d{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.5}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<mask id="thmcut" maskUnits="userSpaceOnUse" x="-110" y="-110" width="220" height="220">
+<rect x="-110" y="-110" width="220" height="220" fill="#fff"/>
+<path d="M96.02 16.93L100.94 17.8M92.19 31.74L96.92 33.37M67.73 70.14L71.2 73.73M55.92 79.87L58.79 83.96M13.57 96.55L14.27 101.5M-45.77 86.09L-48.12 90.5M-58.68 77.87L-61.69 81.86M-87.63 42.74L-92.13 44.93M-93.24 28.51L-98.02 29.97M-96.02 -16.93L-100.94 -17.8M-92.19 -31.74L-96.92 -33.37M-67.73 -70.14L-71.2 -73.73M-55.92 -79.87L-58.79 -83.96M-13.57 -96.55L-14.27 -101.5M45.77 -86.09L48.12 -90.5M58.68 -77.87L61.69 -81.86M87.63 -42.74L92.13 -44.93M93.24 -28.51L98.02 -29.97" fill="none" stroke="#000" stroke-width="4"/>
+<path d="M-86.15 -12.11A75.9 75.9 0 0 1 -18.09 -85.1A104.4 104.4 0 0 0 -86.15 -12.11Z" fill="#000"/></mask>
+<symbol id="thm" viewBox="-110 -110 220 220">
+<circle r="86" fill="none" stroke="currentColor" stroke-width="28" mask="url(#thmcut)"/>
+<circle r="58.5" fill="none" stroke="currentColor" stroke-width="7"/>
+<path d="M42 0H110M-42 0H-110M0 42V110M0 -42V-110" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+<circle r="15" fill="#1FA8FF"/></symbol></defs></svg>
+
+<nav><div class="wrap row">
+  <a class="lockup" href="index.html"><svg viewBox="-110 -110 220 220" aria-hidden="true"><use href="#thm" x="-110" y="-110" width="220" height="220"/></svg><span class="wd">Tyre Hunt</span></a>
+  <a class="cta" href="registry.html">The Registry</a>
+</div></nav>
+
+<header class="page"><div class="wrap">
+  <span class="eyebrow">The Lot</span>
+  <h1>Curbside, for sale</h1>
+  <p class="sub">The biggest car inventory that never touches the internet: a sign in the window on a side street. Hunters photograph it, the judge names the car and reads the price, and it lands here — dated, located, verified.</p>
+  <div class="pledge">The car · the price · roughly where — never the seller's number</div>
+  <div class="stats" id="stats" style="display:none"></div>
+  <div class="filters" id="filters" style="display:none">
+    <button class="fbtn on" data-f="all">All</button>
+    <button class="fbtn" data-f="legendary">Legendary</button>
+    <button class="fbtn" data-f="rare">Rare</button>
+    <button class="fbtn" data-f="classic">Classic</button>
+    <button class="fbtn" data-f="everyday">Everyday</button>
+    <button class="fbtn" data-f="priced">Priced only</button>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <div class="note" id="loading">Reading the lot…</div>
+  <div id="live" style="display:none">
+    <div class="grid" id="grid"></div>
+  </div>
+  <div class="note" id="empty" style="display:none">
+    <b style="color:var(--ink)">Nothing on the lot yet.</b><br>The next car a hunter finds wearing a sign lands here automatically.
+  </div>
+
+  <h2 class="sec">How a car gets on the lot</h2>
+  <div class="howto">
+    <div class="how"><div class="n">01</div><div class="t">A hunter spots a sign</div><div class="d">Windshield, dash, taped to the door. On a street, at a meet, in a driveway.</div></div>
+    <div class="how"><div class="n">02</div><div class="t">The judge does the reading</div><div class="d">Names the car, grades the shot, reads the asking price off the sign, and blurs the seller's phone number before anything is stored.</div></div>
+    <div class="how"><div class="n">03</div><div class="t">It's filed here</div><div class="d">Dated, roughly located, and public. Selling? Claim your listing in the app and add contact details on your own terms.</div></div>
+  </div>
+</main>
+
+<div class="joinband" id="joinband"><div class="wrap"><div class="inner">
+  <div class="big">Found one wearing a sign?</div>
+  <p>Photograph it in the app. If it counts, it's on the lot in seconds — and it counts toward Lot Scout.</p>
+  <a class="cta" href="https://hunt.tyrehunt.app">Open Tyre Hunt — free</a>
+</div></div></div>
+
+<footer>A <a href="index.html"><b>Tyre Hunt</b></a> board · every listing was photographed on the street and verified · sellers' contact details are never stored</footer>
+
+<script>
+(function(){
+"use strict";
+var BASE = "https://kokxlzygppakgcebkygc.supabase.co";
+var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtva3hsenlncHBha2djZWJreWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTM5ODgsImV4cCI6MjA5OTg4OTk4OH0.c8N8aevxB-etS_b8HhG3M4BNlV3lM2gX3BO12vJRQCo";
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function img(p){ return BASE + "/storage/v1/object/public/captures/" + p; }
+function ago(iso){
+  var s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60) return "just now";
+  if (s < 3600) return Math.floor(s/60) + "m ago";
+  if (s < 86400) return Math.floor(s/3600) + "h ago";
+  return Math.floor(s/86400) + "d ago";
+}
+function price(n, cur){
+  if (n == null) return "";
+  try{ if (cur) return new Intl.NumberFormat(undefined, { style:"currency", currency:cur, maximumFractionDigits:0 }).format(n); }catch(e){}
+  return new Intl.NumberFormat(undefined, { maximumFractionDigits:0 }).format(n);
+}
+var rows = [], filter = "all";
+
+function paint(){
+  var list = rows.filter(function(r){
+    if (filter === "all") return true;
+    if (filter === "priced") return r.asking_price != null;
+    return r.rarity === filter;
+  });
+  var st = document.getElementById("stats");
+  var priced = rows.filter(function(r){ return r.asking_price != null; });
+  var models = {}; rows.forEach(function(r){ if (r.cx_key) models[r.cx_key] = 1; });
+  st.style.display = "";
+  st.innerHTML =
+    '<div class="stat"><div class="v">' + rows.length + '</div><div class="l">On the lot</div></div>' +
+    '<div class="stat"><div class="v">' + Object.keys(models).length + '</div><div class="l">Models</div></div>' +
+    '<div class="stat"><div class="v">' + priced.length + '</div><div class="l">Priced</div></div>';
+  document.getElementById("filters").style.display = rows.length ? "" : "none";
+  document.getElementById("grid").innerHTML = list.map(function(r){
+    var p = price(r.asking_price, r.asking_currency);
+    var where = (r.la != null && r.lo != null)
+      ? '<div class="cwhere">near <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=' + Number(r.la).toFixed(2) + ',' + Number(r.lo).toFixed(2) + '">' + Number(r.la).toFixed(2) + ', ' + Number(r.lo).toFixed(2) + '</a> · ~1 km</div>'
+      : '<div class="cwhere">location not shared</div>';
+    return '<div class="card">' +
+      (p ? '<span class="price">' + esc(p) + '</span>' : '') +
+      '<div class="cimg" style="background-image:url(\'' + img(esc(r.img_path)) + '\')"></div>' +
+      '<div class="cbody"><div class="cname">' + esc(r.name || "A find") +
+      '<span class="chip ' + esc(r.rarity || "everyday") + '">' + esc(r.rarity || "everyday") + '</span></div>' +
+      '<div class="cmeta">@' + esc(r.handle) + (r.shot_score != null ? " · SHOT " + r.shot_score : "") + " · " + ago(r.created_at) + "</div>" +
+      where + "</div></div>";
+  }).join("");
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("live").style.display = rows.length ? "" : "none";
+  document.getElementById("empty").style.display = rows.length ? "none" : "";
+}
+
+function load(){
+  return fetch(BASE + "/rest/v1/rpc/public_lot", {
+    method: "POST",
+    headers: { "Content-Type":"application/json", apikey: ANON, Authorization: "Bearer " + ANON },
+    body: JSON.stringify({ lim: 200 })
+  })
+  .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+  .then(function(d){ rows = d || []; paint(); })
+  .catch(function(){ document.getElementById("loading").textContent = "The lot didn't load — refresh in a moment."; });
+}
+
+document.getElementById("filters").addEventListener("click", function(e){
+  var b = e.target.closest(".fbtn"); if (!b) return;
+  filter = b.dataset.f;
+  document.querySelectorAll(".fbtn").forEach(function(x){ x.classList.toggle("on", x === b); });
+  paint();
+});
+
+load();
+setInterval(function(){ if (!document.hidden) load(); }, 60000);
+document.addEventListener("visibilitychange", function(){ if (!document.hidden) load(); });
+})();
+</script>
+</body>
+</html>
