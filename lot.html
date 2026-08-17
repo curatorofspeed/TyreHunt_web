@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Lot — curbside cars for sale, found by hunters — Tyre Hunt</title>
-<meta name="description" content="Cars for sale that never hit the internet: found on the street by Tyre Hunt hunters, verified by the judge, with the seller's own sign so you can read the price and how to reach them.">
+<meta name="description" content="Cars for sale in the real world — spotted on the street by Tyre Hunt hunters, verified by the judge, with the seller's own sign so you can read the price and how to reach them.">
 <meta property="og:title" content="The Lot — Tyre Hunt">
-<meta property="og:description" content="Curbside cars for sale, found by hunters — with the seller's own sign, so you can read the price and how to reach them.">
+<meta property="og:description" content="Curbside. For sale. Cars spotted in the real world, verified, and added by Tyre Hunt.">
 <meta property="og:image" content="https://www.tyrehunt.app/og.png">
 <link rel="canonical" href="https://www.tyrehunt.app/lot.html">
 <link rel="icon" href="icon-192.png">
@@ -15,80 +15,93 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Racing+Sans+One&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --carbon:#0A0B0E; --panel:#12151A; --line:rgba(255,255,255,.09);
+  --carbon:#0A0B0E; --panel:#111318; --line:rgba(255,255,255,.09);
   --ink:#F2F3F6; --muted:#98A0AC; --ember:#18B7DC; --gold:#FFC24B;
-  --orange:#FF8A1E; --blue:#5E97FF; --bronze:#C9834A;
+  --orange:#FF8A1E; --blue:#5E97FF; --ok:#3ECF8E;
   --disp:'Archivo',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--carbon);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,4vw,44px)}
 nav{position:sticky;top:0;z-index:10;background:rgba(10,11,14,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-nav .row{display:flex;align-items:center;justify-content:space-between;height:60px}
-.lockup{display:flex;align-items:center;gap:9px}
-.lockup svg{width:26px;height:26px;color:var(--ink)}
-.lockup .wd{font:700 16px 'Racing Sans One',var(--disp);letter-spacing:.01em;text-transform:uppercase;white-space:nowrap}
-.cta{display:inline-flex;align-items:center;justify-content:center;font:800 12px var(--disp);letter-spacing:.06em;padding:10px 18px;border-radius:999px;background:linear-gradient(180deg,#5BD8F0,var(--ember));color:#04222A;text-align:center}
-header.page{padding:clamp(24px,5vw,48px) 0 4px}
-.eyebrow{font:700 10px var(--mono);letter-spacing:.34em;color:var(--ember);text-transform:uppercase}
-h1{font-size:clamp(28px,6vw,48px);font-weight:900;letter-spacing:.02em;margin-top:8px;text-transform:uppercase;line-height:1.02}
-.where{color:var(--muted);margin-top:10px;font-size:15px}
-.livechip{display:none;align-items:center;gap:7px;margin-top:14px;font:800 11px var(--mono);letter-spacing:.16em;color:var(--ember);border:1px solid rgba(24,183,220,.45);background:rgba(24,183,220,.08);border-radius:999px;padding:7px 14px;width:max-content}
-.livechip.on{display:inline-flex}
-.livechip i{width:8px;height:8px;border-radius:50%;background:var(--ember);animation:pulse 1.6s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
-.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-.stat{flex:1 1 0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 10px;text-align:center;min-width:0}
-.stat .v{font:800 22px var(--disp)}
-.stat .l{font:700 8.5px var(--mono);letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-top:3px}
-h2.sec{font:800 11px var(--mono);letter-spacing:.26em;color:var(--muted);text-transform:uppercase;margin:38px 0 12px}
-.board{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
-.brow{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
-.brow:last-child{border-bottom:0}
-.brow .pos{font:800 13px var(--mono);color:var(--muted);width:26px;flex:0 0 auto}
-.brow.p1 .pos{color:var(--gold)}.brow.p2 .pos{color:var(--ink)}.brow.p3 .pos{color:var(--bronze)}
-.brow .hn{font-weight:800;font-size:15px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.brow .sc{font:800 15px var(--mono);color:var(--ember)}
-.brow .sl{font:700 8.5px var(--mono);letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-left:5px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:13px;padding-bottom:8px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+nav .row{display:flex;align-items:center;justify-content:space-between;height:64px}
+.lockup{display:flex;align-items:center;gap:10px}
+.lockup svg{width:30px;height:30px;color:var(--ink)}
+.lockup .wd{font:700 19px 'Racing Sans One',var(--disp);letter-spacing:.01em;text-transform:uppercase;white-space:nowrap}
+.cta{display:inline-flex;align-items:center;justify-content:center;font:800 13px var(--disp);letter-spacing:.04em;padding:11px 20px;border-radius:10px;background:linear-gradient(180deg,#5BD8F0,var(--ember));color:#04222A;text-align:center}
+.eyebrow{font:700 11px var(--mono);letter-spacing:.34em;color:var(--ember);text-transform:uppercase}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr 1.25fr;gap:clamp(20px,4vw,48px);align-items:center;padding:clamp(28px,4.5vw,56px) 0 22px}
+.hero h1{font-size:clamp(40px,6.4vw,74px);font-weight:900;letter-spacing:.01em;line-height:.98;text-transform:uppercase;margin-top:14px}
+.hero .sub{color:var(--muted);margin-top:18px;font-size:clamp(15px,1.5vw,19px);line-height:1.5;max-width:460px}
+.hpic{position:relative;border-radius:16px;overflow:hidden;background:#0E1013;aspect-ratio:16/9;border:1px solid var(--line)}
+.hpic img{width:100%;height:100%;object-fit:cover;display:block}
+.hpic .tag{position:absolute;left:14px;bottom:14px;display:inline-flex;align-items:center;gap:8px;font:800 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;background:rgba(10,11,14,.78);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:999px;padding:8px 13px}
+.hpic .tag i{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.hpic .price{position:absolute;right:14px;top:14px;font:800 13px var(--mono);letter-spacing:.06em;color:#04222A;background:var(--ok);border-radius:999px;padding:6px 12px}
+
+/* stat bar */
+.statbar{display:grid;grid-template-columns:repeat(3,1fr);background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-top:8px}
+.statbar .st{padding:22px 10px;text-align:center;border-left:1px solid var(--line)}
+.statbar .st:first-child{border-left:0}
+.statbar .v{font:800 34px var(--disp);color:var(--ember);line-height:1}
+.statbar .l{font:700 11px var(--mono);letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-top:9px}
+
+/* quiet + section headers */
+.quiet{display:flex;align-items:center;gap:22px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 28px;margin-top:22px}
+.ico{flex:0 0 auto;width:74px;height:74px;border-radius:50%;border:1.5px solid var(--ember);display:grid;place-items:center;color:var(--ember)}
+.ico svg{width:30px;height:30px}
+.quiet .t{font-size:22px;font-weight:800;letter-spacing:.02em;text-transform:uppercase}
+.quiet .d{color:var(--muted);margin-top:6px;font-size:16px}
+h2.sec{font:700 12px var(--mono);letter-spacing:.34em;color:var(--ink);text-transform:uppercase;margin:34px 0 14px}
+
+/* listings */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 14px}
+.fbtn{font:800 10.5px var(--mono);letter-spacing:.14em;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted);text-transform:uppercase;cursor:pointer}
+.fbtn.on{color:var(--ember);border-color:rgba(24,183,220,.5);background:rgba(24,183,220,.08)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .cimg{aspect-ratio:4/3;background:#0E1013 center/cover no-repeat}
-.cbody{padding:10px 12px 12px}
-.cname{font-weight:800;font-size:13.5px;line-height:1.25}
+.cbody{padding:11px 13px 13px}
+.cname{font-weight:800;font-size:14px;line-height:1.25}
 .cmeta{font:600 10.5px var(--mono);color:var(--muted);margin-top:5px;letter-spacing:.04em}
-.chip{display:inline-block;font:800 8.5px var(--mono);letter-spacing:.12em;padding:3px 8px;border-radius:999px;border:1px solid;text-transform:uppercase;margin-left:4px;vertical-align:1px}
+.chip{display:inline-block;font:800 8.5px var(--mono);letter-spacing:.12em;padding:3px 8px;border-radius:999px;border:1px solid;text-transform:uppercase;margin-left:5px;vertical-align:1px}
 .chip.everyday{color:#8B93A1;border-color:rgba(139,147,161,.5)}
 .chip.classic{color:var(--orange);border-color:rgba(255,138,30,.5)}
 .chip.rare{color:var(--blue);border-color:rgba(94,151,255,.5)}
 .chip.legendary{color:var(--gold);border-color:rgba(255,194,75,.55)}
-.note{color:var(--muted);padding:44px 0;text-align:center}
-main{padding-bottom:12px}
-.joinband{position:sticky;bottom:0;z-index:9;margin-top:44px;background:linear-gradient(180deg,rgba(10,11,14,0),rgba(10,11,14,.96) 24%);padding:26px 0 max(18px,env(safe-area-inset-bottom))}
-.joinband .inner{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:18px;text-align:center}
-.joinband .big{font-size:clamp(17px,3.4vw,22px);font-weight:900;text-transform:uppercase;letter-spacing:.02em}
-.joinband p{color:var(--muted);margin:8px 0 14px;font-size:13.5px}
-.joinband .cta{font-size:14px;padding:14px 30px;width:100%;max-width:340px}
-footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:12.5px;text-align:center}
-
-/* lot page */
-.sub{color:var(--muted);margin-top:12px;font-size:15px;max-width:640px;line-height:1.5}
-.pledge{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font:700 10.5px var(--mono);letter-spacing:.14em;color:#3ECF8E;border:1px solid rgba(62,207,142,.45);background:rgba(62,207,142,.07);border-radius:999px;padding:8px 14px;text-transform:uppercase}
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 4px}
-.fbtn{font:800 10.5px var(--mono);letter-spacing:.14em;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted);text-transform:uppercase;cursor:pointer}
-.fbtn.on{color:var(--ember);border-color:rgba(24,183,220,.5);background:rgba(24,183,220,.08)}
-.card{position:relative}
-.price{position:absolute;top:10px;left:10px;font:800 12px var(--mono);letter-spacing:.06em;color:#04222A;background:#3ECF8E;border-radius:999px;padding:5px 10px}
+.cprice{position:absolute;top:10px;left:10px;font:800 12px var(--mono);letter-spacing:.06em;color:#04222A;background:var(--ok);border-radius:999px;padding:5px 10px}
 .cwhere{font:600 10.5px var(--mono);color:var(--muted);margin-top:4px;letter-spacing:.04em}
 .cwhere a{color:var(--ember);border-bottom:1px solid rgba(24,183,220,.4)}
-.signlink{display:flex;align-items:center;gap:9px;margin-top:10px;padding:7px 8px;border:1px solid rgba(62,207,142,.4);background:rgba(62,207,142,.06);border-radius:10px;font:800 10.5px var(--mono);letter-spacing:.1em;color:#3ECF8E;text-transform:uppercase}
+.signlink{display:flex;align-items:center;gap:9px;margin-top:10px;padding:7px 8px;border:1px solid rgba(62,207,142,.4);background:rgba(62,207,142,.06);border-radius:10px;font:800 10.5px var(--mono);letter-spacing:.1em;color:var(--ok);text-transform:uppercase}
 .signlink .simg{width:44px;height:32px;border-radius:6px;background:#0E1013 center/cover no-repeat;flex:0 0 auto}
-.grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
-.howto{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
-.how{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
-.how .n{font:800 22px var(--mono);color:var(--ember)}
-.how .t{font-weight:800;margin-top:6px}
-.how .d{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.5}
+
+/* how it works */
+.how3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.how{display:flex;align-items:center;gap:18px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 20px}
+.how .n{flex:0 0 auto;width:66px;height:66px;border-radius:50%;border:1.5px solid var(--ember);display:grid;place-items:center;font:600 24px var(--mono);color:var(--ember)}
+.how .t{font-size:16px;font-weight:800;letter-spacing:.03em;text-transform:uppercase}
+.how .d{color:var(--muted);font-size:14.5px;line-height:1.45;margin-top:5px}
+
+/* found one band */
+.found{display:flex;align-items:center;gap:22px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 26px;margin:22px 0 40px}
+.found .t{font-size:24px;font-weight:800;letter-spacing:.02em;text-transform:uppercase}
+.found .d{color:var(--muted);margin-top:5px;font-size:16px}
+.found .cta{margin-left:auto;font:800 14px var(--mono);letter-spacing:.2em;text-transform:uppercase;padding:20px 40px;border-radius:999px;flex:0 0 auto;min-width:min(480px,100%)}
+footer{border-top:1px solid var(--line);padding:24px 0 44px;color:var(--muted);font-size:12.5px;text-align:center;line-height:1.7}
+footer a.em{color:var(--ember)}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;padding-top:26px}
+  .hpic{order:-1}
+  .how3{grid-template-columns:1fr}
+  .found{flex-wrap:wrap}
+  .found .cta{margin-left:0;width:100%;min-width:0;padding:18px 20px}
+  .statbar .v{font-size:28px}
+  .quiet{padding:20px}
+}
 </style>
 </head>
 <body>
@@ -108,46 +121,58 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);f
   <a class="cta" href="registry.html">The Registry</a>
 </div></nav>
 
-<header class="page"><div class="wrap">
-  <span class="eyebrow">The Lot</span>
-  <h1>Curbside, for sale</h1>
-  <p class="sub">The biggest car inventory that never touches the internet: a sign in the window on a side street. Hunters photograph it, the judge names the car and reads the price, and it lands here — dated, located, verified.</p>
-  <div class="pledge">The car · the price · the sign, as the seller wrote it · roughly where</div>
-  <div class="stats" id="stats" style="display:none"></div>
-  <div class="filters" id="filters" style="display:none">
-    <button class="fbtn on" data-f="all">All</button>
-    <button class="fbtn" data-f="legendary">Legendary</button>
-    <button class="fbtn" data-f="rare">Rare</button>
-    <button class="fbtn" data-f="classic">Classic</button>
-    <button class="fbtn" data-f="everyday">Everyday</button>
-    <button class="fbtn" data-f="priced">Priced only</button>
-  </div>
-</div></header>
-
 <main class="wrap">
-  <div class="note" id="loading">Reading the lot…</div>
+  <section class="hero">
+    <div>
+      <span class="eyebrow">The Lot</span>
+      <h1>Curbside.<br>For sale.</h1>
+      <p class="sub">Cars for sale in the real world — spotted, verified, and added by Tyre Hunt.</p>
+    </div>
+    <div class="hpic" id="hpic">
+      <img id="heroImg" src="car-911targa.jpg" alt="A Porsche 911 parked on the street" width="760" height="410">
+      <span class="tag" id="heroTag" style="display:none"><i></i><span id="heroTxt"></span></span>
+      <span class="price" id="heroPrice" style="display:none"></span>
+    </div>
+  </section>
+
+  <div class="statbar" id="stats">
+    <div class="st"><div class="v" id="sCars">0</div><div class="l">Cars</div></div>
+    <div class="st"><div class="v" id="sModels">0</div><div class="l">Models</div></div>
+    <div class="st"><div class="v" id="sPriced">0</div><div class="l">Priced</div></div>
+  </div>
+
+  <div class="quiet" id="quiet">
+    <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/><path d="M8 10.5h5M10.5 8v5"/></svg></div>
+    <div><div class="t" id="quietT">The lot is quiet</div><div class="d" id="quietD">Be the first to spot a car wearing a For Sale sign.</div></div>
+  </div>
+
   <div id="live" style="display:none">
+    <div class="filters" id="filters">
+      <button class="fbtn on" data-f="all">All</button>
+      <button class="fbtn" data-f="legendary">Legendary</button>
+      <button class="fbtn" data-f="rare">Rare</button>
+      <button class="fbtn" data-f="classic">Classic</button>
+      <button class="fbtn" data-f="everyday">Everyday</button>
+      <button class="fbtn" data-f="priced">Priced only</button>
+    </div>
     <div class="grid" id="grid"></div>
   </div>
-  <div class="note" id="empty" style="display:none">
-    <b style="color:var(--ink)">Nothing on the lot yet.</b><br>The next car a hunter finds wearing a sign lands here automatically.
+
+  <h2 class="sec">How it works</h2>
+  <div class="how3">
+    <div class="how"><div class="n">01</div><div><div class="t">Spot it</div><div class="d">Photograph a car wearing a For Sale sign.</div></div></div>
+    <div class="how"><div class="n">02</div><div><div class="t">Verify it</div><div class="d">Add the sign so the car and asking price can be verified.</div></div></div>
+    <div class="how"><div class="n">03</div><div><div class="t">Find it here</div><div class="d">It appears on The Lot with the date and general location.</div></div></div>
   </div>
 
-  <h2 class="sec">How a car gets on the lot</h2>
-  <div class="howto">
-    <div class="how"><div class="n">01</div><div class="t">A hunter spots a sign</div><div class="d">Windshield, dash, taped to the door. On a street, at a meet, in a driveway.</div></div>
-    <div class="how"><div class="n">02</div><div class="t">They add a close-up of the sign</div><div class="d">The judge checks it's a real sale sign, reads the asking price, and that photo becomes the listing — the seller's number, as the seller wrote it. We never type it into a database.</div></div>
-    <div class="how"><div class="n">03</div><div class="t">It's filed here</div><div class="d">Dated, roughly located, public. Selling this car and want it gone or updated? Email <a href="mailto:privacy@curatorsofspeed.com" style="color:var(--ember)">privacy@curatorsofspeed.com</a> and we'll act the same day.</div></div>
+  <div class="found">
+    <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><circle cx="12" cy="13.5" r="4"/><path d="M8.5 7l1.5-2.8h4L15.5 7"/></svg></div>
+    <div><div class="t">Found one?</div><div class="d">Open Tyre Hunt and put it on The Lot.</div></div>
+    <a class="cta" href="https://hunt.tyrehunt.app">Open Tyre Hunt — Free</a>
   </div>
 </main>
 
-<div class="joinband" id="joinband"><div class="wrap"><div class="inner">
-  <div class="big">Found one wearing a sign?</div>
-  <p>Photograph it in the app. If it counts, it's on the lot in seconds — and it counts toward Lot Scout.</p>
-  <a class="cta" href="https://hunt.tyrehunt.app">Open Tyre Hunt — free</a>
-</div></div></div>
-
-<footer>A <a href="index.html"><b>Tyre Hunt</b></a> board · every listing was photographed on the street and verified · sellers: <a href="mailto:privacy@curatorsofspeed.com" style="color:var(--ember)">ask us to remove or update a listing</a></footer>
+<footer>A <a href="index.html"><b>Tyre Hunt</b></a> board · every listing was photographed on the street and verified · the seller's own sign is the contact, never a database<br>Selling one of these? <a class="em" href="mailto:privacy@curatorsofspeed.com">Ask us to remove or update a listing</a></footer>
 
 <script>
 (function(){
@@ -177,22 +202,33 @@ function paint(){
     if (filter === "priced") return r.asking_price != null;
     return r.rarity === filter;
   });
-  var st = document.getElementById("stats");
   var priced = rows.filter(function(r){ return r.asking_price != null; });
   var models = {}; rows.forEach(function(r){ if (r.cx_key) models[r.cx_key] = 1; });
-  st.style.display = "";
-  st.innerHTML =
-    '<div class="stat"><div class="v">' + rows.length + '</div><div class="l">On the lot</div></div>' +
-    '<div class="stat"><div class="v">' + Object.keys(models).length + '</div><div class="l">Models</div></div>' +
-    '<div class="stat"><div class="v">' + priced.length + '</div><div class="l">Priced</div></div>';
-  document.getElementById("filters").style.display = rows.length ? "" : "none";
+  document.getElementById("sCars").textContent = rows.length;
+  document.getElementById("sModels").textContent = Object.keys(models).length;
+  document.getElementById("sPriced").textContent = priced.length;
+
+  // hero follows the newest listing once there is one
+  var top = rows[0];
+  if (top && top.img_path){
+    var hi = document.getElementById("heroImg");
+    hi.src = img(top.img_path); hi.alt = top.name || "Latest car on The Lot";
+    document.getElementById("heroTxt").textContent = "Latest on the lot · " + (top.name || "") + " · " + ago(top.created_at);
+    document.getElementById("heroTag").style.display = "";
+    var hp = price(top.asking_price, top.asking_currency);
+    var hpEl = document.getElementById("heroPrice");
+    hpEl.textContent = hp; hpEl.style.display = hp ? "" : "none";
+  }
+
+  document.getElementById("quiet").style.display = rows.length ? "none" : "";
+  document.getElementById("live").style.display = rows.length ? "" : "none";
   document.getElementById("grid").innerHTML = list.map(function(r){
     var p = price(r.asking_price, r.asking_currency);
     var where = (r.la != null && r.lo != null)
       ? '<div class="cwhere">near <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=' + Number(r.la).toFixed(2) + ',' + Number(r.lo).toFixed(2) + '">' + Number(r.la).toFixed(2) + ', ' + Number(r.lo).toFixed(2) + '</a> · ~1 km</div>'
       : '<div class="cwhere">location not shared</div>';
     return '<div class="card">' +
-      (p ? '<span class="price">' + esc(p) + '</span>' : '') +
+      (p ? '<span class="cprice">' + esc(p) + '</span>' : '') +
       '<div class="cimg" style="background-image:url(\'' + img(esc(r.img_path)) + '\')"></div>' +
       '<div class="cbody"><div class="cname">' + esc(r.name || "A find") +
       '<span class="chip ' + esc(r.rarity || "everyday") + '">' + esc(r.rarity || "everyday") + '</span></div>' +
@@ -201,9 +237,6 @@ function paint(){
       (r.sign_path ? '<a class="signlink" target="_blank" rel="noopener" href="' + img(esc(r.sign_path)) + '"><span class="simg" style="background-image:url(\'' + img(esc(r.sign_path)) + '\')"></span><span>Read the sign ↗</span></a>' : "") +
       "</div></div>";
   }).join("");
-  document.getElementById("loading").style.display = "none";
-  document.getElementById("live").style.display = rows.length ? "" : "none";
-  document.getElementById("empty").style.display = rows.length ? "none" : "";
 }
 
 function load(){
@@ -214,7 +247,10 @@ function load(){
   })
   .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
   .then(function(d){ rows = d || []; paint(); })
-  .catch(function(){ document.getElementById("loading").textContent = "The lot didn't load — refresh in a moment."; });
+  .catch(function(){
+    document.getElementById("quietT").textContent = "The lot didn't load";
+    document.getElementById("quietD").textContent = "Refresh in a moment.";
+  });
 }
 
 document.getElementById("filters").addEventListener("click", function(e){
