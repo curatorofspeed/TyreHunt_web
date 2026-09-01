@@ -232,7 +232,15 @@ if (key){
     if (lot && lot.seen_for_sale > 0){
       var ll = $("lotline"); ll.style.display = "";
       var latest = lot.latest ? price(lot.latest.asking_price, lot.latest.asking_currency) : "";
-      ll.innerHTML = '<span class="chip sale">Seen for sale × ' + lot.seen_for_sale + '</span>' + (latest ? '<span>Last ask ' + esc(latest) + ' · ' + when(lot.latest.created_at) + '</span>' : '') + '<a href="lot.html">See The Lot →</a>';
+      // what a classifieds site can never tell you: how many actually moved,
+      // and how long one of these sits on a kerb before the sign comes down
+      var bits = ['<span class="chip sale">Seen for sale × ' + lot.seen_for_sale + '</span>'];
+      if (lot.live > 0)  bits.push('<span><b style="color:var(--ok)">' + lot.live + '</b> on the lot now</span>');
+      if (lot.gone > 0)  bits.push('<span><b style="color:var(--ink)">' + lot.gone + '</b> sold or gone</span>');
+      if (latest)        bits.push('<span>Last ask ' + esc(latest) + ' · ' + when(lot.latest.created_at) + '</span>');
+      if (lot.days_listed != null) bits.push('<span>Typically sits <b style="color:var(--ink)">' + lot.days_listed + ' day' + (Number(lot.days_listed) === 1 ? '' : 's') + '</b></span>');
+      bits.push('<a href="lot.html">See The Lot →</a>');
+      ll.innerHTML = bits.join("");
     }
     $("ctaBig").textContent = "Seen a " + nm + "?";
     $("count").style.display = ""; $("count").textContent = rows.length + " verified sighting" + (rows.length===1?"":"s");
