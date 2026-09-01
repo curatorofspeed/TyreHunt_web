@@ -69,6 +69,10 @@ h2.sec{font:700 12px var(--mono);letter-spacing:.34em;color:var(--ink);text-tran
 .cname{font-weight:800;font-size:14px;line-height:1.25}
 .cmeta{font:600 10.5px var(--mono);color:var(--muted);margin-top:5px;letter-spacing:.04em}
 .chip{display:inline-block;font:800 8.5px var(--mono);letter-spacing:.12em;padding:3px 8px;border-radius:999px;border:1px solid;text-transform:uppercase;margin-left:5px;vertical-align:1px}
+.cstat{display:inline-block;font:800 8.5px var(--mono);letter-spacing:.12em;padding:3px 8px;border-radius:999px;border:1px solid;text-transform:uppercase;margin-top:9px}
+.cstat.fresh{color:var(--ok);border-color:rgba(62,207,142,.45);background:rgba(62,207,142,.07)}
+.cstat.listed{color:var(--muted);border-color:var(--line)}
+.cstat.stale{color:var(--gold);border-color:rgba(255,194,75,.45);background:rgba(255,194,75,.06)}
 .chip.everyday{color:#8B93A1;border-color:rgba(139,147,161,.5)}
 .chip.classic{color:var(--orange);border-color:rgba(255,138,30,.5)}
 .chip.rare{color:var(--blue);border-color:rgba(94,151,255,.5)}
@@ -224,6 +228,7 @@ function paint(){
   document.getElementById("quiet").style.display = rows.length ? "none" : "";
   document.getElementById("live").style.display = rows.length ? "" : "none";
   document.getElementById("grid").innerHTML = list.map(function(r){
+    var st = statusPill(r);
     var p = price(r.asking_price, r.asking_currency);
     var where = (r.la != null && r.lo != null)
       ? '<div class="cwhere">near <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=' + Number(r.la).toFixed(2) + ',' + Number(r.lo).toFixed(2) + '">' + Number(r.la).toFixed(2) + ', ' + Number(r.lo).toFixed(2) + '</a> · ~1 km</div>'
@@ -236,10 +241,23 @@ function paint(){
       '<div class="cmeta">@' + esc(r.handle) + (r.shot_score != null ? " · SHOT " + r.shot_score : "") + " · " + ago(r.created_at) + "</div>" +
       where +
       (r.sign_path ? '<a class="signlink" target="_blank" rel="noopener" href="' + img(esc(r.sign_path)) + '"><span class="simg" style="background-image:url(\'' + img(esc(r.sign_path)) + '\')"></span><span>Read the sign ↗</span></a>' : "") +
+      st +
       "</div></div>";
   }).join("");
 }
 
+/* A classifieds board goes stale silently; this one cannot, because hunters
+   walk past. A re-capture with the sign still up confirms the car is there,
+   one with the sign gone retires the listing server-side. */
+function statusPill(r){
+  var confirms = r.confirms || 0;
+  var since = new Date(r.confirmed_at || r.created_at);
+  var days = Math.floor((Date.now() - since) / 864e5);
+  if (confirms > 0 && days <= 30) return '<div><span class="cstat fresh">Still there · confirmed ' + (days < 1 ? "today" : days + "d ago") + '</span></div>';
+  if (days <= 7)  return '<div><span class="cstat fresh">Fresh listing</span></div>';
+  if (days <= 30) return '<div><span class="cstat listed">Listed ' + days + ' days ago</span></div>';
+  return '<div><span class="cstat stale">May be gone</span></div>';
+}
 function load(){
   return fetch(BASE + "/rest/v1/rpc/public_lot", {
     method: "POST",
