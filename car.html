@@ -27,9 +27,15 @@
   --mono:'JetBrains Mono',ui-monospace,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+
+/* ---- quality floor: keyboard ring (mouse users see no change), Windows High
+   Contrast keeps the ring, brand selection, motion respects the OS ---- */
+:focus-visible{outline:2px solid var(--miami,#18B7DC);outline-offset:3px;border-radius:4px}
+@media (forced-colors: active){ :focus-visible{outline:3px solid CanvasText} }
+::selection{background:#18B7DC;color:#04222A}
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important} }
 body{background:var(--carbon);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
 a{color:inherit;text-decoration:none}
-:focus-visible{outline:2px solid var(--miami);outline-offset:3px;border-radius:4px}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;gap:9px}
 .brand img{width:26px;height:26px}
@@ -110,8 +116,8 @@ footer a{text-decoration:underline}
       <div class="stat"><b id="sSight">–</b><span>Sightings</span></div>
       <div class="stat"><b id="sHunt">–</b><span>Hunters</span></div>
     </div>
-    <div class="board" id="rows"></div>
-    <div class="state" id="bEmpty" style="display:none"><b>Nobody's famous yet</b>Name a car in your Stable and hunters start building its page.</div>
+    <div class="board" id="rows" aria-label="Most Wanted, ranked by sightings"></div>
+    <div class="state" id="bEmpty" role="status" style="display:none"><b>Nobody's famous yet</b>Name a car in your Stable and hunters start building its page.</div>
     <div class="how"><b>How a car gets on this board.</b> Move a car you own to your Stable in the app, name it, and post a bounty saying where it'll be out. Every hunter who photographs it near home lands a sighting on the car's page — with their photo and their name on it.
       <div class="btns"><a class="btn hot" href="https://hunt.tyrehunt.app">Name your car</a><a class="btn" href="registry.html">The Registry</a></div>
     </div>
@@ -136,14 +142,14 @@ footer a{text-decoration:underline}
     <div class="paps" id="paps"></div>
     <div class="sec">Sightings</div>
     <div class="grid" id="grid"></div>
-    <div class="state" id="cEmpty" style="display:none"><b>No sightings yet</b>The owner has named it. Now someone has to find it.</div>
+    <div class="state" id="cEmpty" role="status" style="display:none"><b>No sightings yet</b>The owner has named it. Now someone has to find it.</div>
     <div class="how"><b>Seen this car?</b> Photograph it in the app. The judge verifies the shot, the owner confirms it's theirs, and your name goes on this page.
       <div class="btns"><a class="btn hot" href="https://hunt.tyrehunt.app">Hunt it</a><a class="btn" id="iosBtn" href="https://apps.apple.com/app/id6803203973" style="display:none">App Store</a></div>
     </div>
   </section>
 
-  <div class="state" id="loading"><b>Pulling the record</b>One moment.</div>
-  <div class="state" id="missing" style="display:none"><b>No car here</b>This car isn't public, or the link is off.<div class="btns" style="justify-content:center"><a class="btn hot" href="car.html">Most Wanted</a></div></div>
+  <div class="state" id="loading" role="status" aria-live="polite"><b>Pulling the record</b>One moment.</div>
+  <div class="state" id="missing" role="status" aria-live="polite" style="display:none"><b>No car here</b>This car isn't public, or the link is off.<div class="btns" style="justify-content:center"><a class="btn hot" href="car.html">Most Wanted</a></div></div>
 </main>
 
 <footer>Every sighting on <a href="https://www.tyrehunt.app">Tyre Hunt</a> is photographed in the wild and verified on the spot.</footer>
