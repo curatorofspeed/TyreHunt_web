@@ -96,6 +96,7 @@ footer a{text-decoration:underline}
       <div class="btns">
         <a class="btn hot" href="https://hunt.tyrehunt.app">Start your Registry — free</a>
         <a class="btn" id="iosBtn" href="https://apps.apple.com/app/id6803203973" style="display:none">Get it on the App Store</a>
+        <a class="btn" id="playBtn" href="https://play.google.com/store/apps/details?id=app.tyrehunt.hunt" style="display:none">Get it on Google Play</a>
         <a class="btn" id="openApp" href="https://hunt.tyrehunt.app">Open in the app</a>
       </div>
     </div>
@@ -145,6 +146,7 @@ fetch(BASE + "/rest/v1/rpc/public_capture", {
     "Spotted by <b>@" + esc(c.handle || "a hunter") + "</b> · filed " + when +
     (c.shot_score != null ? "<br>Shot graded <b>" + c.shot_score + " / 100</b> by the judge" : "");
   document.getElementById("openApp").href = "https://hunt.tyrehunt.app/?c=" + id;
+  if (/Android/.test(navigator.userAgent)) document.getElementById("playBtn").style.display = "";
   if (/iPad|iPhone|iPod/.test(navigator.userAgent)) document.getElementById("iosBtn").style.display = "";
   show("card");
 })

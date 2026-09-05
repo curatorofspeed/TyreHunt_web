@@ -144,7 +144,8 @@ footer a{text-decoration:underline}
     <div class="grid" id="grid"></div>
     <div class="state" id="cEmpty" role="status" style="display:none"><b>No sightings yet</b>The owner has named it. Now someone has to find it.</div>
     <div class="how"><b>Seen this car?</b> Photograph it in the app. The judge verifies the shot, the owner confirms it's theirs, and your name goes on this page.
-      <div class="btns"><a class="btn hot" href="https://hunt.tyrehunt.app">Hunt it</a><a class="btn" id="iosBtn" href="https://apps.apple.com/app/id6803203973" style="display:none">App Store</a></div>
+      <div class="btns"><a class="btn hot" href="https://hunt.tyrehunt.app">Hunt it</a><a class="btn" id="iosBtn" href="https://apps.apple.com/app/id6803203973" style="display:none">App Store</a>
+        <a class="btn" id="playBtn" href="https://play.google.com/store/apps/details?id=app.tyrehunt.hunt" style="display:none">Google Play</a></div>
     </div>
   </section>
 
@@ -216,7 +217,8 @@ if (!id){
         '<div class="cb"><div class="ch">@' + esc(s.handle) + '</div>' +
         '<div class="cd">' + when(s.at) + (s.shot_score != null ? " · SHOT " + s.shot_score : "") + (s.la != null ? " · near " + s.la + ", " + s.lo : "") + '</div></div></a>';
     }).join("");
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) $("iosBtn").style.display = "";
+    if (/Android/.test(navigator.userAgent)) document.getElementById("playBtn").style.display = "";
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent)) $("iosBtn").style.display = "";
     show("car");
   }).catch(function(){ show("missing"); });
 }
