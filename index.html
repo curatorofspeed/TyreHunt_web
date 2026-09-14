@@ -316,6 +316,61 @@ h2{font-size:clamp(26px,3.4vw,40px)}
 .closing{padding:clamp(36px,5vw,64px) 0}
 footer{padding:28px 0 40px}
 @media(max-width:760px){.steps{grid-template-columns:1fr}}
+
+/* ---- In your pocket: the app, drawn in the app's own theme (tokens from the
+   live app: carbon, ember cyan, rarity chips, the real tab bar). Sizes inside
+   the phone are container units so the screen scales as one object. ---- */
+.pocket{overflow:hidden}
+.pocketgrid{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(28px,5vw,72px);align-items:center}
+.pocket .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--ember);text-transform:uppercase;margin-bottom:14px}
+.pocket .storerow{margin-top:28px}
+.pocket .weblink{margin-top:18px}
+.pocket .tagline{font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;text-align:right;margin-top:18px}
+.phonewrap{position:relative;display:flex;justify-content:center;padding:18px 0}
+.phonewrap::before{content:"";position:absolute;inset:6% 4%;background:radial-gradient(closest-side,rgba(24,183,220,.22),transparent);z-index:0;pointer-events:none}
+.phone{position:relative;z-index:1;width:min(340px,80vw);aspect-ratio:9/19;background:#050608;border-radius:48px;padding:10px;box-shadow:0 0 0 1.5px #2A2E36,0 44px 90px -34px rgba(0,0,0,.9);transform:rotate(-6deg)}
+.pscreen{container-type:inline-size;position:relative;height:100%;background:#0A0B0E;border-radius:39px;overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.06)}
+.psb{display:flex;justify-content:space-between;align-items:center;padding:5cqw 8cqw 1cqw;font:700 4cqw var(--disp);color:var(--ink)}
+.psb .bat{width:7.5cqw;height:3.6cqw;border:1.5px solid var(--ink);border-radius:1.2cqw;position:relative}
+.psb .bat::after{content:"";position:absolute;inset:1px;right:30%;background:var(--ink);border-radius:.6cqw}
+.pbrand{display:flex;justify-content:space-between;align-items:center;padding:3cqw 6cqw 0}
+.pbrand .w{font:700 7cqw 'Racing Sans One',var(--disp);text-transform:uppercase;letter-spacing:.01em;color:var(--ink)}
+.pbrand .av{width:10cqw;height:10cqw;border-radius:50%;border:2px solid var(--ember);display:grid;place-items:center;font:800 4.2cqw var(--disp);color:var(--ember)}
+.phead{padding:5cqw 6cqw 0}
+.phead .e{font:700 2.7cqw var(--mono);letter-spacing:.3em;color:var(--ember);text-transform:uppercase}
+.phead .h{font:900 9cqw var(--disp);letter-spacing:-.02em;line-height:1;margin-top:1.6cqw;color:var(--ink)}
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);margin:5cqw 6cqw 0;border:1px solid rgba(255,255,255,.08);border-radius:3.5cqw;overflow:hidden}
+.pstats div{padding:3cqw 2cqw;text-align:center;border-right:1px solid rgba(255,255,255,.08)}
+.pstats div:last-child{border-right:0}
+.pstats b{display:block;font:900 7cqw var(--disp);color:var(--ink);line-height:1}
+.pstats b.rare{color:#5E97FF}
+.pstats span{display:block;font:700 2.3cqw var(--mono);letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-top:1.4cqw}
+.phero{margin:4.5cqw 6cqw 0;background:#13151B;border:1px solid rgba(255,255,255,.08);border-radius:4cqw;overflow:hidden}
+.phero .ph{position:relative;aspect-ratio:16/9}
+.phero .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.pchip{position:absolute;left:3cqw;top:3cqw;font:800 2.5cqw var(--disp);letter-spacing:.14em;text-transform:uppercase;padding:1cqw 2.4cqw;border-radius:999px;border:1px solid;background:rgba(10,11,14,.72)}
+.pchip.classic{color:#FF8A1E;border-color:rgba(255,138,30,.55)}
+.pchip.rare{color:#5E97FF;border-color:rgba(94,151,255,.55)}
+.phero .in{display:flex;justify-content:space-between;align-items:flex-end;padding:3cqw 3.5cqw 3.4cqw}
+.phero .n{font:800 4.6cqw var(--disp);color:var(--ink);line-height:1.2}
+.phero .m{font:600 2.6cqw var(--mono);letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:1cqw}
+.phero .go{font:700 5cqw var(--disp);color:var(--ember)}
+.pthumbs{display:grid;grid-template-columns:1fr 1fr;gap:3cqw;margin:3cqw 6cqw 0;min-height:0}
+.pthumbs div{position:relative;aspect-ratio:4/3;border-radius:3cqw;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.pthumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.ptabs{margin-top:auto;display:flex;align-items:flex-end;background:rgba(10,11,14,.97);border-top:1px solid rgba(255,255,255,.08);padding:2cqw 1cqw 5.5cqw}
+.ptab{flex:1;display:flex;flex-direction:column;align-items:center;gap:1.2cqw;color:var(--muted)}
+.ptab svg{width:6.6cqw;height:6.6cqw}
+.ptab .tl{font:700 2.3cqw var(--disp);letter-spacing:.14em}
+.ptab.on{color:var(--ember)}
+.ptab.cam{margin-top:-7cqw}
+.ptab.cam .ring{width:15.5cqw;height:15.5cqw;border-radius:50%;background:#0A0B0E;border:2.5px solid var(--ember);display:grid;place-items:center;color:var(--ember);box-shadow:0 0 5cqw rgba(24,183,220,.4)}
+.ptab.cam .ring svg{width:7cqw;height:7cqw}
+@media(max-width:880px){
+  .pocketgrid{grid-template-columns:1fr}
+  .phone{transform:rotate(-3deg);width:min(310px,78vw)}
+  .pocket .tagline{text-align:center}
+}
 </style>
   <!-- Tells search engines what this is and what it costs. Deliberately no
        aggregateRating — inventing review counts is the fastest way to get
@@ -415,7 +470,7 @@ footer{padding:28px 0 40px}
         </a>
         <a class="find" href="registry.html">
           <img src="car-911targa.jpg" width="760" height="410" loading="lazy" decoding="async" alt="Porsche 911 Targa">
-          <div class="fc"><span class="no">No. 041</span> · Porsche 911 Targa · <span class="rr rare">Rare</span></div>
+          <div class="fc"><span class="no">No. 041</span> · Porsche 911 Targa · <span class="rr classic">Classic</span></div>
         </a>
         <a class="find" href="registry.html">
           <img src="car-cadillac.jpg" width="760" height="410" loading="lazy" decoding="async" alt="Cadillac Fleetwood Brougham">
@@ -451,6 +506,62 @@ footer{padding:28px 0 40px}
 
 
 
+
+<section class="pocket" id="app">
+  <div class="wrap pocketgrid">
+    <div>
+      <div class="kicker">Hunt. In your pocket.</div>
+      <h2>Your Registry rides along.</h2>
+      <p class="subhead">The app opens on the camera, so the shot is one tap away. Everything you file lands in your garage — numbered, dated, graded, and yours to share.</p>
+      <div class="storerow">
+        <div class="storelabel">Free on iPhone and Android</div>
+        <div class="storebtns">
+          <a class="storebtn live" href="https://apps.apple.com/app/id6803203973">
+            <svg class="gl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.6"/><path d="M10.5 18.4h3"/></svg>
+            <span class="tx"><span class="t1">Download on</span><span class="t2">App Store</span></span>
+          </a>
+          <a class="storebtn live" href="https://play.google.com/store/apps/details?id=app.tyrehunt.hunt">
+            <svg class="gl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 3.5v17a1 1 0 0 0 1.5.87l14-8.5a1 1 0 0 0 0-1.74l-14-8.5A1 1 0 0 0 5 3.5Z"/></svg>
+            <span class="tx"><span class="t1">Get it on</span><span class="t2">Google Play</span></span>
+          </a>
+        </div>
+      </div>
+      <a class="linkcta weblink" href="https://hunt.tyrehunt.app">Or hunt in your browser <span aria-hidden="true">→</span></a>
+    </div>
+    <div>
+      <div class="phonewrap">
+        <div class="phone" role="img" aria-label="The Tyre Hunt app open on Your garage: three sightings, three models, one rare find, led by a Porsche 911 Targa filed as No. 001.">
+          <div class="pscreen" aria-hidden="true">
+            <div class="psb"><span>9:41</span><span class="bat"></span></div>
+            <div class="pbrand"><span class="w">Tyre Hunt</span><span class="av">D</span></div>
+            <div class="phead"><div class="e">The good stuff you found</div><div class="h">Your garage</div></div>
+            <div class="pstats">
+              <div><b>03</b><span>Sightings</span></div>
+              <div><b>03</b><span>Models</span></div>
+              <div><b class="rare">01</b><span>Rare find</span></div>
+            </div>
+            <div class="phero">
+              <div class="ph"><img src="car-911targa.jpg" width="760" height="410" alt="" loading="lazy" decoding="async"><span class="pchip classic">Classic</span></div>
+              <div class="in"><div><div class="n">Porsche 911 Targa</div><div class="m">No. 001 · Your first classic</div></div><span class="go">↗</span></div>
+            </div>
+            <div class="pthumbs">
+              <div><img src="car-hero.jpg" width="760" height="410" alt="" loading="lazy" decoding="async"><span class="pchip rare">Rare</span></div>
+              <div><img src="car-cadillac.jpg" width="760" height="410" alt="" loading="lazy" decoding="async"></div>
+            </div>
+            <div class="ptabs">
+              <div class="ptab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 10l9-6 9 6v10a1 1 0 0 1-1 1h-3v-7H7v7H4a1 1 0 0 1-1-1V10z"/><path d="M7 17h10M7 19.5h10"/></svg><span class="tl">GARAGE</span></div>
+              <div class="ptab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s-6.5-5.4-6.5-10A6.5 6.5 0 0 1 12 4.5 6.5 6.5 0 0 1 18.5 11c0 4.6-6.5 10-6.5 10z"/><circle cx="12" cy="11" r="2.3"/></svg><span class="tl">MAP</span></div>
+              <div class="ptab cam"><span class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4"/><path d="M12 3v5.2M21 12h-5.2M12 21v-5.2M3 12h5.2" opacity=".55"/></svg></span></div>
+              <div class="ptab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8.5l1.3 1.3 2.4-2.6M8.5 14l1.3 1.3 2.4-2.6M15 9h1.5M15 14.5h1.5"/></svg><span class="tl">HUNTS</span></div>
+              <div class="ptab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3.5" width="16" height="10" rx="2"/><path d="M8 9.5l2.2-2.6 2.6 2.6 2-1.6 3.2 1.6" opacity=".7"/><path d="M5.5 17h13M7 20.5h10"/></svg><span class="tl">FEED</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tagline">Tap in. Head out.</div>
+    </div>
+  </div>
+</section>
 
 <section id="board" hidden>
   <div class="wrap">
