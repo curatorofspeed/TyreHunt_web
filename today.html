@@ -109,6 +109,13 @@ footer a{text-decoration:underline}
 .bike{display:block;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
 .bike .bn2{font:800 18px var(--disp);color:var(--ink);margin-bottom:4px}
 .bike p{color:var(--muted);font-size:14px;line-height:1.55;margin-top:6px;text-wrap:pretty}
+.shot{margin:22px 0 0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel)}
+.shot a{display:block}
+.shot .sph{aspect-ratio:16/10;background:#000 center/cover no-repeat}
+.shot figcaption{padding:11px 16px;font:600 12px var(--mono);letter-spacing:.06em;color:var(--muted)}
+.shot figcaption b{color:var(--ink)}
+.bike .bph{aspect-ratio:16/9;border-radius:10px;background:#000 center/cover no-repeat;margin-bottom:12px}
+.board{display:block;margin-top:8px;font:700 12px var(--mono);letter-spacing:.04em;color:var(--miami-hi)}
 .arch{list-style:none;display:flex;flex-direction:column;gap:8px}
 .arch a{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 .arch a:hover{border-color:rgba(24,183,220,.5)}
@@ -133,6 +140,11 @@ footer a{text-decoration:underline}
     <p class="hl" id="dHead" hidden></p>
     <div class="meta"><span class="chip" id="dTier"></span><span class="dt" id="dDate"></span></div>
 
+    <figure class="shot" id="shot" hidden>
+      <a id="shotLink"><div class="sph" id="shotImg" role="img"></div></a>
+      <figcaption id="shotCap"></figcaption>
+    </figure>
+
     <div class="cotd">
       <div id="bMatters"><div class="sec">Why it matters</div><p id="dMatters"></p></div>
       <div id="bNumbers"><div class="sec">The numbers</div><p class="num" id="dNumbers"></p></div>
@@ -140,6 +152,7 @@ footer a{text-decoration:underline}
     </div>
 
     <div class="how" id="hunt"><b>Spot it today.</b> Photograph one in the wild before midnight and it's stamped into your Registry, and onto the day's board for every hunter to see.
+      <span class="board" id="board" hidden></span>
       <div class="btns"><a class="btn hot" href="https://hunt.tyrehunt.app">Start hunting</a><a class="btn" href="registry.html">The Registry</a></div>
     </div>
 
@@ -201,6 +214,36 @@ rpc("car_of_the_day", { d: day }).then(function(r){
       + (b.matters ? '<p>' + esc(b.matters) + '</p>' : '');
   }
   show("day");
+  // The photo is always a hunter's own: the day's most-liked shot of this car.
+  var tz = day === today ? new Date().getTimezoneOffset() : fromKey(day).getTimezoneOffset();
+  rpc("cotd_shots", { d: day, tz_min: tz, lim: 12 }).then(function(shots){
+    shots = shots || [];
+    var carShots = shots.filter(function(x){ return x.lane === "car"; });
+    var bikeShots = shots.filter(function(x){ return x.lane === "moto"; });
+    var top = carShots[0];
+    if (top){
+      $("shotImg").style.backgroundImage = "url('" + BASE + "/storage/v1/object/public/captures/" + encodeURI(top.img_path) + "')";
+      $("shotImg").setAttribute("aria-label", c.name + (top.handle ? ", photographed by @" + top.handle : ""));
+      $("shotLink").href = "spot.html?c=" + encodeURIComponent(top.id);
+      $("shotCap").innerHTML = (top.handle ? "Photo <b>@" + esc(top.handle) + "</b>" : "Hunter photo")
+        + (top.likes ? " · " + top.likes + " like" + (top.likes === 1 ? "" : "s") : "")
+        + (carShots.length > 1 ? " · leading " + carShots.length + " shots" : "");
+      $("shot").hidden = false;
+    }
+    if (day === today){
+      $("board").textContent = carShots.length
+        ? carShots.length + (carShots.length >= 12 ? "+" : "") + " hunter" + (carShots.length === 1 ? " has" : "s have") + " filed one today."
+        : "Nobody has landed one yet today. First shot takes the board.";
+      $("board").hidden = false;
+    }
+    var bt = bikeShots[0];
+    if (bt && $("bike").firstChild){
+      var ph = document.createElement("a");
+      ph.href = "spot.html?c=" + encodeURIComponent(bt.id);
+      ph.innerHTML = '<div class="bph" role="img" aria-label="' + esc(b.name + (bt.handle ? ", photographed by @" + bt.handle : "")) + '" style="background-image:url(\'' + BASE + "/storage/v1/object/public/captures/" + encodeURI(bt.img_path) + '\')"></div>';
+      $("bike").insertBefore(ph, $("bike").firstChild);
+    }
+  }).catch(function(){});
   // the week so far: today and the six days before it
   var keys = []; var base = fromKey(today);
   for (var i = 0; i < 7; i++){ var dd = new Date(base); dd.setDate(base.getDate() - i); keys.push(dayKey(dd)); }
