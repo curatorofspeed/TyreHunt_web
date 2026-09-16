@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="apple-itunes-app" content="app-id=6803203973">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lost Cars — Tyre Hunt</title>
+<meta name="description" content="Seven cars the record says were built and nobody can find: the Bugatti Atlantic 'La Voiture Noire', James Dean's 550 Spyder, a Ferrari 375 MM and more.">
+<meta name="theme-color" content="#0A0B0E">
+<link rel="canonical" href="https://www.tyrehunt.app/lost.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Tyre Hunt">
+<meta property="og:title" content="The Lost Cars — Tyre Hunt">
+<meta property="og:description" content="Seven cars the record says were built and nobody can find.">
+<meta property="og:image" content="https://www.tyrehunt.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Racing+Sans+One&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --carbon:#0A0B0E; --panel:#12141A; --line:rgba(255,255,255,.10);
+  --ink:#F2F3F6; --muted:#98A0AC; --miami:#18B7DC; --miami-hi:#5BD8F0;
+  --judge:#6FA5FF; --gold:#FFC24B; --ok:#3ECF8E;
+  --disp:'Archivo',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* ---- quality floor: keyboard ring (mouse users see no change), Windows High
+   Contrast keeps the ring, brand selection, motion respects the OS ---- */
+:focus-visible{outline:2px solid var(--miami,#18B7DC);outline-offset:3px;border-radius:4px}
+@media (forced-colors: active){ :focus-visible{outline:3px solid CanvasText} }
+::selection{background:#18B7DC;color:#04222A}
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important} }
+body{background:var(--carbon);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:9px}
+.brand img{width:26px;height:26px}
+.wd{font:700 18px 'Racing Sans One',var(--disp);text-transform:uppercase}
+.cta{font:800 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;background:linear-gradient(180deg,var(--miami-hi),var(--miami));color:#04222A;padding:11px 16px;border-radius:999px}
+main{flex:1;width:100%;max-width:980px;margin:0 auto;padding:26px 16px 50px}
+.eyebrow{font:800 9.5px var(--mono);letter-spacing:.36em;color:var(--miami);text-transform:uppercase}
+h1{font-size:clamp(30px,6vw,54px);font-weight:900;letter-spacing:-.02em;line-height:.98;text-transform:uppercase;margin-top:8px}
+.lede{color:var(--muted);font-size:15px;line-height:1.55;max-width:560px;margin-top:12px}
+.lede b{color:var(--ink)}
+.statbar{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:22px 0}
+.stat{padding:16px 10px;text-align:center;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat b{display:block;font:900 30px var(--disp);color:var(--miami)}
+.stat span{font:700 9px var(--mono);letter-spacing:.3em;color:var(--muted);text-transform:uppercase}
+.chip{display:inline-block;font:800 8.5px var(--mono);letter-spacing:.14em;padding:3px 8px;border-radius:999px;border:1px solid;text-transform:uppercase;vertical-align:1px}
+.chip.everyday{color:#8B93A1;border-color:rgba(139,147,161,.5)}
+.chip.classic{color:#FF8A1E;border-color:rgba(255,138,30,.5)}
+.chip.rare{color:#5E97FF;border-color:rgba(94,151,255,.5)}
+.chip.legendary{color:var(--gold);border-color:rgba(255,194,75,.55);background:rgba(255,194,75,.08)}
+/* board */
+.board{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.brow{display:grid;grid-template-columns:44px 96px 1fr auto;gap:14px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 14px 10px 10px}
+.brow:hover{border-color:rgba(24,183,220,.5)}
+.rk{font:900 22px var(--disp);color:var(--muted);text-align:center}
+.brow:nth-child(1) .rk{color:var(--gold)} .brow:nth-child(2) .rk{color:#C9CDD6} .brow:nth-child(3) .rk{color:#C98A5A}
+.bimg{width:96px;height:66px;border-radius:9px;background:#0E1013 center/cover no-repeat}
+.bn{font:800 16px var(--disp);color:var(--ink);line-height:1.15}
+.bm{font:600 10.5px var(--mono);letter-spacing:.06em;color:var(--muted);margin-top:4px}
+.bs{text-align:right}
+.bs b{display:block;font:900 22px var(--disp);color:var(--ink)}
+.bs span{font:700 8.5px var(--mono);letter-spacing:.24em;color:var(--muted);text-transform:uppercase}
+/* car page */
+.hero{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel);margin-top:18px}
+.hph{aspect-ratio:16/10;background:#000 center/cover no-repeat}
+.hin{padding:18px 20px 20px}
+.hn{font-size:clamp(26px,5vw,40px);font-weight:900;letter-spacing:-.02em;line-height:1}
+.hm{font:600 12px var(--mono);letter-spacing:.06em;color:var(--muted);margin-top:8px;line-height:1.7}
+.hm b{color:var(--ink)}
+.sec{font:800 11px var(--mono);letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin:28px 0 12px;display:flex;align-items:center;gap:12px}
+.sec:after{content:"";flex:1;height:1px;background:var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.cimg{aspect-ratio:4/3;background:#0E1013 center/cover no-repeat}
+.cb{padding:10px 12px 12px}
+.ch{font:700 12px var(--mono);color:var(--ink)}
+.cd{font:600 10px var(--mono);letter-spacing:.06em;color:var(--muted);margin-top:3px}
+.paps{display:flex;flex-wrap:wrap;gap:8px}
+.pap{font:700 11px var(--mono);color:var(--ink);padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}
+.pap.first{color:var(--gold);border-color:rgba(255,194,75,.5)}
+.state{text-align:center;padding:60px 24px;border:1px dashed var(--line);border-radius:20px;color:var(--muted);font-size:13.5px;line-height:1.6;margin-top:20px}
+.state b{display:block;color:var(--ink);font-weight:800;letter-spacing:.1em;font-size:13px;text-transform:uppercase;margin-bottom:8px}
+.how{margin-top:34px;padding:18px 20px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--muted);font-size:14px;line-height:1.6}
+.how b{color:var(--ink)}
+.btns{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;letter-spacing:.08em;padding:13px 18px;border-radius:999px;border:1px solid var(--line);min-height:44px;text-transform:uppercase}
+.btn.hot{background:linear-gradient(180deg,var(--miami-hi),var(--miami));color:#04222A;border-color:transparent}
+footer{text-align:center;padding:0 16px 30px;font-size:11.5px;color:var(--muted)}
+footer a{text-decoration:underline}
+@media (max-width:560px){ .brow{grid-template-columns:32px 80px 1fr auto;gap:10px} .bimg{width:80px;height:56px} .bn{font-size:14px} }
+
+/* ---- Lost cars ---- */
+.lost{list-style:none;display:flex;flex-direction:column;gap:14px;margin-top:26px}
+.lcar{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:16px;padding:18px 20px}
+.lcar h2{font:800 clamp(19px,3vw,23px) var(--disp);letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
+.lcar .ly{font:700 11px var(--mono);letter-spacing:.08em;color:var(--gold);margin-top:5px;text-transform:uppercase}
+.lcar p{font-size:15.5px;line-height:1.62;color:var(--ink);margin-top:10px;max-width:700px;text-wrap:pretty}
+.lcar .ll{font:600 12px var(--mono);letter-spacing:.04em;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="https://www.tyrehunt.app"><img src="icon-192.png" alt=""><span class="wd">Tyre Hunt</span></a>
+  <a class="cta" href="https://hunt.tyrehunt.app">Start hunting</a>
+</header>
+
+<main>
+  <div class="eyebrow">The Lost Cars</div>
+  <h1>Built, then lost</h1>
+  <p class="lede">Every car here is in the record: built, sold, photographed, raced. Then the trail stops. Some were scrapped, some were broken for parts, and some may be sitting under a tarp right now. Most gone is not all gone.</p>
+
+  <ol class="lost" aria-label="The lost cars">
+    <li class="lcar" id="atlantic">
+      <h2>Bugatti Type 57 SC Atlantic</h2>
+      <div class="ly">1936 · one of four · chassis 57453 · “La Voiture Noire”</div>
+      <p>Jean Bugatti&#x27;s personal Atlantic and the most valuable missing car on earth. Three of the four survive as concours royalty; this one has no confirmed sighting since the late 1930s, when it was reportedly loaded onto a train out of Alsace ahead of the German advance. Bugatti&#x27;s own history says the trail ends there.</p>
+      <div class="ll">Last trace: en route to Bordeaux, France · c. 1938–41</div>
+    </li>
+    <li class="lcar" id="aerolithe">
+      <h2>Bugatti Aérolithe</h2>
+      <div class="ly">1935 · one built · the Elektron show car</div>
+      <p>The magnesium-alloy prototype that gave the Atlantic its shape and its riveted spine. It vanished around 1936 — dismantled for parts, lost to the war, or quietly parked somewhere. Only recreations exist today.</p>
+      <div class="ll">Last trace: France · c. 1936</div>
+    </li>
+    <li class="lcar" id="375mm">
+      <h2>Ferrari 375 MM</h2>
+      <div class="ly">1953 · one of 26 · chassis 0378AM · Pinin Farina Berlinetta</div>
+      <p>Every other 375 MM is accounted for. This one was sold to a collector in Genoa in 1953 and simply stopped appearing. The Ferrari world&#x27;s long-standing suspicion is that somebody, somewhere, knows exactly where it is.</p>
+      <div class="ll">Last known: Genoa, Italy · 1953</div>
+    </li>
+    <li class="lcar" id="sj506">
+      <h2>Duesenberg SJ</h2>
+      <div class="ly">1930s · one of ~36 supercharged · chassis 506</div>
+      <p>One of the supercharged Duesenbergs — the fastest American cars of their era — and one of the few whose chassis has never been traced through the registries that track the rest.</p>
+      <div class="ll">Last known: United States</div>
+    </li>
+    <li class="lcar" id="littlebastard">
+      <h2>Porsche 550 Spyder</h2>
+      <div class="ly">1955 · the wreck · James Dean&#x27;s “Little Bastard”</div>
+      <p>After Dean&#x27;s crash the remains toured as a highway-safety exhibit for years. In 1960 the car was crated for shipment to Los Angeles and never arrived. Parts have surfaced over the decades; the hulk never has.</p>
+      <div class="ll">Last trace: in transit, Miami → Los Angeles · 1960</div>
+    </li>
+    <li class="lcar" id="motorama">
+      <h2>GM Motorama dream cars</h2>
+      <div class="ly">1950s · show cars · several unaccounted</div>
+      <p>GM&#x27;s Motorama concepts were mostly ordered destroyed, but a stubborn number escaped the crusher and were last seen in salvage yards decades ago. Cars like the 1953 Buick Wildcat and the fastback Corvette Corvair remain unlocated — the most findable entries on this board.</p>
+      <div class="ll">Last trace: Michigan salvage yards · 1970s</div>
+    </li>
+    <li class="lcar" id="btf-b">
+      <h2>DeLorean DMC-12 ‘B’ car</h2>
+      <div class="ly">1980s · film hero car · Back to the Future</div>
+      <p>One of the DeLoreans used for the film&#x27;s most famous shots. It disappeared after production wrapped and only fragments have ever resurfaced. Most believe the complete car no longer exists — most is not all.</p>
+      <div class="ll">Last trace: studio backlot, California</div>
+    </li>
+  </ol>
+
+  <div class="how"><b>Hunt what's still out there.</b> Everything else in the Registry is on the road somewhere. Photograph it in the wild and it's verified on the spot.
+    <div class="btns"><a class="btn hot" href="https://hunt.tyrehunt.app">Start hunting</a><a class="btn" href="today.html">Car of the Day</a></div>
+  </div>
+</main>
+
+<footer>Every sighting on <a href="https://www.tyrehunt.app">Tyre Hunt</a> is photographed in the wild and verified on the spot.</footer>
+</body>
+</html>
