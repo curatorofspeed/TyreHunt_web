@@ -165,6 +165,7 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
       <button data-v="users">Hunters</button>
       <button data-v="map">Map</button>
       <button data-v="errors">Errors</button>
+      <button data-v="feedback" id="fbTab">Feedback</button>
     </nav>
     <div class="who"><span id="whoami"></span><button class="btn sm" id="refresh">↻ REFRESH</button><button class="btn sm" id="signout">SIGN OUT</button></div>
   </header>
@@ -233,6 +234,16 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
         <button class="btn sm danger" id="errClear">CLEAR ALL</button>
       </div>
       <div id="errList"><div class="empty">Loading…</div></div>
+    </section>
+
+    <!-- FEEDBACK (beta testers, from /beta) -->
+    <section class="view" id="v-feedback">
+      <div class="tools">
+        <span class="pill" id="fbCount">—</span>
+        <button class="btn sm" id="fbFilter" aria-pressed="false">SHOW ALL</button>
+        <a class="btn sm" href="/beta" target="_blank" rel="noopener" style="color:var(--ink);text-decoration:none">OPEN /BETA</a>
+      </div>
+      <div id="fbList"><div class="empty">Loading…</div></div>
     </section>
 
     <!-- MAP -->
@@ -353,13 +364,14 @@ function gotoTab(v){
   document.querySelectorAll(".view").forEach(vw => vw.classList.toggle("on", vw.id === "v-"+v));
   if(v === "map") drawMap();
   if(v === "errors") loadErrors();
+  if(v === "feedback") loadFeedback();
 }
 document.querySelector("nav.tabs").addEventListener("click", e => {
   const b = e.target.closest("button"); if(!b) return;
   gotoTab(b.dataset.v);
 });
 $("refresh").addEventListener("click", loadAll);
-function loadAll(){ loadOverview(); loadStrips(); loadMod(); loadUsers(); loadMap(); loadErrors(); }
+function loadAll(){ loadOverview(); loadStrips(); loadMod(); loadUsers(); loadMap(); loadErrors(); loadFeedback(); }
 
 /* ================= OVERVIEW ================= */
 const TILES = [
@@ -578,6 +590,61 @@ $("errClear").addEventListener("click", async () => {
   btn.textContent = "CLEAR ALL";
   try{ await sb.from("client_errors").delete().gte("created_at","1970-01-01"); toast("Error log cleared"); loadErrors(); loadOverview(); }
   catch(e){ toast("Clear failed"); }
+});
+
+/* ================= FEEDBACK (beta testers) =================
+   Rows come from the public /beta form. RLS lets only operators read them. */
+let fbShowAll = false;
+const FB_KIND = { bug: ["SOMETHING BROKE", "bad"], idea: ["IDEA", "gold"], praise: ["LIKED", "good"], other: ["OTHER", ""] };
+async function loadFeedback(){
+  const box = $("fbList"); if(!box) return;
+  try{
+    let q = sb.from("beta_feedback").select("*").order("created_at",{ascending:false}).limit(200);
+    if(!fbShowAll) q = q.eq("reviewed", false);
+    const [{ data, error }, fresh] = await Promise.all([q, sb.from("beta_feedback").select("id",{count:"exact",head:true}).eq("reviewed",false)]);
+    if(error) throw error;
+    const n = fresh.count ?? 0;
+    $("fbTab").textContent = n ? "Feedback · " + n : "Feedback";
+    $("fbCount").textContent = n + " new" + (fbShowAll ? " · " + (data ? data.length : 0) + " shown" : "");
+    if(!data || !data.length){ box.innerHTML = '<div class="empty">' + (fbShowAll ? "No feedback yet. Send testers to tyrehunt.app/beta." : "Nothing new. Every item has been reviewed.") + '</div>'; return; }
+    box.innerHTML = data.map(r=>{
+      const k = FB_KIND[r.kind] || FB_KIND.other;
+      const dev = r.device === "iphone" ? "iPhone app" : r.device === "android" ? "Android app" : r.device === "web" ? "Web" : "device not given";
+      return '<div class="row" style="align-items:flex-start'+(r.reviewed?';opacity:.6':'')+'"><div class="grow">'+
+        '<div style="margin-bottom:6px"><span class="pill '+k[1]+'">'+k[0]+'</span>'+(r.reviewed?' <span class="pill">REVIEWED</span>':'')+'</div>'+
+        '<div class="t" style="white-space:pre-wrap;overflow-wrap:anywhere">'+esc(r.message)+'</div>'+
+        '<div class="d">'+dev+(r.handle?' · @'+esc(r.handle):'')+
+          (r.email?' · <a href="mailto:'+esc(r.email)+'?subject='+encodeURIComponent("Your Tyre Hunt feedback")+'" style="text-decoration:underline">'+esc(r.email)+'</a>':'')+
+          ' · '+ago(r.created_at)+'</div>'+
+      '</div><div style="display:flex;flex-direction:column;gap:6px;flex:0 0 auto">'+
+        '<button class="btn sm" data-fbrev="'+r.id+'" data-to="'+(r.reviewed?'0':'1')+'">'+(r.reviewed?'REOPEN':'MARK REVIEWED')+'</button>'+
+        '<button class="btn sm danger" data-fbdel="'+r.id+'">DELETE</button>'+
+      '</div></div>';
+    }).join("");
+  }catch(e){ box.innerHTML = '<div class="empty">Couldn\'t load feedback.</div>'; }
+}
+$("fbFilter").addEventListener("click", () => {
+  fbShowAll = !fbShowAll;
+  $("fbFilter").textContent = fbShowAll ? "SHOW NEW ONLY" : "SHOW ALL";
+  $("fbFilter").setAttribute("aria-pressed", String(fbShowAll));
+  loadFeedback();
+});
+$("fbList").addEventListener("click", async e => {
+  const rev = e.target.closest("[data-fbrev]"), del = e.target.closest("[data-fbdel]");
+  try{
+    if(rev){
+      rev.disabled = true;
+      const { error } = await sb.from("beta_feedback").update({ reviewed: rev.dataset.to === "1" }).eq("id", +rev.dataset.fbrev);
+      if(error) throw error;
+      toast(rev.dataset.to === "1" ? "Marked reviewed" : "Reopened"); loadFeedback();
+    } else if(del){
+      if (del.textContent !== "TAP AGAIN"){ del.textContent = "TAP AGAIN"; setTimeout(()=>{ if(del.isConnected) del.textContent="DELETE"; }, 3500); return; }
+      del.disabled = true;
+      const { error } = await sb.from("beta_feedback").delete().eq("id", +del.dataset.fbdel);
+      if(error) throw error;
+      toast("Feedback deleted"); loadFeedback();
+    }
+  }catch(err){ toast("That didn't save. Check you're signed in as an operator."); loadFeedback(); }
 });
 
 /* ================= PULSE: latest / top shots / top hunters ================= */
