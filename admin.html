@@ -607,7 +607,9 @@ $("errClear").addEventListener("click", async () => {
    Read-only. Amounts are decided on the server (earn_catalogue, tally_capture);
    a line is reversed by flagging or deleting its capture in Moderation. */
 const XP_EVENT = { capture_world_first:"First ever filed", capture_region_first:"First in region", capture_new_model:"New model",
-  capture_repeat:"Another sighting", lot_sign_verified:"For-sale sign verified" };
+  capture_repeat:"Another sighting", lot_sign_verified:"For-sale sign verified",
+  referral_made:"A friend you brought in", referral_joined:"Joined through a friend",
+  star_car_named:"Named a Star Car", sighting_confirmed:"Sighting confirmed by the owner" };
 let xpLatest = false, xpOpen = null;
 function xpLineRow(l, withHandle){
   return '<div class="row" style="'+(l.reversed_at?'opacity:.55':'')+'">'+

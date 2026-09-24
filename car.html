@@ -82,6 +82,11 @@ h1{font-size:clamp(30px,6vw,54px);font-weight:900;letter-spacing:-.02em;line-hei
 .mods{list-style:none;display:flex;flex-direction:column;gap:8px}
 .mods li{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px}
 .mods li b{display:block;font:700 11px var(--mono);letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:3px}
+.social{font:700 12px var(--mono);letter-spacing:.06em;color:var(--muted);margin-top:10px}
+.social b{color:var(--ink)}
+.cmts{display:flex;flex-direction:column;gap:8px}
+.cmts .c{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:14px;line-height:1.5}
+.cmts .c .h{font:700 11px var(--mono);color:var(--miami);margin-right:8px}
 .hm{font:600 12px var(--mono);letter-spacing:.06em;color:var(--muted);margin-top:8px;line-height:1.7}
 .hm b{color:var(--ink)}
 .sec{font:800 11px var(--mono);letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin:28px 0 12px;display:flex;align-items:center;gap:12px}
@@ -149,12 +154,15 @@ footer a{text-decoration:underline}
       <div class="stat"><b id="cFirst">–</b><span>First to find</span></div>
     </div>
     <p class="lede fame" id="fame" style="display:none"></p>
+    <p class="social" id="social" style="display:none"></p>
     <div class="sec" id="storyHead" style="display:none">The story</div>
     <div class="story" id="story" style="display:none"></div>
     <div class="sec" id="modsHead" style="display:none">Mods</div>
     <ul class="mods" id="mods" style="display:none"></ul>
     <div class="sec" id="galHead" style="display:none">Gallery</div>
     <div class="grid" id="gal" style="display:none"></div>
+    <div class="sec" id="cmtHead" style="display:none">Comments</div>
+    <div class="cmts" id="cmts" style="display:none"></div>
     <div class="sec">The paparazzi</div>
     <div class="paps" id="paps"></div>
     <div class="sec">Sightings</div>
@@ -178,7 +186,7 @@ footer a{text-decoration:underline}
 var BASE = "https://kokxlzygppakgcebkygc.supabase.co";
 var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtva3hsenlncHBha2djZWJreWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTM5ODgsImV4cCI6MjA5OTg4OTk4OH0.c8N8aevxB-etS_b8HhG3M4BNlV3lM2gX3BO12vJRQCo";
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-function img(p){ return BASE + "/storage/v1/object/public/captures/" + encodeURI(p); }
+function img(p){ return BASE + "/storage/v1/object/public/captures/" + encodeURI(String(p||"")).replace(/['"()\s\\]/g, function(c){ return "%" + c.charCodeAt(0).toString(16).toUpperCase(); }); }
 function $(id){ return document.getElementById(id); }
 function show(id){ ["board","car","loading","missing"].forEach(function(x){ $(x).style.display = x===id ? "" : "none"; }); }
 function rpc(name, args){
@@ -251,6 +259,13 @@ if (!id){
     if (gal.length){
       $("gal").innerHTML = gal.map(function(g){ return '<div class="card"><div class="cimg" style="background-image:url(\'' + img(g.path) + '\')"></div>' + (g.caption ? '<div class="cb"><div class="cd">' + esc(g.caption) + '</div></div>' : '') + '</div>'; }).join("");
       $("gal").style.display = ""; $("galHead").style.display = "";
+    }
+    var lk = +c.likes || 0, cm = +c.comments || 0;
+    if (lk || cm){ $("social").innerHTML = "♥ <b>" + lk + "</b> &nbsp; 💬 <b>" + cm + "</b> &nbsp;·&nbsp; like it and talk about it in the app"; $("social").style.display = ""; }
+    var crow = Array.isArray(c.comment_rows) ? c.comment_rows : [];
+    if (crow.length){
+      $("cmts").innerHTML = crow.map(function(x){ return '<div class="c"><span class="h">@' + esc(x.handle) + '</span>' + esc(x.body) + '</div>'; }).join("");
+      $("cmts").style.display = ""; $("cmtHead").style.display = "";
     }
     $("openApp").href = "https://hunt.tyrehunt.app/?car=" + id;
     show("car");
