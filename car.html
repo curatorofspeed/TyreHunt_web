@@ -70,9 +70,18 @@ h1{font-size:clamp(30px,6vw,54px);font-weight:900;letter-spacing:-.02em;line-hei
 .bs span{font:700 8.5px var(--mono);letter-spacing:.24em;color:var(--muted);text-transform:uppercase}
 /* car page */
 .hero{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel);margin-top:18px}
-.hph{aspect-ratio:16/10;background:#000 center/cover no-repeat}
-.hin{padding:18px 20px 20px}
-.hn{font-size:clamp(26px,5vw,40px);font-weight:900;letter-spacing:-.02em;line-height:1}
+.hph{aspect-ratio:16/10;background:#000 center/cover no-repeat;position:relative}
+.hplate{position:absolute;left:0;right:0;bottom:0;padding:56px 20px 18px;background:linear-gradient(180deg,rgba(10,11,14,0),rgba(10,11,14,.86) 60%)}
+.hplate .eyebrow{color:var(--gold)}
+.hin{padding:14px 20px 18px}
+.hn{font-size:clamp(30px,7vw,60px);font-weight:900;letter-spacing:-.02em;line-height:1;margin-top:6px;text-wrap:balance;overflow-wrap:anywhere}
+#cFirst{font-size:clamp(15px,4.6vw,22px);overflow-wrap:anywhere;line-height:1.15;padding-top:5px}
+.fame{margin:-8px 0 0;font-size:16px}
+.fame b{color:var(--gold)}
+.story{margin-top:0;border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:18px 20px;font-size:15.5px;line-height:1.65;text-wrap:pretty}
+.mods{list-style:none;display:flex;flex-direction:column;gap:8px}
+.mods li{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px}
+.mods li b{display:block;font:700 11px var(--mono);letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:3px}
 .hm{font:600 12px var(--mono);letter-spacing:.06em;color:var(--muted);margin-top:8px;line-height:1.7}
 .hm b{color:var(--ink)}
 .sec{font:800 11px var(--mono);letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin:28px 0 12px;display:flex;align-items:center;gap:12px}
@@ -127,9 +136,10 @@ footer a{text-decoration:underline}
   <section id="car" style="display:none">
     <div class="eyebrow"><a href="car.html">← Most Wanted</a></div>
     <div class="hero">
-      <div class="hph" id="hph" role="img"></div>
+      <div class="hph" id="hph" role="img">
+        <div class="hplate"><div class="eyebrow">Star Car</div><div class="hn" id="hn"></div></div>
+      </div>
       <div class="hin">
-        <div class="hn" id="hn"></div>
         <div class="hm" id="hm"></div>
       </div>
     </div>
@@ -138,13 +148,20 @@ footer a{text-decoration:underline}
       <div class="stat"><b id="cHunt">–</b><span>Hunters</span></div>
       <div class="stat"><b id="cFirst">–</b><span>First to find</span></div>
     </div>
+    <p class="lede fame" id="fame" style="display:none"></p>
+    <div class="sec" id="storyHead" style="display:none">The story</div>
+    <div class="story" id="story" style="display:none"></div>
+    <div class="sec" id="modsHead" style="display:none">Mods</div>
+    <ul class="mods" id="mods" style="display:none"></ul>
+    <div class="sec" id="galHead" style="display:none">Gallery</div>
+    <div class="grid" id="gal" style="display:none"></div>
     <div class="sec">The paparazzi</div>
     <div class="paps" id="paps"></div>
     <div class="sec">Sightings</div>
     <div class="grid" id="grid"></div>
     <div class="state" id="cEmpty" role="status" style="display:none"><b>No sightings yet</b>The owner has named it. Now someone has to find it.</div>
     <div class="how"><b>Seen this car?</b> Photograph it in the app. The judge verifies the shot, the owner confirms it's theirs, and your name goes on this page.
-      <div class="btns"><a class="btn hot" href="https://hunt.tyrehunt.app">Hunt it</a><a class="btn" id="iosBtn" href="https://apps.apple.com/app/id6803203973" style="display:none">App Store</a>
+      <div class="btns"><a class="btn hot" href="https://hunt.tyrehunt.app">Hunt it</a><a class="btn" id="openApp" href="https://hunt.tyrehunt.app">Open in the app</a><a class="btn" id="iosBtn" href="https://apps.apple.com/app/id6803203973" style="display:none">App Store</a>
         <a class="btn" id="playBtn" href="https://play.google.com/store/apps/details?id=app.tyrehunt.hunt" style="display:none">Google Play</a></div>
     </div>
   </section>
@@ -161,7 +178,7 @@ footer a{text-decoration:underline}
 var BASE = "https://kokxlzygppakgcebkygc.supabase.co";
 var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtva3hsenlncHBha2djZWJreWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTM5ODgsImV4cCI6MjA5OTg4OTk4OH0.c8N8aevxB-etS_b8HhG3M4BNlV3lM2gX3BO12vJRQCo";
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-function img(p){ return BASE + "/storage/v1/object/public/captures/" + esc(p); }
+function img(p){ return BASE + "/storage/v1/object/public/captures/" + encodeURI(p); }
 function $(id){ return document.getElementById(id); }
 function show(id){ ["board","car","loading","missing"].forEach(function(x){ $(x).style.display = x===id ? "" : "none"; }); }
 function rpc(name, args){
@@ -202,7 +219,7 @@ if (!id){
     $("hn").innerHTML = esc(nm) + ' <span class="chip ' + esc(c.rarity||"everyday") + '">' + esc(c.rarity||"everyday") + '</span>';
     $("hm").innerHTML = (c.name ? esc(full) + (c.year_range ? " · " + esc(c.year_range) : "") + "<br>" : "") +
       "Owned by <b>@" + esc(c.owner) + "</b> · Star Car since " + when(c.created_at) +
-      (c.home ? " · home turf near " + c.home.la + ", " + c.home.lo : "");
+      "";
     $("cSpot").textContent = c.spotted || 0;
     $("cHunt").textContent = c.hunters || 0;
     $("cFirst").textContent = c.first ? "@" + c.first.handle : "–";
@@ -215,10 +232,27 @@ if (!id){
       return '<a class="card" href="spot.html?c=' + s.capture_id + '">' +
         '<div class="cimg" style="background-image:url(\'' + img(s.img_path) + '\')"></div>' +
         '<div class="cb"><div class="ch">@' + esc(s.handle) + '</div>' +
-        '<div class="cd">' + when(s.at) + (s.shot_score != null ? " · SHOT " + s.shot_score : "") + (s.la != null ? " · near " + s.la + ", " + s.lo : "") + '</div></div></a>';
+        '<div class="cd">' + when(s.at) + (s.shot_score != null ? " · SHOT " + s.shot_score : "") + "" + '</div></div></a>';
     }).join("");
     if (/Android/.test(navigator.userAgent)) document.getElementById("playBtn").style.display = "";
   if (/iPad|iPhone|iPod/.test(navigator.userAgent)) $("iosBtn").style.display = "";
+    var n = +c.spotted || 0, m = +c.hunters || 0;
+    if (n > 0){
+      $("fame").innerHTML = "Spotted <b>" + n + (n === 1 ? " time" : " times") + "</b> by <b>" + m + (m === 1 ? " hunter" : " hunters") + "</b>.";
+      $("fame").style.display = "";
+    }
+    if (c.story){ $("story").textContent = c.story; $("story").style.display = ""; $("storyHead").style.display = ""; }
+    var mods = Array.isArray(c.mods) ? c.mods : [];
+    if (mods.length){
+      $("mods").innerHTML = mods.map(function(m){ return "<li>" + (m.part ? "<b>" + esc(m.part) + "</b>" : "") + esc(m.note || "") + "</li>"; }).join("");
+      $("mods").style.display = ""; $("modsHead").style.display = "";
+    }
+    var gal = Array.isArray(c.gallery) ? c.gallery : [];
+    if (gal.length){
+      $("gal").innerHTML = gal.map(function(g){ return '<div class="card"><div class="cimg" style="background-image:url(\'' + img(g.path) + '\')"></div>' + (g.caption ? '<div class="cb"><div class="cd">' + esc(g.caption) + '</div></div>' : '') + '</div>'; }).join("");
+      $("gal").style.display = ""; $("galHead").style.display = "";
+    }
+    $("openApp").href = "https://hunt.tyrehunt.app/?car=" + id;
     show("car");
   }).catch(function(){ show("missing"); });
 }
