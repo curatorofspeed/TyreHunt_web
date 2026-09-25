@@ -271,7 +271,29 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
       <div class="tools">
         <span class="pill" id="rsCount">—</span>
         <button class="btn sm" id="rsNew">NEW EVENT</button>
+        <button class="btn sm" id="rsSeasonNew">SEASON ROSTER</button>
       </div>
+      <div id="rsSeasonForm" style="display:none;background:var(--panel);border:1px solid rgba(255,194,75,.35);border-radius:14px;padding:14px;margin-bottom:12px">
+        <div class="t" style="margin-bottom:8px">Season roster</div>
+        <div class="d" style="margin-bottom:10px">A series' field for a year. Any event of that series in that season inherits it; a round's own list still wins for the numbers it names.</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+          <label class="d">Series<br><select id="rsSeasonSeries" style="width:100%"></select></label>
+          <label class="d">Season<br><input id="rsSeasonYear" placeholder="2026" style="width:100%"></label>
+          <label class="d">Entry list URL<br><input id="rsSeasonUrl" placeholder="https://…/entry-list" style="width:100%"></label>
+        </div>
+        <label class="d" style="display:block;margin-top:10px">Or paste the entry list<br><textarea id="rsSeasonText" rows="5" style="width:100%"></textarea></label>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn sm" id="rsSeasonParse">READ THE LIST</button>
+          <span class="pill" id="rsSeasonParsed">no rows yet</span>
+        </div>
+        <label class="d" style="display:block;margin-top:10px">Rows — one per line: number | make | model | class | team | drivers<br><textarea id="rsSeasonRows" rows="10" style="width:100%;font-family:var(--mono);font-size:11px"></textarea></label>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn sm" id="rsSeasonSave">SAVE SEASON</button>
+          <button class="btn sm" id="rsSeasonCancel">CANCEL</button>
+          <button class="btn sm danger" id="rsSeasonDelete" style="display:none">DELETE SEASON</button>
+        </div>
+      </div>
+      <div id="rsSeasonList"></div>
       <div id="rsForm" style="display:none;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
           <label class="d">Series<br><select id="rsSeries" style="width:100%"></select></label>
@@ -667,8 +689,13 @@ async function loadRosters(){
       $("rsSeries").innerHTML = '<option value="">— series —</option>' + rsSeriesRows.map(x => '<option value="'+x.id+'">'+esc(x.name)+'</option>').join("");
       $("rsVenue").innerHTML = '<option value="">— pick a circuit —</option>' + rsVenueRows.map(x => '<option value="'+x.id+'">'+esc(x.name)+' ('+esc(x.country)+')</option>').join("");
     }
-    const { data, error } = await sb.rpc("admin_race_events");
+    const [{ data, error }, { data: seasons }] = await Promise.all([sb.rpc("admin_race_events"), sb.rpc("admin_race_series_rosters")]);
     if(error) throw error;
+    $("rsSeasonList").innerHTML = (seasons && seasons.length)
+      ? '<div class="t" style="margin:4px 0 8px">Season rosters</div>' + seasons.map(s => '<div class="row"><div class="grow"><div class="t">'+esc(s.series)+' <span class="pill gold">'+s.season+'</span> <span class="pill">'+s.entries+' cars</span></div>' +
+          '<div class="d">every event of this series in '+s.season+' inherits these numbers</div></div>' +
+          '<button class="btn sm" data-rsseason="'+s.series_id+'|'+s.season+'">EDIT</button></div>').join("") + '<div class="t" style="margin:14px 0 8px">Events</div>'
+      : "";
     rsEvents = data || [];
     $("rsCount").textContent = rsEvents.length + " events";
     if(!rsEvents.length){ box.innerHTML = '<div class="empty">No rosters yet. Add a track weekend and read its entry list.</div>'; return; }
@@ -691,6 +718,58 @@ function rsOpen(e){
   $("rsForm").scrollIntoView({ block: "start" });
 }
 $("rsNew").addEventListener("click", () => rsOpen(null));
+/* ---- season rosters ---- */
+function rsSeasonOpen(seriesId, season){
+  $("rsSeasonForm").style.display = ""; $("rsForm").style.display = "none";
+  $("rsSeasonSeries").innerHTML = '<option value="">— series —</option>' + rsSeriesRows.map(x => '<option value="'+x.id+'">'+esc(x.name)+'</option>').join("");
+  $("rsSeasonSeries").value = seriesId ? String(seriesId) : "";
+  $("rsSeasonYear").value = season || new Date().getFullYear();
+  $("rsSeasonUrl").value = ""; $("rsSeasonText").value = ""; $("rsSeasonRows").value = ""; $("rsSeasonParsed").textContent = seriesId ? "loading rows…" : "no rows yet";
+  $("rsSeasonDelete").style.display = seriesId ? "" : "none";
+  if(seriesId){ sb.from("race_series_entries").select("number,make,model,class,team,drivers").eq("series_id", seriesId).eq("season", season).order("number").then(({ data }) => { $("rsSeasonRows").value = rsRowsToText(data); $("rsSeasonParsed").textContent = (data||[]).length + " rows"; }); }
+  $("rsSeasonForm").scrollIntoView({ block: "start" });
+}
+$("rsSeasonNew").addEventListener("click", () => rsSeasonOpen(null, null));
+$("rsSeasonCancel").addEventListener("click", () => { $("rsSeasonForm").style.display = "none"; });
+$("rsSeasonList").addEventListener("click", e => {
+  const b = e.target.closest("[data-rsseason]"); if(!b) return;
+  const [sid, yr] = b.dataset.rsseason.split("|"); rsSeasonOpen(+sid, +yr);
+});
+$("rsSeasonParse").addEventListener("click", async () => {
+  const url = $("rsSeasonUrl").value.trim(), text = $("rsSeasonText").value.trim();
+  if(!url && !text){ toast("Give it a URL or paste the list"); return; }
+  $("rsSeasonParse").disabled = true; $("rsSeasonParsed").textContent = "reading…";
+  try{
+    const r = await fetch(SUPA_URL + "/functions/v1/roster-import", { method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + session.access_token },
+      body: JSON.stringify({ url: url || undefined, text: text || undefined }) });
+    const out = await r.json();
+    if(!r.ok || out.error) throw new Error(out.error || ("HTTP " + r.status));
+    $("rsSeasonRows").value = rsRowsToText(out.entries);
+    $("rsSeasonParsed").textContent = out.entries.length + " rows read";
+    if(!$("rsSeasonSeries").value && out.series){ const s = rsSeriesRows.find(x => x.name.toLowerCase() === out.series.toLowerCase()); if(s) $("rsSeasonSeries").value = String(s.id); }
+  }catch(e){ $("rsSeasonParsed").textContent = "couldn't read it: " + (e.message || e); }
+  $("rsSeasonParse").disabled = false;
+});
+$("rsSeasonSave").addEventListener("click", async () => {
+  const sid = +$("rsSeasonSeries").value, yr = parseInt($("rsSeasonYear").value, 10), rows = rsTextToRows($("rsSeasonRows").value);
+  if(!sid || !yr){ toast("Series and season are needed"); return; }
+  $("rsSeasonSave").disabled = true;
+  try{
+    const { data, error } = await sb.rpc("admin_race_series_roster_save", { p_series_id: sid, p_season: yr, p_entries: rows });
+    if(error) throw error;
+    toast("Saved · " + data + " cars"); $("rsSeasonForm").style.display = "none"; loadRosters();
+  }catch(e){ toast("That didn't save: " + (e.message || e)); }
+  $("rsSeasonSave").disabled = false;
+});
+$("rsSeasonDelete").addEventListener("click", async () => {
+  const sid = +$("rsSeasonSeries").value, yr = parseInt($("rsSeasonYear").value, 10); if(!sid || !yr) return;
+  const b = $("rsSeasonDelete");
+  if(!b.dataset.arm){ b.dataset.arm = "1"; b.textContent = "TAP AGAIN TO DELETE"; setTimeout(() => { delete b.dataset.arm; b.textContent = "DELETE SEASON"; }, 3500); return; }
+  const { error } = await sb.rpc("admin_race_series_roster_delete", { p_series_id: sid, p_season: yr });
+  if(error){ toast("Couldn't delete"); return; }
+  toast("Season roster deleted"); $("rsSeasonForm").style.display = "none"; loadRosters();
+});
 $("rsCancel").addEventListener("click", () => { $("rsForm").style.display = "none"; });
 $("rsList").addEventListener("click", e => {
   const b = e.target.closest("[data-rsedit]"); if(!b) return;
