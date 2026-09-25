@@ -167,6 +167,7 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
       <button data-v="errors">Errors</button>
       <button data-v="feedback" id="fbTab">Feedback</button>
       <button data-v="xp">XP</button>
+      <button data-v="judge">Judge</button>
     </nav>
     <div class="who"><span id="whoami"></span><button class="btn sm" id="refresh">↻ REFRESH</button><button class="btn sm" id="signout">SIGN OUT</button></div>
   </header>
@@ -256,6 +257,14 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
       <div id="xpList"><div class="empty">Loading…</div></div>
     </section>
 
+    <!-- JUDGE (what hunters corrected, and what the judge is shown) -->
+    <section class="view" id="v-judge">
+      <div class="tools">
+        <span class="pill" id="jdCount">—</span>
+      </div>
+      <div id="jdList"><div class="empty">Loading…</div></div>
+    </section>
+
     <!-- MAP -->
     <section class="view" id="v-map">
       <div class="tools">
@@ -314,6 +323,7 @@ function ago(ts){ if(!ts) return "—"; const s=(Date.now()-new Date(ts))/1000;
 function imgUrl(p){ try{ return p ? sb.storage.from("captures").getPublicUrl(p).data.publicUrl : ""; }catch(e){ return ""; } }
 
 /* ================= AUTH ================= */
+const IMG_BASE = SUPA_URL + "/storage/v1/object/public/captures/";
 try{ sb = window.supabase.createClient(SUPA_URL, SUPA_ANON); }
 catch(e){ $("gNote").textContent = "Couldn't load the Supabase library — check your connection or an ad-blocker."; }
 
@@ -376,6 +386,7 @@ function gotoTab(v){
   if(v === "errors") loadErrors();
   if(v === "feedback") loadFeedback();
   if(v === "xp") loadXp();
+  if(v === "judge") loadJudge();
 }
 document.querySelector("nav.tabs").addEventListener("click", e => {
   const b = e.target.closest("button"); if(!b) return;
@@ -602,6 +613,30 @@ $("errClear").addEventListener("click", async () => {
   try{ await sb.from("client_errors").delete().gte("created_at","1970-01-01"); toast("Error log cleared"); loadErrors(); loadOverview(); }
   catch(e){ toast("Clear failed"); }
 });
+
+/* ================= JUDGE =================
+   Corrections hunters made in their dossiers. The verify function reads the
+   same confusions list and shows the judge the most repeated ones. */
+async function loadJudge(){
+  const box = $("jdList"); box.innerHTML = '<div class="empty">Loading…</div>';
+  try{
+    const [{ data: conf, error: e1 }, { data: rows, error: e2 }] = await Promise.all([
+      sb.rpc("admin_judge_confusions", { lim: 20 }), sb.rpc("admin_judge_corrections", { lim: 200 })]);
+    if(e1 || e2) throw (e1 || e2);
+    $("jdCount").textContent = (rows ? rows.length : 0) + " corrections · " + (conf ? conf.length : 0) + " lessons";
+    let h = "";
+    if(conf && conf.length){
+      h += '<div class="row" style="flex-direction:column;align-items:stretch"><div class="t">What the judge is being told</div>' +
+        conf.map(c => '<div class="d">"' + esc(c.judged) + '" was really <b style="color:var(--ink)">' + esc(c.fixed) + '</b>' + (c.n > 1 ? ' <span class="pill">×' + c.n + '</span>' : '') + '</div>').join("") + '</div>';
+    }
+    if(!rows || !rows.length){ box.innerHTML = h + '<div class="empty">No corrections yet. When a hunter fixes a make or model in a dossier, it lands here.</div>'; return; }
+    box.innerHTML = h + rows.map(r => '<div class="row">' +
+      (r.img_path ? '<div class="fimg" style="width:64px;height:48px;border-radius:8px;background:#0E1013 center/cover no-repeat;flex:0 0 auto;background-image:url(\'' + esc(IMG_BASE + encodeURI(r.img_path)) + '\')"></div>' : '') +
+      '<div class="grow"><div class="t">' + esc(r.judged || "—") + ' → ' + esc(r.fixed || "—") + (r.source === "operator" ? ' <span class="pill gold">OPERATOR</span>' : '') + '</div>' +
+      '<div class="d">@' + esc(r.handle || "—") + ' · capture #' + r.capture_id + ' · ' + ago(r.created_at) + '</div></div>' +
+      '<a class="btn sm" href="https://www.tyrehunt.app/spot.html?c=' + r.capture_id + '" target="_blank" rel="noopener" style="color:var(--ink);text-decoration:none">SPOT</a></div>').join("");
+  }catch(e){ box.innerHTML = '<div class="empty">Couldn\'t load corrections. Check you\'re signed in as an operator.</div>'; }
+}
 
 /* ================= XP =================
    Read-only. Amounts are decided on the server (earn_catalogue, tally_capture);
