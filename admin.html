@@ -168,6 +168,7 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
       <button data-v="feedback" id="fbTab">Feedback</button>
       <button data-v="xp">XP</button>
       <button data-v="judge">Judge</button>
+      <button data-v="roster">Rosters</button>
     </nav>
     <div class="who"><span id="whoami"></span><button class="btn sm" id="refresh">↻ REFRESH</button><button class="btn sm" id="signout">SIGN OUT</button></div>
   </header>
@@ -263,6 +264,39 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
         <span class="pill" id="jdCount">—</span>
       </div>
       <div id="jdList"><div class="empty">Loading…</div></div>
+    </section>
+
+    <!-- ROSTERS (track weekend entry lists the judge reads) -->
+    <section class="view" id="v-roster">
+      <div class="tools">
+        <span class="pill" id="rsCount">—</span>
+        <button class="btn sm" id="rsNew">NEW EVENT</button>
+      </div>
+      <div id="rsForm" style="display:none;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+          <label class="d">Series<br><select id="rsSeries" style="width:100%"></select></label>
+          <label class="d">Event name<br><input id="rsName" placeholder="Pirelli GT4 America · Barber" style="width:100%"></label>
+          <label class="d">Venue<br><select id="rsVenue" style="width:100%"><option value="">— pick a circuit —</option></select></label>
+          <label class="d">Lat, lng<br><input id="rsLat" placeholder="33.5307" style="width:48%"> <input id="rsLng" placeholder="-86.6185" style="width:48%"></label>
+          <label class="d">Starts<br><input id="rsFrom" type="date" style="width:100%"></label>
+          <label class="d">Ends<br><input id="rsTo" type="date" style="width:100%"></label>
+          <label class="d">Radius km<br><input id="rsRadius" value="8" style="width:100%"></label>
+          <label class="d">Entry list URL<br><input id="rsUrl" placeholder="https://…/entry-list" style="width:100%"></label>
+        </div>
+        <label class="d" style="display:block;margin-top:10px">Or paste the entry list<br><textarea id="rsText" rows="5" style="width:100%"></textarea></label>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn sm" id="rsParse">READ THE LIST</button>
+          <span class="pill" id="rsParsed">no rows yet</span>
+        </div>
+        <label class="d" style="display:block;margin-top:10px">Rows — one per line: number | make | model | class | team | drivers<br><textarea id="rsRows" rows="10" style="width:100%;font-family:var(--mono);font-size:11px"></textarea></label>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn sm" id="rsSave">SAVE EVENT</button>
+          <button class="btn sm" id="rsCancel">CANCEL</button>
+          <button class="btn sm danger" id="rsDelete" style="display:none">DELETE EVENT</button>
+        </div>
+        <input type="hidden" id="rsId">
+      </div>
+      <div id="rsList"><div class="empty">Loading…</div></div>
     </section>
 
     <!-- MAP -->
@@ -387,6 +421,7 @@ function gotoTab(v){
   if(v === "feedback") loadFeedback();
   if(v === "xp") loadXp();
   if(v === "judge") loadJudge();
+  if(v === "roster") loadRosters();
 }
 document.querySelector("nav.tabs").addEventListener("click", e => {
   const b = e.target.closest("button"); if(!b) return;
@@ -612,6 +647,97 @@ $("errClear").addEventListener("click", async () => {
   btn.textContent = "CLEAR ALL";
   try{ await sb.from("client_errors").delete().gte("created_at","1970-01-01"); toast("Error log cleared"); loadErrors(); loadOverview(); }
   catch(e){ toast("Clear failed"); }
+});
+
+/* ================= ROSTERS =================
+   Track weekend entry lists. At a circuit during an event the verify function
+   gives the judge this list, and the number on the door names the car. */
+let rsSeriesRows = [], rsVenueRows = [], rsEvents = [];
+function rsRowsToText(rows){ return (rows||[]).map(e => [e.number, e.make, e.model, e.class||"", e.team||"", e.drivers||""].join(" | ")).join("\n"); }
+function rsTextToRows(t){
+  return String(t||"").split("\n").map(l => l.split("|").map(x => x.trim())).filter(p => p[0] && p[1])
+    .map(p => ({ number: p[0].replace(/^#/,""), make: p[1], model: p[2]||"", class: p[3]||"", team: p[4]||"", drivers: p[5]||"" }));
+}
+async function loadRosters(){
+  const box = $("rsList"); box.innerHTML = '<div class="empty">Loading…</div>';
+  try{
+    if(!rsSeriesRows.length){
+      const [{ data: s }, { data: v }] = await Promise.all([sb.from("race_series").select("id,name").order("name"), sb.from("race_venues").select("id,name,lat,lng,country").order("name")]);
+      rsSeriesRows = s || []; rsVenueRows = v || [];
+      $("rsSeries").innerHTML = '<option value="">— series —</option>' + rsSeriesRows.map(x => '<option value="'+x.id+'">'+esc(x.name)+'</option>').join("");
+      $("rsVenue").innerHTML = '<option value="">— pick a circuit —</option>' + rsVenueRows.map(x => '<option value="'+x.id+'">'+esc(x.name)+' ('+esc(x.country)+')</option>').join("");
+    }
+    const { data, error } = await sb.rpc("admin_race_events");
+    if(error) throw error;
+    rsEvents = data || [];
+    $("rsCount").textContent = rsEvents.length + " events";
+    if(!rsEvents.length){ box.innerHTML = '<div class="empty">No rosters yet. Add a track weekend and read its entry list.</div>'; return; }
+    box.innerHTML = rsEvents.map(e => '<div class="row"><div class="grow"><div class="t">'+esc(e.name)+' <span class="pill">'+e.entries+' cars</span></div>' +
+      '<div class="d">'+esc(e.series||"—")+' · '+esc(e.venue)+' · '+esc(e.starts_on)+' → '+esc(e.ends_on)+' · '+e.radius_km+' km</div></div>' +
+      '<button class="btn sm" data-rsedit="'+e.id+'">EDIT</button></div>').join("");
+  }catch(e){ box.innerHTML = '<div class="empty">Couldn\'t load rosters. Check you\'re signed in as an operator.</div>'; }
+}
+function rsOpen(e){
+  $("rsForm").style.display = "";
+  $("rsId").value = e ? e.id : "";
+  $("rsSeries").value = e && e.series_id ? String(e.series_id) : "";
+  $("rsName").value = e ? e.name : ""; $("rsVenue").value = "";
+  $("rsLat").value = e ? e.lat : ""; $("rsLng").value = e ? e.lng : "";
+  $("rsFrom").value = e ? e.starts_on : ""; $("rsTo").value = e ? e.ends_on : "";
+  $("rsRadius").value = e ? e.radius_km : 8; $("rsUrl").value = e ? (e.source_url||"") : ""; $("rsText").value = "";
+  $("rsRows").value = ""; $("rsParsed").textContent = e ? "loading rows…" : "no rows yet";
+  $("rsDelete").style.display = e ? "" : "none";
+  if(e){ sb.from("race_entries").select("number,make,model,class,team,drivers").eq("event_id", e.id).order("number").then(({ data }) => { $("rsRows").value = rsRowsToText(data); $("rsParsed").textContent = (data||[]).length + " rows"; }); }
+  $("rsForm").scrollIntoView({ block: "start" });
+}
+$("rsNew").addEventListener("click", () => rsOpen(null));
+$("rsCancel").addEventListener("click", () => { $("rsForm").style.display = "none"; });
+$("rsList").addEventListener("click", e => {
+  const b = e.target.closest("[data-rsedit]"); if(!b) return;
+  const ev = rsEvents.find(x => String(x.id) === b.dataset.rsedit); if(ev) rsOpen(ev);
+});
+$("rsVenue").addEventListener("change", () => {
+  const v = rsVenueRows.find(x => String(x.id) === $("rsVenue").value); if(!v) return;
+  $("rsLat").value = v.lat; $("rsLng").value = v.lng;
+  if(!$("rsName").value) $("rsName").value = v.name;
+});
+$("rsParse").addEventListener("click", async () => {
+  const url = $("rsUrl").value.trim(), text = $("rsText").value.trim();
+  if(!url && !text){ toast("Give it a URL or paste the list"); return; }
+  $("rsParse").disabled = true; $("rsParsed").textContent = "reading…";
+  try{
+    const r = await fetch(SUPA_URL + "/functions/v1/roster-import", { method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + session.access_token },
+      body: JSON.stringify({ url: url || undefined, text: text || undefined }) });
+    const out = await r.json();
+    if(!r.ok || out.error) throw new Error(out.error || ("HTTP " + r.status));
+    $("rsRows").value = rsRowsToText(out.entries);
+    $("rsParsed").textContent = out.entries.length + " rows read" + (out.event ? " · " + out.event : "");
+    if(!$("rsName").value && out.event) $("rsName").value = out.event;
+    if(!$("rsSeries").value && out.series){ const s = rsSeriesRows.find(x => x.name.toLowerCase() === out.series.toLowerCase()); if(s) $("rsSeries").value = String(s.id); }
+  }catch(e){ $("rsParsed").textContent = "couldn't read it: " + (e.message || e); }
+  $("rsParse").disabled = false;
+});
+$("rsSave").addEventListener("click", async () => {
+  const rows = rsTextToRows($("rsRows").value);
+  const p = { id: $("rsId").value || null, series_id: $("rsSeries").value || null, name: $("rsName").value.trim(), venue: ($("rsVenue").selectedOptions[0] && $("rsVenue").value ? $("rsVenue").selectedOptions[0].textContent.replace(/ \([A-Z]{2}\)$/, "") : "") || $("rsName").value.trim(),
+    lat: parseFloat($("rsLat").value), lng: parseFloat($("rsLng").value), radius_km: parseFloat($("rsRadius").value) || 8,
+    starts_on: $("rsFrom").value, ends_on: $("rsTo").value, source_url: $("rsUrl").value.trim(), entries: rows };
+  if(!p.name || isNaN(p.lat) || isNaN(p.lng) || !p.starts_on || !p.ends_on){ toast("Name, position and dates are needed"); return; }
+  $("rsSave").disabled = true;
+  try{
+    const { error } = await sb.rpc("admin_race_event_save", { p });
+    if(error) throw error;
+    toast("Saved · " + rows.length + " cars"); $("rsForm").style.display = "none"; loadRosters();
+  }catch(e){ toast("That didn't save: " + (e.message || e)); }
+  $("rsSave").disabled = false;
+});
+$("rsDelete").addEventListener("click", async () => {
+  const id = +$("rsId").value; if(!id) return;
+  if(!$("rsDelete").dataset.arm){ $("rsDelete").dataset.arm = "1"; $("rsDelete").textContent = "TAP AGAIN TO DELETE"; setTimeout(() => { delete $("rsDelete").dataset.arm; $("rsDelete").textContent = "DELETE EVENT"; }, 3500); return; }
+  const { error } = await sb.rpc("admin_race_event_delete", { p_id: id });
+  if(error){ toast("Couldn't delete"); return; }
+  toast("Event deleted"); $("rsForm").style.display = "none"; loadRosters();
 });
 
 /* ================= JUDGE =================
