@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="apple-itunes-app" content="app-id=6803203973">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Live lobby — Tyre Hunt</title>
-<meta name="description" content="A live board of verified car spots, filed in real time by hunters on the ground.">
-<meta property="og:title" content="Live lobby — Tyre Hunt">
-<meta property="og:description" content="Verified spots landing in real time. Every car on this board was photographed in the wild.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meet board — Tyre Hunt</title>
+<meta name="description" content="The live board of a car meet: every car photographed on the lot, named by the judge, and ranked by how rare it is.">
+<meta property="og:title" content="Meet board — Tyre Hunt">
+<meta property="og:description" content="Who finds the rarest car at the show? Every car on this board was photographed on the lot and named by the judge.">
 <meta property="og:image" content="https://www.tyrehunt.app/og.png">
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,44 +15,70 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Racing+Sans+One&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --carbon:#0A0B0E; --panel:#12151A; --line:rgba(255,255,255,.09);
+  --carbon:#0A0B0E; --panel:#12151A; --panel2:#171A21; --line:rgba(255,255,255,.09);
   --ink:#F2F3F6; --muted:#98A0AC; --ember:#18B7DC; --gold:#FFC24B;
   --orange:#FF8A1E; --blue:#5E97FF; --bronze:#C9834A;
   --disp:'Archivo',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+/* ---- quality floor: keyboard ring (mouse users see no change), Windows High
+   Contrast keeps the ring, brand selection, motion respects the OS ---- */
+:focus-visible{outline:2px solid var(--ember);outline-offset:3px;border-radius:4px}
+@media (forced-colors: active){ :focus-visible{outline:3px solid CanvasText} }
+::selection{background:#18B7DC;color:#04222A}
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important} }
+[hidden]{display:none!important}
 body{background:var(--carbon);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 .wrap{max-width:1120px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
 nav{position:sticky;top:0;z-index:10;background:rgba(10,11,14,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-nav .row{display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .row{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
 .lockup{display:flex;align-items:center;gap:9px}
 .lockup svg{width:26px;height:26px;color:var(--ink)}
 .lockup .wd{font:700 16px 'Racing Sans One',var(--disp);letter-spacing:.01em;text-transform:uppercase;white-space:nowrap}
 .cta{display:inline-flex;align-items:center;justify-content:center;font:800 12px var(--disp);letter-spacing:.06em;padding:10px 18px;border-radius:999px;background:linear-gradient(180deg,#5BD8F0,var(--ember));color:#04222A;text-align:center}
 header.page{padding:clamp(24px,5vw,48px) 0 4px}
-.eyebrow{font:700 10px var(--mono);letter-spacing:.34em;color:var(--ember);text-transform:uppercase}
-h1{font-size:clamp(28px,6vw,48px);font-weight:900;letter-spacing:.02em;margin-top:8px;text-transform:uppercase;line-height:1.02}
+.eyebrow{font:700 10px var(--mono);letter-spacing:.3em;color:var(--ember);text-transform:uppercase}
+.eyebrow.closed{color:var(--gold)}
+h1{font-size:clamp(28px,6vw,48px);font-weight:900;letter-spacing:.02em;margin-top:8px;text-transform:uppercase;line-height:1.02;overflow-wrap:anywhere}
 .where{color:var(--muted);margin-top:10px;font-size:15px}
-.livechip{display:none;align-items:center;gap:7px;margin-top:14px;font:800 11px var(--mono);letter-spacing:.16em;color:var(--ember);border:1px solid rgba(24,183,220,.45);background:rgba(24,183,220,.08);border-radius:999px;padding:7px 14px;width:max-content}
-.livechip.on{display:inline-flex}
-.livechip i{width:8px;height:8px;border-radius:50%;background:var(--ember);animation:pulse 1.6s ease-in-out infinite}
+.livechip{display:inline-flex;align-items:center;gap:7px;margin-top:14px;font:800 11px var(--mono);letter-spacing:.16em;color:var(--ember);border:1px solid rgba(24,183,220,.45);background:rgba(24,183,220,.08);border-radius:999px;padding:7px 14px;width:max-content;max-width:100%}
+.livechip i{width:8px;height:8px;border-radius:50%;background:var(--ember);animation:pulse 1.6s ease-in-out infinite;flex:0 0 auto}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
 .stat{flex:1 1 0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 10px;text-align:center;min-width:0}
 .stat .v{font:800 22px var(--disp)}
-.stat .l{font:700 8.5px var(--mono);letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-top:3px}
-h2.sec{font:800 11px var(--mono);letter-spacing:.26em;color:var(--muted);text-transform:uppercase;margin:38px 0 12px}
+.stat .l{font:700 8.5px var(--mono);letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+h2.sec{font:800 11px var(--mono);letter-spacing:.24em;color:var(--muted);text-transform:uppercase;margin:38px 0 12px}
+.legend{font:600 11px/1.6 var(--mono);color:var(--muted);margin:-4px 0 12px;letter-spacing:.03em}
 .board{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
 .brow{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
 .brow:last-child{border-bottom:0}
-.brow .pos{font:800 13px var(--mono);color:var(--muted);width:26px;flex:0 0 auto}
+.brow .pos{font:800 13px var(--mono);color:var(--muted);width:30px;flex:0 0 auto}
 .brow.p1 .pos{color:var(--gold)}.brow.p2 .pos{color:var(--ink)}.brow.p3 .pos{color:var(--bronze)}
 .brow .hn{font-weight:800;font-size:15px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.brow .sc{font:800 15px var(--mono);color:var(--ember)}
-.brow .sl{font:700 8.5px var(--mono);letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-left:5px}
+.brow .fs{font:800 11px var(--mono);color:var(--gold);letter-spacing:.04em;white-space:nowrap}
+.brow .md{font:600 10px var(--mono);color:var(--muted);letter-spacing:.08em;white-space:nowrap}
+.brow .sc{font:800 16px var(--mono);color:var(--ember);white-space:nowrap}
+.brow .sl{font:700 8.5px var(--mono);letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-left:4px}
+.brow.wait .hn{color:var(--muted);font-weight:600;white-space:normal}
+.awards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:13px;margin-top:30px}
+.award{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.award .aimg{aspect-ratio:16/10;background:#0E1013 center/cover no-repeat}
+.award .ab{padding:12px 14px 14px}
+.award .ak{font:800 9px var(--mono);letter-spacing:.22em;color:var(--gold);text-transform:uppercase}
+.award .an{font-weight:800;font-size:15px;margin-top:6px;line-height:1.25}
+.award .ah{font:600 11px var(--mono);color:var(--muted);margin-top:5px}
+.podium{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:30px}
+.pod{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 10px;text-align:center;min-width:0}
+.pod.p1{border-color:rgba(255,194,75,.55);background:linear-gradient(180deg,rgba(255,194,75,.1),var(--panel))}
+.pod .pk{font:800 22px var(--mono);color:var(--gold)}
+.pod.p2 .pk{color:var(--ink)}.pod.p3 .pk{color:var(--bronze)}
+.pod .ph{font-weight:800;font-size:14px;margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod .ps{font:700 11px var(--mono);color:var(--ember);margin-top:4px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:13px;padding-bottom:8px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative}
+.card .first{position:absolute;top:9px;left:9px;font:800 9px var(--mono);letter-spacing:.14em;color:#1A1204;background:var(--gold);border-radius:999px;padding:4px 8px}
 .cimg{aspect-ratio:4/3;background:#0E1013 center/cover no-repeat}
 .cbody{padding:10px 12px 12px}
 .cname{font-weight:800;font-size:13.5px;line-height:1.25}
@@ -63,6 +89,9 @@ h2.sec{font:800 11px var(--mono);letter-spacing:.26em;color:var(--muted);text-tr
 .chip.rare{color:var(--blue);border-color:rgba(94,151,255,.5)}
 .chip.legendary{color:var(--gold);border-color:rgba(255,194,75,.55)}
 .note{color:var(--muted);padding:44px 0;text-align:center}
+.soon{margin-top:30px;border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:22px}
+.soon .big{font:900 clamp(20px,4vw,28px) var(--disp);text-transform:uppercase}
+.soon p{color:var(--muted);margin-top:10px;line-height:1.55;font-size:14.5px;max-width:640px}
 main{padding-bottom:12px}
 .joinband{position:sticky;bottom:0;z-index:9;margin-top:44px;background:linear-gradient(180deg,rgba(10,11,14,0),rgba(10,11,14,.96) 24%);padding:26px 0 max(18px,env(safe-area-inset-bottom))}
 .joinband .inner{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:18px;text-align:center}
@@ -70,6 +99,74 @@ main{padding-bottom:12px}
 .joinband p{color:var(--muted);margin:8px 0 14px;font-size:13.5px}
 .joinband .cta{font-size:14px;padding:14px 30px;width:100%;max-width:340px}
 footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:12.5px;text-align:center}
+
+/* ---- TV: the tablet or screen at the organizer's table ---- */
+body.tv{overflow:hidden;height:100vh}
+#tv{position:fixed;inset:0;display:flex;flex-direction:column;padding:2.2vh 2.4vw;gap:1.8vh;background:radial-gradient(120% 90% at 50% 0%,#171A21 0%,#0A0B0E 70%)}
+.tvtop{display:flex;align-items:center;gap:2vw}
+.tvtop svg{width:4.4vh;height:4.4vh;color:var(--ink);flex:0 0 auto}
+.tvname{font:900 clamp(22px,4.6vh,58px)/1 var(--disp);text-transform:uppercase;letter-spacing:.01em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tvclock{font:800 clamp(16px,3.2vh,40px) var(--mono);color:var(--ember);white-space:nowrap}
+.tvclock.closed{color:var(--gold)}
+.tvgrid{flex:1;min-height:0;display:grid;grid-template-columns:1.35fr 1fr;gap:2.4vw}
+.tvboard{min-height:0;display:flex;flex-direction:column;background:rgba(18,21,26,.8);border:1px solid var(--line);border-radius:2vh;padding:2vh 1.6vw;overflow:hidden}
+.tvh{font:800 clamp(10px,1.6vh,18px) var(--mono);letter-spacing:.24em;color:var(--muted);margin-bottom:1.2vh}
+.tvrow{display:flex;align-items:center;gap:1.2vw;padding:1.05vh 0;border-bottom:1px solid var(--line)}
+.tvrow:last-child{border-bottom:0}
+.tvrow .pos{font:800 clamp(14px,2.6vh,30px) var(--mono);color:var(--muted);width:3.4vw;min-width:34px}
+.tvrow.p1 .pos{color:var(--gold)}.tvrow.p2 .pos{color:var(--ink)}.tvrow.p3 .pos{color:var(--bronze)}
+.tvrow .hn{flex:1;min-width:0;font:800 clamp(16px,3vh,36px) var(--disp);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tvrow .fs{font:800 clamp(12px,2.1vh,24px) var(--mono);color:var(--gold)}
+.tvrow .sc{font:800 clamp(16px,3vh,36px) var(--mono);color:var(--ember)}
+#tvBoard{overflow:hidden}
+.tvurl{font:700 clamp(11px,1.8vh,20px) var(--mono);color:var(--ink);letter-spacing:.02em;word-break:break-all}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tvwait{color:var(--muted);font-size:clamp(14px,2.4vh,26px);line-height:1.4;margin:auto 0;text-align:center}
+.tvstats{display:flex;gap:1vw;margin-top:auto;padding-top:1.4vh}
+.tvstats div{flex:1;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:1.2vh;padding:1vh .5vw}
+.tvstats b{display:block;font:800 clamp(16px,3.2vh,38px) var(--disp)}
+.tvstats span{display:block;font:700 clamp(8px,1.2vh,13px) var(--mono);letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.tvside{min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1.4vh}
+.tvqr{background:#fff;border-radius:2vh;padding:2vh;width:min(38vh,30vw);aspect-ratio:1}
+.tvqr canvas,.tvqr img{width:100%!important;height:100%!important;display:block;image-rendering:pixelated}
+.tvscan{font:900 clamp(20px,4.4vh,54px) var(--disp);text-transform:uppercase;letter-spacing:.02em}
+.tvcode{font:800 clamp(16px,3.4vh,42px) var(--mono);color:var(--gold);letter-spacing:.12em}
+.tvsub{color:var(--muted);font-size:clamp(12px,2vh,22px);line-height:1.4;max-width:34vw}
+.tvlegend{font:700 clamp(9px,1.5vh,16px) var(--mono);color:var(--muted);letter-spacing:.04em}
+.tvstrip{height:17vh;display:flex;gap:1vw;overflow:hidden}
+.tvstrip .t{flex:0 0 auto;height:100%;aspect-ratio:4/3;border-radius:1.4vh;background:#0E1013 center/cover no-repeat;position:relative;border:1px solid var(--line)}
+.tvstrip .t span{position:absolute;left:0;right:0;bottom:0;padding:.8vh .8vw;font:700 clamp(9px,1.4vh,15px) var(--mono);background:linear-gradient(180deg,transparent,rgba(0,0,0,.8));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tvstrip .t.f{border-color:rgba(255,194,75,.7)}
+.tvtext{display:flex;flex-direction:column;align-items:center;gap:1.4vh}
+/* an organizer's phone held upright: the board on top, the QR beside its words */
+@media (orientation: portrait){
+  .tvgrid{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;gap:1.6vh}
+  .tvside{flex-direction:row;justify-content:flex-start;text-align:left;gap:4vw}
+  .tvqr{width:min(20vh,36vw);padding:1.2vh;flex:0 0 auto}
+  .tvtext{align-items:flex-start;gap:.8vh}
+  .tvscan{font-size:clamp(18px,3vh,40px)}
+  .tvsub{max-width:none}
+  .tvlegend{display:none}
+  .tvstrip{height:11vh}
+  .tvtop{flex-wrap:wrap;row-gap:.6vh}
+  .tvname{flex:1 1 calc(100% - 7vh)}
+  .tvclock{width:100%;font-size:clamp(14px,2.4vh,30px)}
+}
+.tvfull{position:fixed;right:1.2vw;bottom:1.2vh;font:800 11px var(--mono);letter-spacing:.14em;color:var(--muted);background:rgba(18,21,26,.9);border:1px solid var(--line);border-radius:999px;padding:9px 14px;cursor:pointer}
+#takeover{position:fixed;inset:0;z-index:50;background:#000 center/cover no-repeat;display:flex;align-items:flex-end;animation:toIn .5s ease-out}
+@keyframes toIn{from{opacity:0}to{opacity:1}}
+#takeover .toin{width:100%;padding:5vh 4vw;background:linear-gradient(180deg,transparent,rgba(0,0,0,.88) 45%)}
+#takeover .tok{font:800 clamp(14px,2.8vh,32px) var(--mono);letter-spacing:.2em;color:var(--gold)}
+#takeover .ton{font:900 clamp(30px,8vh,110px)/1 var(--disp);text-transform:uppercase;margin-top:1.4vh}
+#takeover .toh{font:800 clamp(18px,4vh,48px) var(--mono);color:var(--ember);margin-top:1.6vh}
+@media (max-width:640px){
+  .podium{gap:7px}
+  .pod{padding:12px 6px}
+  .pod .pk{font-size:18px}
+  .pod .ph{font-size:12px}
+  .pod .ps{font-size:9.5px;letter-spacing:0}
+  .brow .md{display:none}
+}
 </style>
 </head>
 <body>
@@ -84,6 +181,7 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);f
 <path d="M42 0H110M-42 0H-110M0 42V110M0 -42V-110" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
 <circle r="15" fill="#1FA8FF"/></symbol></defs></svg>
 
+<div id="site">
 <nav><div class="wrap row">
   <a class="lockup" href="index.html"><svg viewBox="-110 -110 220 220" aria-hidden="true"><use href="#thm" x="-110" y="-110" width="220" height="220"/></svg><span class="wd">Tyre Hunt</span></a>
   <div style="display:flex;align-items:center;gap:14px"><a href="lot.html" style="font:700 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)">The Lot</a>
@@ -91,105 +189,316 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);f
 </div></nav>
 
 <header class="page"><div class="wrap">
-  <span class="eyebrow" id="eyebrow">Live lobby</span>
+  <span class="eyebrow" id="eyebrow">Meet board</span>
   <h1 id="title">Loading…</h1>
   <div class="where" id="where"></div>
-  <div class="livechip" id="livechip"><i></i><span id="liveTxt">LIVE</span></div>
-  <div class="stats" id="stats" style="display:none"></div>
+  <div class="livechip" id="livechip" hidden><i></i><span id="liveTxt"></span></div>
+  <div class="stats" id="stats" hidden></div>
 </div></header>
 
 <main class="wrap">
-  <div class="note" id="loading">Reading the board…</div>
-  <div class="note" id="missing" style="display:none">
-    That lobby isn't open. Codes are case-insensitive — check the code and try again.
+  <div class="note" id="loading" role="status">Reading the board…</div>
+  <div class="note" id="missing" hidden>
+    That meet isn't on the board. Codes are four letters or numbers: check the poster and try again.
   </div>
-  <div id="live" style="display:none">
-    <h2 class="sec">Standings · most models</h2>
+  <section id="upcoming" hidden>
+    <div class="soon">
+      <div class="big" id="soonWhen"></div>
+      <p>The board opens when the meet starts. Scan the poster at the show to play: photograph the cars on the lot, the judge names each one, and the rarest finds rank highest.</p>
+    </div>
+  </section>
+  <section id="live" hidden>
+    <div id="podium"></div>
+    <h2 class="sec" id="boardHead">Standings · show score</h2>
+    <p class="legend">Everyday 1 · Classic 3 · Rare 5 · Legendary 10 · +2 to the first hunter to file a model here</p>
     <div class="board" id="board"></div>
+    <p class="vh" id="lead" role="status" aria-live="polite"></p>
+    <div id="awards"></div>
     <h2 class="sec">Landing now</h2>
     <div class="grid" id="recent"></div>
-  </div>
+  </section>
 </main>
 
-<div class="joinband" id="joinband" style="display:none"><div class="wrap"><div class="inner">
+<div class="joinband" id="joinband" hidden><div class="wrap"><div class="inner">
   <div class="big" id="joinBig">You're standing next to these cars</div>
-  <p>Point your camera at real metal. The judge names it, grades the shot, and puts you on this board.</p>
-  <a class="cta" id="joinCta" href="https://hunt.tyrehunt.app">Join the lobby — free</a>
+  <p id="joinTxt">Point your phone at real metal. The judge names it and puts you on this board. Free, in your browser.</p>
+  <a class="cta" id="joinCta" href="https://hunt.tyrehunt.app">Play — free</a>
 </div></div></div>
 
-<footer>A <a href="index.html"><b>Tyre Hunt</b></a> board · every spot verified, numbered, and dated</footer>
+<footer>A <a href="index.html"><b>Tyre Hunt</b></a> meet board · every car named by the judge, filed on the lot</footer>
+</div>
+
+<div id="tv" hidden>
+  <div class="tvtop">
+    <svg viewBox="-110 -110 220 220" aria-hidden="true"><use href="#thm" x="-110" y="-110" width="220" height="220"/></svg>
+    <div class="tvname" id="tvName"></div>
+    <div class="tvclock" id="tvClock" role="timer"></div>
+  </div>
+  <div class="tvgrid">
+    <div class="tvboard">
+      <div class="tvh">STANDINGS · SHOW SCORE</div>
+      <div id="tvBoard" style="display:flex;flex-direction:column;flex:1;min-height:0"></div>
+      <div class="tvstats" id="tvStats"></div>
+    </div>
+    <div class="tvside">
+      <div class="tvqr" id="tvQr" role="img" aria-label="QR code: scan to play"></div>
+      <div class="tvtext">
+        <div class="tvscan">Scan to play</div>
+        <div class="tvcode" id="tvCode"></div>
+        <div class="tvurl" id="tvUrl"></div>
+        <div class="tvsub">Free in your phone's browser. Photograph the cars on the lot; the judge names every one.</div>
+        <div class="tvlegend">EVERYDAY 1 · CLASSIC 3 · RARE 5 · LEGENDARY 10 · FIRST HERE +2</div>
+      </div>
+    </div>
+  </div>
+  <div class="tvstrip" id="tvStrip"></div>
+  <button class="tvfull" id="tvFull" type="button">FULLSCREEN</button>
+</div>
+<div id="takeover" hidden role="status" aria-live="assertive">
+  <div class="toin"><div class="tok" id="toKind"></div><div class="ton" id="toName"></div><div class="toh" id="toHandle"></div></div>
+</div>
 
 <script>
 (function(){
 "use strict";
 var BASE = "https://kokxlzygppakgcebkygc.supabase.co";
 var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtva3hsenlncHBha2djZWJreWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTM5ODgsImV4cCI6MjA5OTg4OTk4OH0.c8N8aevxB-etS_b8HhG3M4BNlV3lM2gX3BO12vJRQCo";
+var APP = "https://hunt.tyrehunt.app/";
+function $(id){ return document.getElementById(id); }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
   return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-function img(p){ return BASE + "/storage/v1/object/public/captures/" + p; }
+/* a storage path goes into url('…'): every character that could close it is encoded */
+function img(p){
+  return BASE + "/storage/v1/object/public/captures/" + String(p || "").split("/").map(function(seg){
+    return encodeURIComponent(seg).replace(/[!'()*]/g, function(c){ return "%" + c.charCodeAt(0).toString(16).toUpperCase(); });
+  }).join("/");
+}
 function ago(iso){
-  var s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+  var s = Math.max(0, (now() - new Date(iso).getTime()) / 1000);
   if (s < 60) return "just now";
   if (s < 3600) return Math.floor(s/60) + "m ago";
   if (s < 86400) return Math.floor(s/3600) + "h ago";
   return Math.floor(s/86400) + "d ago";
 }
-var code = (new URLSearchParams(location.search).get("c") || "").trim();
-var first = true;
+var params = new URLSearchParams(location.search);
+var code = (params.get("c") || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
+var TV = params.get("tv") === "1";
+var skew = 0, data = null, first = true;
+function now(){ return Date.now() + skew; }
+function playUrl(){ return APP + "?lobby=" + encodeURIComponent(code); }
+function stateOf(d){
+  var s = Date.parse(d.starts_at), e = Date.parse(d.ends_at), t = now();
+  if (!isFinite(s) || !isFinite(e)) return d.state || "live";
+  return t < s ? "upcoming" : t < e ? "live" : "closed";
+}
+/* saved shots taken before the close can still arrive for an hour, so the
+   results are provisional until then */
+function locked(d){ var l = Date.parse(d.locks_at || ""); return !isFinite(l) || now() >= l; }
+function clock(iso){ try{ return new Date(iso).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); }catch(e){ return ""; } }
+function day(iso){ try{ return new Date(iso).toLocaleString([], { weekday: "long", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }); }catch(e){ return ""; } }
+function hms(ms){
+  ms = Math.max(0, ms); var h = Math.floor(ms / 3600000), m = Math.floor(ms % 3600000 / 60000), s = Math.floor(ms % 60000 / 1000);
+  return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(s).padStart(2, "0");
+}
+function until(ms){
+  var m = Math.round(Math.max(0, ms) / 60000);
+  if (m < 60) return m + " min";
+  var h = Math.floor(m / 60); return h + "h " + String(m % 60).padStart(2, "0") + "m";
+}
+function rarityLabel(r){ return String(r || "everyday").toUpperCase(); }
 
 function show(id){
-  ["loading","missing","live"].forEach(function(x){
-    document.getElementById(x).style.display = x === id ? (x === "live" ? "" : "") : "none";
-  });
+  ["loading","missing","upcoming","live"].forEach(function(x){ $(x).hidden = x !== id; });
 }
 
+/* ---------- the page (phones, laptops) ---------- */
 function paint(d){
-  document.getElementById("title").textContent = d.name || "Live lobby";
-  document.title = (d.name || "Live lobby") + " — live board on Tyre Hunt";
+  var st = stateOf(d);
+  $("title").textContent = d.name || "Meet board";
+  document.title = (d.name || "Meet board") + " — meet board on Tyre Hunt";
   var bits = [];
-  if (d.place) bits.push(d.place);
-  bits.push("Lobby " + d.code);
-  document.getElementById("where").textContent = bits.join(" · ");
+  if (d.place) bits.push(esc(d.place));
+  bits.push("Code " + esc(d.code));
+  if (d.organizer_ig) bits.push('hosted by <a href="https://instagram.com/' + encodeURIComponent(d.organizer_ig) + '" rel="noopener" target="_blank">@' + esc(d.organizer_ig) + '</a>');
+  $("where").innerHTML = bits.join(" · ");
+  paintClock(d);
 
-  var lc = document.getElementById("livechip");
-  if (d.live > 0){
-    lc.classList.add("on");
-    document.getElementById("liveTxt").textContent = d.live + " HUNTER" + (d.live === 1 ? "" : "S") + " SHOOTING NOW";
-  } else lc.classList.remove("on");
+  var lc = $("livechip");
+  lc.hidden = !(st === "live" && d.live > 0);
+  if (!lc.hidden) $("liveTxt").textContent = d.live + " HUNTER" + (d.live === 1 ? "" : "S") + " SHOOTING NOW";
 
-  var st = document.getElementById("stats");
-  st.style.display = "";
-  st.innerHTML =
-    '<div class="stat"><div class="v">' + d.spots + '</div><div class="l">Verified spots</div></div>' +
-    '<div class="stat"><div class="v">' + d.models + '</div><div class="l">Models</div></div>' +
-    '<div class="stat"><div class="v">' + d.hunters + '</div><div class="l">Hunters</div></div>';
+  var stt = $("stats");
+  stt.hidden = st === "upcoming";
+  stt.innerHTML =
+    '<div class="stat"><div class="v">' + (d.spots || 0) + '</div><div class="l">Cars filed</div></div>' +
+    '<div class="stat"><div class="v">' + (d.models || 0) + '</div><div class="l">Models</div></div>' +
+    '<div class="stat"><div class="v">' + (d.hunters || 0) + '</div><div class="l">Hunters</div></div>';
 
-  var board = d.board || [];
-  document.getElementById("board").innerHTML = board.length
-    ? board.map(function(b, i){
-        return '<div class="brow p' + (i+1) + '"><span class="pos">' + (i === 0 ? "★" : "#" + (i+1)) + '</span>' +
+  var jb = $("joinband");
+  jb.hidden = false;
+  if (st === "closed"){
+    $("joinBig").textContent = "This meet has closed";
+    $("joinTxt").textContent = "Hunt the next one: the judge names every car you photograph, anywhere.";
+    $("joinCta").textContent = "Start hunting — free";
+    $("joinCta").href = APP;
+  } else {
+    $("joinBig").textContent = st === "upcoming" ? "Play when the meet starts" : (d.spots > 0 ? "You're standing next to these cars" : "Take the first spot");
+    $("joinTxt").textContent = "Point your phone at real metal. The judge names it and puts you on this board. Free, in your browser.";
+    $("joinCta").textContent = st === "upcoming" ? "Get ready — free" : "Play — free";
+    $("joinCta").href = playUrl();
+  }
+
+  if (st === "upcoming"){
+    $("soonWhen").textContent = "Starts " + day(d.starts_at);
+    show("upcoming");
+    return;
+  }
+
+  var board = d.board || [], fin = st === "closed" && locked(d);
+  $("boardHead").textContent = st !== "closed" ? "Standings · show score"
+    : fin ? "Final standings · show score" : "Standings · results lock at " + clock(d.locks_at);
+  $("board").innerHTML = !board.length
+    ? '<div class="brow wait"><span class="hn">Nobody\'s on the board yet. The first car filed on the lot takes the lead.</span></div>'
+    : board.map(function(b, i){
+        return '<div class="brow p' + b.rank + '"><span class="pos">' + (b.rank === 1 ? "★" : "#" + b.rank) + '</span>' +
           '<span class="hn">@' + esc(b.handle) + '</span>' +
-          '<span class="sc">' + b.models + '<span class="sl">models</span></span></div>';
-      }).join("")
-    : '<div class="brow"><span class="hn" style="color:var(--muted);font-weight:600">Board is empty — the first capture takes the lead.</span></div>';
+          (b.firsts ? '<span class="fs" title="Firsts at this meet">★' + b.firsts + '</span>' : "") +
+          '<span class="md">' + b.models + ' model' + (b.models === 1 ? "" : "s") + '</span>' +
+          '<span class="sc">' + b.score + '<span class="sl">pts</span></span></div>';
+      }).join("");
+
+  // the close: a podium, then the two awards
+  var pod = $("podium");
+  if (st === "closed" && board.length){
+    pod.innerHTML = (fin ? "" : '<p class="legend" style="margin:26px 0 -18px">Provisional until ' + esc(clock(d.locks_at)) + '</p>') +
+      '<div class="podium">' + board.slice(0, 3).map(function(b){
+      return '<div class="pod p' + b.rank + '"><div class="pk">' + (b.rank === 1 ? "1ST" : b.rank === 2 ? "2ND" : "3RD") + '</div>' +
+        '<div class="ph">@' + esc(b.handle) + '</div><div class="ps">' + b.score + ' PTS · ' + b.models + ' MODEL' + (b.models === 1 ? "" : "S") + '</div></div>';
+    }).join("") + '</div>';
+  } else pod.innerHTML = "";
+
+  var aw = d.awards || {}, cards = [];
+  if (aw.rarest) cards.push(awardCard(st === "closed" ? "Rarest find" : "Rarest find so far", aw.rarest.name,
+    '<span class="chip ' + esc(aw.rarest.rarity) + '">' + esc(aw.rarest.rarity) + '</span>', aw.rarest.handle, aw.rarest.img_path));
+  if (aw.best_shot) cards.push(awardCard(st === "closed" ? "Best shot" : "Best shot so far", aw.best_shot.name,
+    '<span class="chip everyday">SHOT ' + esc(aw.best_shot.shot) + '</span>', aw.best_shot.handle, aw.best_shot.img_path));
+  $("awards").innerHTML = cards.length ? '<div class="awards">' + cards.join("") + '</div>' : "";
 
   var rec = d.recent || [];
-  document.getElementById("recent").innerHTML = rec.length
+  $("recent").innerHTML = rec.length
     ? rec.map(function(r){
-        return '<div class="card"><div class="cimg" style="background-image:url(\'' + img(esc(r.img_path)) + '\')"></div>' +
+        return '<div class="card">' + (r.first ? '<span class="first">★ FIRST HERE</span>' : "") +
+          '<div class="cimg" style="background-image:url(\'' + img(r.img_path) + '\')"></div>' +
           '<div class="cbody"><div class="cname">' + esc(r.name || "A find") +
           '<span class="chip ' + esc(r.rarity || "everyday") + '">' + esc(r.rarity || "everyday") + '</span></div>' +
-          '<div class="cmeta">@' + esc(r.handle) + (r.shot != null ? " · SHOT " + r.shot : "") + " · " + ago(r.created_at) + "</div></div></div>";
+          '<div class="cmeta">@' + esc(r.handle) + (r.shot != null ? " · SHOT " + esc(r.shot) : "") + " · " + ago(r.created_at) + "</div></div></div>";
       }).join("")
     : '<div class="note" style="grid-column:1/-1;padding:26px 0">Nothing filed yet. Be the first name on the board.</div>';
-
-  var jb = document.getElementById("joinband");
-  jb.style.display = "";
-  document.getElementById("joinCta").href = "https://hunt.tyrehunt.app/?lobby=" + encodeURIComponent(d.code);
-  document.getElementById("joinBig").textContent = d.spots > 0
-    ? "You're standing next to these cars"
-    : "Take the first spot";
   show("live");
+  announceLead(d);
+}
+var lastLead = "";
+function announceLead(d){
+  var b = (d.board || [])[0];
+  var line = b ? "Leader: @" + b.handle + ", " + b.score + " points" : "";
+  if (line && line !== lastLead){ lastLead = line; $("lead").textContent = line; }
+}
+function awardCard(kind, name, chip, handle, path){
+  return '<div class="award">' + (path ? '<div class="aimg" style="background-image:url(\'' + img(path) + '\')"></div>' : "") +
+    '<div class="ab"><div class="ak">' + esc(kind) + '</div><div class="an">' + esc(name || "A find") + chip + '</div>' +
+    '<div class="ah">@' + esc(handle) + '</div></div></div>';
+}
+function paintClock(d){
+  if (!d) return;
+  var st = stateOf(d), eb = $("eyebrow");
+  eb.className = "eyebrow" + (st === "closed" ? " closed" : "");
+  eb.textContent = st === "upcoming" ? "Meet board · opens in " + until(Date.parse(d.starts_at) - now())
+    : st === "live" ? "Live · " + hms(Date.parse(d.ends_at) - now()) + " left"
+    : locked(d) ? "Final results" : "Closed · results lock at " + clock(d.locks_at);
+  if (TV){
+    var c = $("tvClock");
+    c.className = "tvclock" + (st === "closed" ? " closed" : "");
+    c.textContent = st === "upcoming" ? "STARTS IN " + until(Date.parse(d.starts_at) - now()).toUpperCase()
+      : st === "live" ? hms(Date.parse(d.ends_at) - now()) + " LEFT"
+      : locked(d) ? "FINAL RESULTS" : "RESULTS LOCK AT " + clock(d.locks_at).toUpperCase();
+  }
+}
+
+/* ---------- TV: the screen at the organizer's table ---------- */
+var qrDone = false, seenFirsts = null, lastTakeover = 0, takeQueue = [], wake = null;
+function paintTv(d){
+  var st = stateOf(d);
+  $("tvName").textContent = d.name || "Meet board";
+  $("tvCode").textContent = "CODE " + d.code;
+  $("tvUrl").textContent = "hunt.tyrehunt.app/?lobby=" + d.code;
+  $("tvQr").style.visibility = "";
+  var board = d.board || [];
+  $("tvBoard").innerHTML = st === "upcoming"
+    ? '<div class="tvwait">The board opens at ' + esc(clock(d.starts_at)) + '.<br>Scan the code to get ready.</div>'
+    : !board.length ? '<div class="tvwait">Nobody\'s on the board yet.<br>The first car filed takes the lead.</div>'
+    : board.slice(0, 10).map(function(b){
+        return '<div class="tvrow p' + b.rank + '"><span class="pos">' + (b.rank === 1 ? "★" : b.rank) + '</span>' +
+          '<span class="hn">@' + esc(b.handle) + '</span>' + (b.firsts ? '<span class="fs">★' + b.firsts + '</span>' : "") +
+          '<span class="sc">' + b.score + '</span></div>';
+      }).join("");
+  $("tvStats").innerHTML = '<div><b>' + (d.spots || 0) + '</b><span>Cars filed</span></div><div><b>' + (d.models || 0) + '</b><span>Models</span></div>' +
+    '<div><b>' + (d.hunters || 0) + '</b><span>Hunters</span></div><div><b>' + (d.live || 0) + '</b><span>Shooting now</span></div>';
+  fitTvRows();
+  $("tvStrip").innerHTML = (d.recent || []).slice(0, 10).map(function(r){
+    return '<div class="t' + (r.first ? " f" : "") + '" style="background-image:url(\'' + img(r.img_path) + '\')"><span>' + (r.first ? "★ " : "") + esc(r.name) + ' · @' + esc(r.handle) + '</span></div>';
+  }).join("");
+  paintClock(d);
+  if (!qrDone) drawQr();
+  takeovers(d);
+}
+/* only the rows that fit: the last ones go rather than slide under the stats */
+function fitTvRows(){
+  var box = $("tvBoard"), rows = box.querySelectorAll(".tvrow");
+  for (var i = rows.length - 1; i > 0 && box.scrollHeight > box.clientHeight + 1; i--) rows[i].remove();
+}
+/* the QR is drawn only for a meet the board has loaded, with the code it returned */
+function drawQr(){
+  if (typeof QRCode !== "function" || !data || !data.code) return;
+  qrDone = true;
+  $("tvQr").innerHTML = "";
+  new QRCode($("tvQr"), { text: APP + "?lobby=" + encodeURIComponent(data.code), width: 512, height: 512, colorDark: "#0A0B0E", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+  setTimeout(fitTvRows, 60);
+}
+function tvMessage(msg){
+  $("tvName").textContent = "Meet board";
+  $("tvBoard").innerHTML = '<div class="tvwait">' + msg + '</div>';
+  $("tvQr").style.visibility = "hidden";
+}
+/* A rare or legendary first at the meet takes the screen for ten seconds, at
+   most once every three minutes. The first look only remembers what's there. */
+function takeovers(d){
+  if (stateOf(d) === "closed"){ takeQueue = []; return; }
+  var rows = (d.recent || []).filter(function(r){ return r.first && (r.rarity === "rare" || r.rarity === "legendary") && r.img_path; });
+  var key = function(r){ return r.handle + "|" + r.name; };
+  if (!seenFirsts){ seenFirsts = {}; rows.forEach(function(r){ seenFirsts[key(r)] = 1; }); return; }
+  rows.forEach(function(r){ if (!seenFirsts[key(r)]){ seenFirsts[key(r)] = 1; takeQueue.push(r); } });
+  // only fresh finds, and only the newest two waiting
+  takeQueue = takeQueue.filter(function(r){ return now() - Date.parse(r.created_at) < 300000; })
+    .sort(function(a, b){ return Date.parse(b.created_at) - Date.parse(a.created_at); }).slice(0, 2);
+  runTakeover();
+}
+function runTakeover(){
+  if (!takeQueue.length || !$("takeover").hidden || Date.now() - lastTakeover < 180000) return;
+  if (data && stateOf(data) === "closed"){ takeQueue = []; return; }
+  var r = takeQueue.shift();
+  if (now() - Date.parse(r.created_at) >= 300000) return;
+  lastTakeover = Date.now();
+  var t = $("takeover");
+  t.style.backgroundImage = "url('" + img(r.img_path) + "')";
+  $("toKind").textContent = "★ FIRST AT THE MEET · " + rarityLabel(r.rarity);
+  $("toName").textContent = r.name || "A find";
+  $("toHandle").textContent = "@" + r.handle;
+  t.hidden = false;
+  setTimeout(function(){ t.hidden = true; }, 10000);
+}
+function wakeLock(){
+  if (!("wakeLock" in navigator) || document.hidden) return;
+  navigator.wakeLock.request("screen").then(function(w){ wake = w; }).catch(function(){});
 }
 
 function load(){
@@ -200,21 +509,55 @@ function load(){
   })
   .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
   .then(function(d){
-    if (!d){ if (first) show("missing"); return; }
-    paint(d);
+    if (!d){
+      if (first){ show("missing"); $("title").textContent = "No meet"; if (TV) tvMessage("No meet with the code " + esc(code || "") + ".<br>Check the code on the poster."); }
+      return;
+    }
+    if (d.now){ var sk = Date.parse(d.now) - Date.now(); if (isFinite(sk)) skew = sk; }
+    data = d;
+    if (TV){ paintTv(d); if (!qrDone) drawQr(); } else paint(d);
     first = false;
   })
   .catch(function(){
-    if (first) document.getElementById("loading").textContent = "The board didn't load — refresh in a moment.";
+    if (first){
+      $("loading").textContent = "The board didn't load. Refresh in a moment.";
+      if (TV) tvMessage("The board didn't load.<br>It will try again in a moment.");
+    }
   });
 }
 
-if (!code){ show("missing"); }
+if (TV){
+  document.body.classList.add("tv");
+  $("site").hidden = true;
+  $("tv").hidden = false;
+  var s = document.createElement("script");
+  s.src = "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js";
+  s.onload = function(){ if (!qrDone) drawQr(); };
+  s.onerror = function(){ $("tvQr").hidden = true; };   // the code and the address under it still get people in
+  document.head.appendChild(s);
+  var fsEl = function(){ return document.fullscreenElement || document.webkitFullscreenElement || null; };
+  if (!(document.fullscreenEnabled || document.webkitFullscreenEnabled)) $("tvFull").hidden = true;
+  $("tvFull").addEventListener("click", function(){
+    var el = document.documentElement;
+    if (fsEl()){ (document.exitFullscreen || document.webkitExitFullscreen || function(){}).call(document); return; }
+    (el.requestFullscreen || el.webkitRequestFullscreen || function(){}).call(el);
+    wakeLock();
+  });
+  var fsSync = function(){ $("tvFull").hidden = !!fsEl(); };
+  document.addEventListener("fullscreenchange", fsSync);
+  document.addEventListener("webkitfullscreenchange", fsSync);
+  window.addEventListener("resize", function(){ if (data) paintTv(data); });
+  // row heights change when the web fonts arrive: fit the board again then
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ if (data) paintTv(data); });
+  wakeLock();
+}
+if (!code){ show("missing"); $("title").textContent = "No meet"; if (TV) tvMessage("This screen needs a meet code.<br>Open lobby.html?c=CODE&amp;tv=1"); }
 else {
   load();
-  // a board at an event is a live thing; keep it current while the page is open
-  setInterval(function(){ if (!document.hidden) load(); }, 30000);
-  document.addEventListener("visibilitychange", function(){ if (!document.hidden) load(); });
+  // a board at a meet is a live thing; the table screen refreshes faster
+  setInterval(function(){ if (!document.hidden) load(); }, TV ? 15000 : 30000);
+  setInterval(function(){ paintClock(data); if (TV) runTakeover(); }, 1000);
+  document.addEventListener("visibilitychange", function(){ if (!document.hidden){ load(); if (TV) wakeLock(); } });
 }
 })();
 </script>

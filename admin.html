@@ -169,6 +169,7 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
       <button data-v="xp">XP</button>
       <button data-v="judge">Judge</button>
       <button data-v="roster">Rosters</button>
+      <button data-v="meets">Meets</button>
     </nav>
     <div class="who"><span id="whoami"></span><button class="btn sm" id="refresh">↻ REFRESH</button><button class="btn sm" id="signout">SIGN OUT</button></div>
   </header>
@@ -321,6 +322,35 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
       <div id="rsList"><div class="empty">Loading…</div></div>
     </section>
 
+    <!-- MEETS -->
+    <section class="view" id="v-meets">
+      <div class="tools">
+        <span class="pill" id="mtCount">—</span>
+        <button class="btn sm" id="mtNew">NEW MEET</button>
+      </div>
+      <div id="mtForm" style="display:none;background:var(--panel);border:1px solid rgba(24,183,220,.35);border-radius:14px;padding:14px;margin-bottom:12px">
+        <input type="hidden" id="mtId">
+        <div class="t" style="margin-bottom:8px" id="mtFormTitle">New meet</div>
+        <div class="d" style="margin-bottom:10px">A meet is a place and a window. Shots inside the fence while it runs rank on its board. A checked meet also cuts the gap between shots to 4 seconds, lets hunters shoot the same car, and pays check-in XP. The daily caps stay.</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+          <label class="d">Name<br><input id="mtName" maxlength="60" style="width:100%" placeholder="Cars &amp; Coffee · Redmond"></label>
+          <label class="d">Place<br><input id="mtPlace" maxlength="60" style="width:100%" placeholder="Marymoor Park lot"></label>
+          <label class="d">Starts (your time)<br><input id="mtStart" type="datetime-local" style="width:100%"></label>
+          <label class="d">Ends (your time)<br><input id="mtEnd" type="datetime-local" style="width:100%"></label>
+          <label class="d">Pin: "lat, lng" or a Google Maps link<br><input id="mtPin" style="width:100%" placeholder="47.6615, -122.1219"></label>
+          <label class="d">Fence radius (m)<br><input id="mtRadius" type="number" min="50" max="2000" step="10" style="width:100%" value="300"></label>
+          <label class="d">Organizer Instagram<br><input id="mtIg" style="width:100%" placeholder="@carsandcoffee"></label>
+          <label class="d" style="display:flex;align-items:center;gap:8px;margin-top:18px"><input type="checkbox" id="mtVerified"> Checked meet</label>
+        </div>
+        <div class="d" id="mtPinOut" style="margin-top:8px"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn sm" id="mtSave">SAVE MEET</button>
+          <button class="btn sm" id="mtCancel">CANCEL</button>
+        </div>
+      </div>
+      <div id="mtList"><div class="empty">Loading…</div></div>
+    </section>
+
     <!-- MAP -->
     <section class="view" id="v-map">
       <div class="tools">
@@ -444,6 +474,7 @@ function gotoTab(v){
   if(v === "xp") loadXp();
   if(v === "judge") loadJudge();
   if(v === "roster") loadRosters();
+  if(v === "meets") loadMeets();
 }
 document.querySelector("nav.tabs").addEventListener("click", e => {
   const b = e.target.closest("button"); if(!b) return;
@@ -718,6 +749,116 @@ function rsOpen(e){
   $("rsForm").scrollIntoView({ block: "start" });
 }
 $("rsNew").addEventListener("click", () => rsOpen(null));
+/* ================= MEETS =================
+   A meet is a hunts row with a fence and a window. Shots inside the fence rank
+   on its board; a checked meet also relaxes the shot gap and same-car
+   duplicates there, and pays check-in XP. */
+let mtRows = [];
+function mtParsePin(s){
+  s = String(s || "").trim();
+  try{ s = decodeURIComponent(s); }catch(e){}
+  if(!s) return null;
+  const num = "(-?\\d+(?:\\.\\d+)?)";
+  // a dropped pin (!3d…!4d…) or a search/pin query first; the "@" map view centre only as a last resort
+  const tries = [["pin", new RegExp("!3d" + num + "!4d" + num)], ["pin", new RegExp("[?&](?:q|ll|query)=" + num + ",\\s*" + num)],
+    ["pair", new RegExp("^\\s*" + num + "\\s*[,\\s]\\s*" + num + "\\s*$")], ["view", new RegExp("@" + num + ",\\s*" + num)]];
+  for(const [kind, re] of tries){
+    const m = s.match(re);
+    if(!m) continue;
+    const lat = +m[1], lng = +m[2];
+    if(!(Math.abs(lat) <= 90 && Math.abs(lng) <= 180)) return undefined;
+    return { lat: +lat.toFixed(6), lng: +lng.toFixed(6), kind };
+  }
+  return undefined;
+}
+function mtIg(s){
+  s = String(s || "").trim().replace(/^(https?:\/\/)?(www\.)?instagram\.com\//i, "").replace(/[/?#].*$/, "").replace(/^@/, "");
+  return s;
+}
+function mtLocal(iso){
+  if(!iso) return "";
+  const d = new Date(iso), p = n => String(n).padStart(2, "0");
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + "T" + p(d.getHours()) + ":" + p(d.getMinutes());
+}
+async function loadMeets(){
+  const box = $("mtList"); box.innerHTML = '<div class="empty">Loading…</div>';
+  try{
+    const { data, error } = await sb.rpc("admin_hunts");
+    if(error) throw error;
+    mtRows = data || [];
+    $("mtCount").textContent = mtRows.length + " meets";
+    if(!mtRows.length){ box.innerHTML = '<div class="empty">No meets yet. Create one here, then print its poster from the app.</div>'; return; }
+    const now = Date.now();
+    box.innerHTML = mtRows.map(h => {
+      const closes = h.ends_at ? Date.parse(h.ends_at) : Date.parse(h.starts_at) + 3 * 3600e3;
+      const st = now < Date.parse(h.starts_at) ? "upcoming" : now < closes ? "live" : "closed";
+      const c = encodeURIComponent(h.lobby_code || "");
+      return '<div class="row"><div class="grow"><div class="t">' + esc(h.name) + ' <span class="pill' + (st === "live" ? " gold" : "") + '">' + st + '</span>' +
+        (h.verified ? ' <span class="pill gold">checked</span>' : "") + (h.lat == null ? ' <span class="pill">no pin</span>' : "") + '</div>' +
+        '<div class="d">' + esc(h.lobby_code || "—") + ' · ' + esc(new Date(h.starts_at).toLocaleString()) +
+        (h.ends_at ? ' → ' + esc(new Date(h.ends_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })) : "") +
+        (h.place ? ' · ' + esc(h.place) : "") + ' · @' + esc(h.host_handle || "—") + ' · ' + h.hunters + ' hunters · ' + h.receipts + ' counted shots · ' + h.rsvps + ' in' +
+        (h.lat != null ? ' · ' + h.radius_m + ' m fence' : "") + '</div></div>' +
+        '<a class="btn sm" href="lobby.html?c=' + c + '" target="_blank" rel="noopener">BOARD</a>' +
+        '<a class="btn sm" href="lobby.html?c=' + c + '&amp;tv=1" target="_blank" rel="noopener">TV</a>' +
+        '<button class="btn sm" data-mtedit="' + h.id + '">EDIT</button></div>';
+    }).join("");
+  }catch(e){ box.innerHTML = '<div class="empty">Couldn\'t load meets. Check you\'re signed in as an operator.</div>'; }
+}
+function mtPinPreview(){
+  const p = mtParsePin($("mtPin").value);
+  $("mtPinOut").innerHTML = p === null ? "No pin yet: shots can file to this meet by its code, but only shots inside a pinned fence rank."
+    : p === undefined ? '<span style="color:var(--ember)">Couldn\'t read that pin. Paste "lat, lng", or a full Google Maps address (a short maps.app.goo.gl link carries no pin: open it first, then copy the address).</span>'
+    : 'Pin ' + p.lat + ', ' + p.lng + ' · <a href="https://www.google.com/maps?q=' + p.lat + ',' + p.lng + '" target="_blank" rel="noopener" style="text-decoration:underline">check it on the map</a>' +
+      (p.kind === "view" ? ' · <span style="color:var(--ember)">this is the map view\'s centre, not a dropped pin: check it lands on the lot</span>'
+        : p.kind === "pair" ? ' · latitude first, then longitude' : "");
+}
+function mtOpen(h){
+  $("mtForm").style.display = "";
+  $("mtFormTitle").textContent = h ? "Edit " + h.name + " · " + (h.lobby_code || "") : "New meet";
+  $("mtId").value = h ? h.id : "";
+  $("mtName").value = h ? h.name : ""; $("mtPlace").value = h ? (h.place || "") : "";
+  $("mtStart").value = h ? mtLocal(h.starts_at) : ""; $("mtEnd").value = h ? mtLocal(h.ends_at) : "";
+  $("mtPin").value = h && h.lat != null ? h.lat + ", " + h.lng : "";
+  $("mtRadius").value = h ? h.radius_m : 300;
+  $("mtIg").value = h && h.organizer_ig ? "@" + h.organizer_ig : "";
+  $("mtVerified").checked = !!(h && h.verified);
+  mtPinPreview();
+  $("mtForm").scrollIntoView({ block: "start" });
+}
+$("mtPin").addEventListener("input", mtPinPreview);
+$("mtNew").addEventListener("click", () => mtOpen(null));
+$("mtCancel").addEventListener("click", () => { $("mtForm").style.display = "none"; });
+$("mtList").addEventListener("click", e => {
+  const b = e.target.closest("[data-mtedit]"); if(!b) return;
+  const h = mtRows.find(x => String(x.id) === b.dataset.mtedit); if(h) mtOpen(h);
+});
+$("mtSave").addEventListener("click", async () => {
+  const name = $("mtName").value.trim(), place = $("mtPlace").value.trim(), start = $("mtStart").value, end = $("mtEnd").value;
+  if(!name || !start){ toast("Name and start are needed"); return; }
+  if(name.length < 2 || name.length > 60){ toast("The name has to be 2 to 60 characters"); return; }
+  if(place.length > 60){ toast("The place has to be 60 characters or fewer"); return; }
+  const ig = mtIg($("mtIg").value);
+  if(ig && !/^[A-Za-z0-9._]{1,30}$/.test(ig)){ toast("That Instagram handle doesn't look right"); return; }
+  const pin = mtParsePin($("mtPin").value);
+  if(pin === undefined){ toast("Couldn't read the pin"); return; }
+  const s = new Date(start), en = end ? new Date(end) : null;
+  if(isNaN(s.getTime()) || (en && isNaN(en.getTime()))){ toast("Check the times"); return; }
+  if(en && !(en > s)){ toast("It has to end after it starts"); return; }
+  if(en && en - s > 24 * 3600e3){ toast("A meet runs 24 hours at most"); return; }
+  const radius = parseInt($("mtRadius").value, 10) || 300;
+  if(radius < 50 || radius > 2000){ toast("The fence radius has to be 50 to 2000 m"); return; }
+  $("mtSave").disabled = true;
+  try{
+    const { data, error } = await sb.rpc("admin_hunt_save", { p_id: $("mtId").value ? +$("mtId").value : null,
+      p_name: name, p_place: place, p_starts_at: s.toISOString(), p_ends_at: en ? en.toISOString() : null,
+      p_lat: pin ? pin.lat : null, p_lng: pin ? pin.lng : null, p_radius_m: radius,
+      p_organizer_ig: ig, p_verified: $("mtVerified").checked });
+    if(error) throw error;
+    toast("Saved · code " + data.code); $("mtForm").style.display = "none"; loadMeets();
+  }catch(e){ toast("That didn't save: " + (e.message || e)); }
+  $("mtSave").disabled = false;
+});
 /* ---- season rosters ---- */
 function rsSeasonOpen(seriesId, season){
   $("rsSeasonForm").style.display = ""; $("rsForm").style.display = "none";
@@ -849,7 +990,8 @@ async function loadJudge(){
 const XP_EVENT = { capture_world_first:"First ever filed", capture_region_first:"First in region", capture_new_model:"New model",
   capture_repeat:"Another sighting", lot_sign_verified:"For-sale sign verified",
   referral_made:"A friend you brought in", referral_joined:"Joined through a friend",
-  star_car_named:"Named a Star Car", sighting_confirmed:"Sighting confirmed by the owner" };
+  star_car_named:"Named a Star Car", sighting_confirmed:"Sighting confirmed by the owner",
+  event_checkin:"Checked in at a meet" };
 let xpLatest = false, xpOpen = null;
 function xpLineRow(l, withHandle){
   return '<div class="row" style="'+(l.reversed_at?'opacity:.55':'')+'">'+
