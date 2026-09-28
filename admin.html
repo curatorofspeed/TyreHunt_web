@@ -264,6 +264,7 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
       <div class="tools">
         <span class="pill" id="jdCount">—</span>
       </div>
+      <div id="jdWatch"></div>
       <div id="jdList"><div class="empty">Loading…</div></div>
     </section>
 
@@ -963,7 +964,27 @@ $("rsDelete").addEventListener("click", async () => {
 /* ================= JUDGE =================
    Corrections hunters made in their dossiers. The verify function reads the
    same confusions list and shows the judge the most repeated ones. */
+/* Model watch: which model judged, how often a call failed and why, speed and
+   tokens per call, and what hunters corrected, per model (last 14 days). */
+async function loadJudgeWatch(){
+  const box = $("jdWatch");
+  try{
+    const { data, error } = await sb.rpc("admin_judge_watch", { p_days: 14 });
+    if(error) throw error;
+    const caps = data.captures || [], calls = data.calls || [];
+    let h = '<div class="row" style="flex-direction:column;align-items:stretch"><div class="t">Model watch · last 14 days</div>';
+    h += caps.length ? caps.map(c => '<div class="d"><b style="color:var(--ink)">' + esc(c.model) + '</b> · ' + c.judged + ' judged · ' + c.counted + ' counted · ' +
+      c.corrected + ' corrected (' + (c.judged ? Math.round(100 * c.corrected / c.judged) : 0) + '%) · ' + (c.rare_pct ?? 0) + '% rare or legendary · confidence ' + (c.avg_conf ?? "—") + '</div>').join("")
+      : '<div class="d">No judged captures in this window.</div>';
+    h += calls.length ? '<div class="d" style="margin-top:8px">Claude calls by day:</div>' + calls.slice(0, 40).map(r => '<div class="d">' + esc(r.day) + ' · ' + esc(r.model) + ' · ' + esc(r.mode) + ' · ' + r.calls + ' calls' +
+      (r.failed ? ' · <b style="color:var(--ember)">' + r.failed + ' failed</b> (' + esc(r.failures || "") + ')' : ' · 0 failed') +
+      ' · p50 ' + (r.p50_ms ?? "—") + ' ms · p95 ' + (r.p95_ms ?? "—") + ' ms · ~' + (r.avg_in ?? "—") + ' in / ' + (r.avg_out ?? "—") + ' out tokens</div>').join("")
+      : '<div class="d" style="margin-top:8px">No Claude calls logged yet (logging started with judge v42).</div>';
+    box.innerHTML = h + '</div>';
+  }catch(e){ box.innerHTML = ""; }
+}
 async function loadJudge(){
+  loadJudgeWatch();
   const box = $("jdList"); box.innerHTML = '<div class="empty">Loading…</div>';
   try{
     const [{ data: conf, error: e1 }, { data: rows, error: e2 }] = await Promise.all([
