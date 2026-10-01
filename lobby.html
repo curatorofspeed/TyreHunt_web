@@ -364,7 +364,7 @@ function paint(d){
           '<span class="hn">@' + esc(b.handle) + '</span>' +
           (b.firsts ? '<span class="fs" title="Firsts at this meet">★' + b.firsts + '</span>' : "") +
           '<span class="md">' + b.models + ' model' + (b.models === 1 ? "" : "s") + '</span>' +
-          '<span class="sc">' + b.score + '<span class="sl">pts</span></span></div>';
+          '<span class="sc">' + b.score + '</span></div>';
       }).join("");
 
   // the close: a podium, then the two awards
@@ -373,7 +373,7 @@ function paint(d){
     pod.innerHTML = (fin ? "" : '<p class="legend" style="margin:26px 0 -18px">Provisional until ' + esc(clock(d.locks_at)) + '</p>') +
       '<div class="podium">' + board.slice(0, 3).map(function(b){
       return '<div class="pod p' + b.rank + '"><div class="pk">' + (b.rank === 1 ? "1ST" : b.rank === 2 ? "2ND" : "3RD") + '</div>' +
-        '<div class="ph">@' + esc(b.handle) + '</div><div class="ps">' + b.score + ' PTS · ' + b.models + ' MODEL' + (b.models === 1 ? "" : "S") + '</div></div>';
+        '<div class="ph">@' + esc(b.handle) + '</div><div class="ps">' + b.score + ' · ' + b.models + ' MODEL' + (b.models === 1 ? "" : "S") + '</div></div>';
     }).join("") + '</div>';
   } else pod.innerHTML = "";
 
@@ -400,7 +400,7 @@ function paint(d){
 var lastLead = "";
 function announceLead(d){
   var b = (d.board || [])[0];
-  var line = b ? "Leader: @" + b.handle + ", " + b.score + " points" : "";
+  var line = b ? "Leader: @" + b.handle + ", show score " + b.score : "";
   if (line && line !== lastLead){ lastLead = line; $("lead").textContent = line; }
 }
 function awardCard(kind, name, chip, handle, path){

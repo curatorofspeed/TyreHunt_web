@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="apple-itunes-app" content="app-id=6803203973">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gamify your Cars &amp; Coffee with Meet Mode | Tyre Hunt</title>
+<meta name="description" content="Turn your Cars &amp; Coffee into a live car hunt. Your crowd scans a poster and shoots the rows; the judge scores each find by rarity. Free for organizers.">
+<meta name="theme-color" content="#0A0B0E">
+<meta property="og:title" content="Gamify your Cars &amp; Coffee with Meet Mode">
+<meta property="og:description" content="Your crowd scans a poster and works the rows. The judge scores each find by rarity, a board at your table shows who's ahead, and you read out the winners. Free for organizers.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.tyrehunt.app/meets.html">
+<meta property="og:site_name" content="Tyre Hunt">
+<meta property="og:image" content="https://www.tyrehunt.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Tyre Hunt — a registry of cars found in the wild">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gamify your Cars &amp; Coffee with Meet Mode">
+<meta name="twitter:description" content="Your crowd scans a poster and works the rows; the judge scores each find by rarity. Free for organizers.">
+<meta name="twitter:image" content="https://www.tyrehunt.app/og.png">
+<link rel="canonical" href="https://www.tyrehunt.app/meets.html">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://kokxlzygppakgcebkygc.supabase.co" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Racing+Sans+One&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --carbon:#0A0B0E;
+  --navy:#021A36;
+  --panel:#12141A;
+  --line:rgba(255,255,255,.10);
+  --ink:#F2F3F6;
+  --muted:#98A0AC;
+  --ember:#18B7DC;
+  --gold:#5BD8F0;
+  --cream:#FBF8F3;
+  --paper-muted:#5A6B80;
+  --scan-rgb:94,151,255;
+  --disp:'Archivo',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --pad:clamp(20px,5vw,64px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--carbon);color:var(--ink);font-family:var(--disp);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--ember);outline-offset:3px;border-radius:4px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:var(--pad)}
+
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(10,11,14,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .row{display:flex;align-items:center;justify-content:space-between;height:62px}
+.lockup{display:flex;align-items:center;gap:9px}
+.lockup .mk{width:28px;height:28px;color:var(--ink);overflow:visible}
+.lockup .wd{font:700 clamp(14.5px,4.6vw,17.5px) 'Racing Sans One',var(--disp);letter-spacing:.01em;text-transform:uppercase;color:var(--ink);white-space:nowrap;line-height:1}
+nav .links{display:flex;align-items:center;gap:26px;font-size:13px;font-weight:600;color:var(--muted)}
+nav .links a:hover{color:var(--ink)}
+@media(max-width:720px){nav .links a:not(.btn){display:none}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--disp);font-weight:800;font-size:12.5px;letter-spacing:.06em;padding:11px 20px;border-radius:999px;border:1px solid var(--line);color:var(--ink);background:transparent;cursor:pointer;transition:transform .12s ease,border-color .12s ease}
+.btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.28)}
+.btn.hot{background:linear-gradient(180deg,var(--gold),var(--ember));color:#04222A;border-color:transparent}
+.btn.lg{font-size:14px;padding:15px 28px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:clamp(48px,9vw,104px) 0 clamp(56px,8vw,96px);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-20% -10% auto -10%;height:70%;background:radial-gradient(60% 70% at 30% 0%,rgba(24,183,220,.14),transparent 70%);pointer-events:none}
+.herogrid{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,64px);align-items:center}
+@media(max-width:880px){.herogrid{grid-template-columns:1fr;gap:40px}}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:var(--ember);text-transform:uppercase;margin-bottom:18px}
+h1{font-size:clamp(38px,6.4vw,68px);font-weight:900;line-height:.98;letter-spacing:-.035em}
+h1 em{font-style:normal;color:var(--gold)}
+.lede{font-size:clamp(15px,1.7vw,18px);line-height:1.6;color:var(--muted);margin-top:20px;max-width:44ch}
+.herocta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+.storerow{margin-top:26px}
+.storelabel{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:11px}
+.storebtns{display:flex;gap:10px;flex-wrap:wrap}
+.storebtn{display:inline-flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:12px;padding:10px 16px;background:var(--panel);min-width:168px;transition:border-color .15s ease,transform .15s ease}
+.storebtn.live:hover{border-color:rgba(24,183,220,.45);transform:translateY(-1px)}
+.storebtn.soon{opacity:.55;cursor:default}
+.storebtn .gl{width:19px;height:19px;flex:0 0 auto;color:var(--ink)}
+.storebtn .tx{display:flex;flex-direction:column;line-height:1.25}
+.storebtn .t1{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.storebtn .t2{font-size:14px;font-weight:800;letter-spacing:-.01em}
+.closing .storerow{display:flex;flex-direction:column;align-items:center;margin-top:28px}
+.trust{display:flex;gap:22px;margin-top:26px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.trust span{display:flex;align-items:center;gap:7px}
+.trust i{width:5px;height:5px;border-radius:50%;background:var(--ember);font-style:normal}
+
+/* ---------- the phone demo (signature) ---------- */
+.stage{display:flex;justify-content:center}
+/* lean hero */
+nav .links a:not(.btn){font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+nav .links a:not(.btn):hover{color:var(--ink)}
+nav .links .btn.hot{border-radius:10px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;font-size:11.5px;padding:12px 22px}
+.hero .btn.hot.lg{border-radius:12px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;font-size:12.5px;padding:17px 32px}
+.linkcta{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);padding:6px 0;border-bottom:2px solid var(--ember);align-self:center}
+.heropic{margin:0;position:relative;border-radius:16px;overflow:hidden;background:#0E1013;border:1px solid var(--line)}
+.heropic img{width:100%;height:auto;aspect-ratio:760/410;object-fit:cover;display:block}
+.vbar{display:flex;align-items:center;gap:0;background:var(--panel);border-top:1px solid var(--line);padding:16px 20px}
+.vbar .vr{min-width:0}
+.vbar .mk{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vbar .vl{flex:0 0 auto;text-align:center;padding-right:20px;margin-right:20px;border-right:1px solid var(--line)}
+.vbar .vchip{display:block;font-family:var(--mono);font-weight:700;font-size:20px;letter-spacing:.2em;color:var(--ember);text-transform:uppercase}
+.vbar .vconf{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:4px}
+.vbar .mk{font-weight:800;font-size:16px;letter-spacing:.02em;text-transform:uppercase}
+.vbar .yr{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+.vbar .stamp{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ember);text-transform:uppercase;margin-top:5px}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-top:clamp(28px,4vw,44px)}
+.si{display:flex;align-items:center;gap:16px;padding:22px 24px;border-left:1px solid var(--line)}
+.si:first-child{border-left:0}
+.si .ic{flex:0 0 auto;width:54px;height:54px;border-radius:50%;border:1.5px solid var(--ember);display:grid;place-items:center;color:var(--ember)}
+.si .ic svg{width:24px;height:24px}
+.si .t{font-weight:800;font-size:15px;letter-spacing:.03em;text-transform:uppercase}
+.si .d{color:var(--muted);font-size:13.5px;margin-top:3px}
+.finds{padding:0 0 clamp(40px,6vw,72px)}
+.findsbox{display:grid;grid-template-columns:1fr 2.1fr;gap:24px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.findshead h2{font-size:clamp(20px,2.2vw,32px);line-height:1.02;letter-spacing:-.02em;text-transform:uppercase;max-width:none}
+.findshead .linkcta{margin-top:24px}
+.findsgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.find{display:block;background:var(--carbon);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.find img{width:100%;height:auto;aspect-ratio:760/410;object-fit:cover;display:block}
+.find .fc{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:11px 12px;color:var(--ink)}
+.find .no{color:var(--muted)}
+.find .rr{color:var(--ember)}
+.find .rr.classic{color:#FF8A1E}
+@media(max-width:960px){
+  .strip{grid-template-columns:1fr}
+  .si{border-left:0;border-top:1px solid var(--line)}
+  .si:first-child{border-top:0}
+  .findsbox{grid-template-columns:1fr}
+  .findsgrid{grid-template-columns:1fr}
+  .vbar{padding:12px 14px}
+  .vbar .vchip{font-size:16px}
+}
+.phone{position:relative;width:min(300px,82vw);aspect-ratio:9/19;border-radius:38px;background:#000;border:1px solid rgba(255,255,255,.14);box-shadow:0 30px 70px -20px rgba(0,0,0,.9),0 0 0 8px rgba(255,255,255,.02);overflow:hidden}
+.vf{position:absolute;inset:0;background:
+  radial-gradient(120% 80% at 50% 20%,#1a1d24,#0b0d11 70%);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;padding-bottom:27%}
+.carart{width:100%;height:auto;display:block;opacity:1}
+.hud{position:absolute;left:0;right:0;top:0;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--muted)}
+.hud .pill{border:1px solid var(--line);border-radius:999px;padding:4px 9px;background:rgba(10,11,14,.6)}
+.brackets span{position:absolute;width:34px;height:34px;border:2px solid rgba(var(--scan-rgb),.75);opacity:0;transition:opacity .3s ease}
+.brackets .tl{top:74px;left:22px;border-right:0;border-bottom:0;border-radius:6px 0 0 0}
+.brackets .tr{top:74px;right:22px;border-left:0;border-bottom:0;border-radius:0 6px 0 0}
+.brackets .bl{bottom:150px;left:22px;border-right:0;border-top:0;border-radius:0 0 0 6px}
+.brackets .br{bottom:150px;right:22px;border-left:0;border-top:0;border-radius:0 0 6px 0}
+.phone.scanning .brackets span{opacity:1}
+/* Full-height track so the sweep runs on transform (compositor-only) instead of
+   animating `top` (layout + paint every frame). translateY % is relative to the
+   element's own height = the phone, so the geometry stays responsive. */
+.scanline{position:absolute;left:0;right:0;top:0;height:100%;opacity:0;pointer-events:none}
+.scanline::before{content:"";position:absolute;left:0;right:0;top:76px;height:2px;background:linear-gradient(90deg,transparent,rgba(var(--scan-rgb),.95),transparent);box-shadow:0 0 18px rgba(var(--scan-rgb),.8)}
+.phone.scanning .scanline{opacity:1;animation:sweep 1.5s cubic-bezier(.45,0,.55,1) 2}
+@keyframes sweep{0%{transform:translateY(0)}100%{transform:translateY(calc(100% - 232px))}}
+.verdict{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(12,14,19,.94);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:18px;padding:15px 16px 16px;transform:translateY(120%);opacity:0;transition:transform .5s cubic-bezier(.2,.9,.3,1),opacity .4s ease}
+.phone.landed .verdict{transform:none;opacity:1}
+.verdict .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.chip{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;padding:3px 8px;border-radius:999px;color:var(--gold);border:1px solid rgba(91,216,240,.55)}
+.verdict .mk{font-weight:900;font-size:19px;letter-spacing:-.02em;margin-top:9px;line-height:1.1}
+.verdict .yr{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:5px;letter-spacing:.06em}
+.verdict .blurb{font-size:11.5px;line-height:1.5;color:var(--muted);margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+.verdict .stamp{display:flex;align-items:center;gap:7px;margin-top:11px;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--ember)}
+.replay{position:relative;z-index:5;flex:0 0 auto;background:rgba(10,11,14,.7);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:10px 16px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;cursor:pointer;opacity:0;transition:opacity .3s ease}
+.phone.landed .replay{opacity:1}
+.phone.landed .replay:hover{border-color:var(--ember);color:var(--ember)}
+
+/* ---------- sections ---------- */
+section{padding:clamp(38px,8vw,110px) 0}
+.sechead{font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:var(--ember);text-transform:uppercase;margin-bottom:14px}
+h2{font-size:clamp(28px,4.2vw,46px);font-weight:900;letter-spacing:-.03em;line-height:1.05;max-width:20ch}
+.subhead{color:var(--muted);font-size:clamp(14px,1.5vw,16.5px);line-height:1.6;margin-top:16px;max-width:56ch}
+
+/* steps — a real sequence, so it is numbered */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:44px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
+.step{background:var(--carbon);padding:clamp(22px,3vw,32px)}
+.step .n{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;color:var(--ember)}
+.step h3{font-size:19px;font-weight:800;margin-top:14px;letter-spacing:-.01em}
+.step p{color:var(--muted);font-size:13.5px;line-height:1.6;margin-top:9px}
+
+/* registry — the cream inversion */
+.registry{background:var(--cream);color:var(--navy)}
+.registry .sechead{color:#0E7A94}
+.registry h2{color:var(--navy)}
+.registry .subhead{color:#3A4A5E}
+.ledger{margin-top:40px;border:1px solid rgba(2,26,54,.18);border-radius:12px;overflow:hidden;background:#fff}
+.ledger .lhead,.ledger .lrow{display:grid;grid-template-columns:64px 1fr 108px 92px;gap:12px;padding:13px 18px;align-items:center;font-family:var(--mono);font-size:11.5px}
+@media(max-width:700px){
+  .ledger .lhead{display:none}
+  .ledger .lrow{grid-template-columns:56px 1fr;row-gap:4px;padding:14px 16px}
+  .ledger .lrow .rr,.ledger .lrow .dd{grid-column:2;font-size:10.5px}
+  /* Mobile drops the header row, so re-attach the column names inline. */
+  .ledger .lrow .rr::before{content:"Class · ";color:var(--paper-muted);font-weight:400}
+  .ledger .lrow .dd::before{content:"Filed · ";color:var(--paper-muted)}
+}
+.ledger .lhead{background:rgba(2,26,54,.05);letter-spacing:.16em;font-size:9.5px;text-transform:uppercase;color:var(--paper-muted);border-bottom:1px solid rgba(2,26,54,.14)}
+.ledger .lrow{border-bottom:1px solid rgba(2,26,54,.09)}
+.ledger .lrow:last-child{border-bottom:0}
+.ledger .no{color:var(--paper-muted)}
+.ledger .nm{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:-.01em}
+.ledger .rr{font-weight:700;letter-spacing:.1em;font-size:10px}
+.rr.legendary{color:#B8860B} .rr.classic{color:#C2410C} .rr.rare{color:#1D4ED8} .rr.everyday{color:#64748B}
+.ledger .dd{color:var(--paper-muted);letter-spacing:.04em}
+.ledgernote{font-family:var(--mono);font-size:10.5px;color:var(--paper-muted);margin-top:14px;letter-spacing:.04em}
+
+/* live leaderboard */
+.lbcard{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel);margin-top:36px}
+.lbhead{display:grid;grid-template-columns:44px 1fr 90px;gap:12px;padding:12px 18px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--line);font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.lbr{display:grid;grid-template-columns:44px 1fr 90px;gap:12px;padding:13px 18px;align-items:center;border-bottom:1px solid var(--line)}
+.lbr:last-child{border-bottom:0}
+.lbr .rk{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--muted);text-align:center}
+.lbr:nth-child(2) .rk{color:var(--gold)}
+.lbr:nth-child(3) .rk{color:var(--ink)}
+.lbr:nth-child(4) .rk{color:#C9834A}
+.lbr .hd{font-family:var(--mono);font-size:13.5px;color:var(--ink)}
+.lbr .ti{font-size:10px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-top:2px}
+.lbr .sc{text-align:right;font-weight:900;font-size:17px;letter-spacing:-.02em}
+.lbr .sc small{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--muted);font-weight:400;margin-top:2px}
+.lbstate{padding:26px 18px;text-align:center;color:var(--muted);font-size:13px}
+.lbtabs{display:inline-flex;gap:3px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:3px;margin-top:20px}
+.lbtabs button{font-family:var(--mono);font-weight:700;font-size:9.5px;letter-spacing:.12em;padding:7px 14px;border-radius:999px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.lbtabs button.on{background:linear-gradient(180deg,var(--gold),var(--ember));color:#04222A}
+
+/* judge */
+.judge{background:var(--navy);position:relative;overflow:hidden}
+.judge::after{content:"";position:absolute;right:-8%;top:-30%;width:520px;height:520px;background:radial-gradient(circle,rgba(24,183,220,.13),transparent 65%);pointer-events:none}
+.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:40px;position:relative}
+@media(max-width:760px){.rules{grid-template-columns:1fr}}
+.rule{border:1px solid rgba(255,255,255,.13);border-radius:14px;padding:20px 22px;background:rgba(255,255,255,.03)}
+.rule h3{font-size:15px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+.rule h3::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ember);flex:0 0 auto}
+.rule p{color:#9FB0C4;font-size:13px;line-height:1.6;margin-top:8px}
+
+/* features */
+.feats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:44px}
+@media(max-width:1000px){.feats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.feats{grid-template-columns:1fr}}
+.feat{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--panel);transition:border-color .15s ease,transform .15s ease}
+.feat:hover{border-color:rgba(24,183,220,.4);transform:translateY(-2px)}
+.feat .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
+.feat h3{font-size:17px;font-weight:800;margin-top:11px;letter-spacing:-.01em}
+.feat p{color:var(--muted);font-size:13px;line-height:1.6;margin-top:8px}
+
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:40px;max-width:760px}
+@media(max-width:640px){.plans{grid-template-columns:1fr}}
+.plan{border:1.5px solid var(--line);border-radius:18px;padding:26px;background:var(--panel);position:relative}
+.plan.best{border-color:rgba(91,216,240,.55);background:linear-gradient(180deg,rgba(91,216,240,.09),rgba(91,216,240,.01))}
+.plan .tag{position:absolute;top:-11px;left:24px;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:#04222A;background:linear-gradient(180deg,var(--gold),var(--ember));padding:4px 10px;border-radius:999px}
+.plan .nm{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.plan .pr{font-size:38px;font-weight:900;letter-spacing:-.03em;margin-top:10px}
+.plan .pr span{font-size:14px;font-weight:600;color:var(--muted);letter-spacing:0}
+.plan .sub{color:var(--muted);font-size:12.5px;margin-top:6px}
+.plan ul{list-style:none;margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+.plan li{font-size:13.5px;color:var(--muted);padding:7px 0 7px 22px;position:relative;line-height:1.5}
+.plan li::before{content:"◎";position:absolute;left:0;color:var(--gold);font-size:11px;top:8px}
+.plan .btn{width:100%;margin-top:20px}
+.plan.free{border-color:rgba(255,255,255,.18)}
+.planhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.billtoggle{display:inline-flex;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:3px}
+.billtoggle button{font-family:var(--mono);font-weight:700;font-size:9.5px;letter-spacing:.12em;padding:6px 12px;border-radius:999px;border:0;background:transparent;color:var(--muted);cursor:pointer;transition:color .12s ease}
+.billtoggle button:hover{color:var(--ink)}
+.billtoggle button.on{background:linear-gradient(180deg,var(--gold),var(--ember));color:#04222A}
+.saveline{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--gold);margin-top:7px;min-height:13px}
+.freetag{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--ember);border:1px solid rgba(24,183,220,.5);padding:4px 9px;border-radius:999px}
+
+/* closing */
+.closing{text-align:center;border-top:1px solid var(--line)}
+.closing .mk{width:56px;height:56px;margin:0 auto 22px;color:var(--ink);overflow:visible}
+.closing h2{max-width:22ch;margin:0 auto}
+.countdown{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--gold);margin-top:18px;text-transform:uppercase}
+
+footer{border-top:1px solid var(--line);padding:36px 0 48px;color:var(--muted);font-size:12.5px}
+footer .row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-end}
+footer .wd{display:block;font:700 16px 'Racing Sans One',var(--disp);letter-spacing:.01em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;line-height:1}
+footer a:hover{color:var(--ink)}
+footer .lks{display:flex;gap:18px;flex-wrap:wrap}
+.fine{margin-top:8px;font-size:11.5px;line-height:1.6}
+
+@media(pointer:coarse){
+  /* Touch needs a bigger hit area than the compact desktop pills provide;
+     mouse/trackpad (pointer:fine) keeps the small pills unchanged. */
+  .lbtabs button,.billtoggle button{min-height:44px;display:inline-flex;align-items:center}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .verdict{transform:none;opacity:1}
+  .brackets span{opacity:1}
+  .replay{display:none}
+}
+
+/* lean rhythm */
+section{padding:clamp(28px,4.2vw,56px) 0}
+.finds{padding:0 0 clamp(20px,3vw,36px)}
+h2{font-size:clamp(26px,3.4vw,40px)}
+.subhead{margin-top:12px}
+.sechead{margin-bottom:10px}
+.steps{margin-top:22px;gap:14px;background:transparent;border:0;border-radius:0;overflow:visible}
+.step{display:flex;align-items:flex-start;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 20px}
+.step .num{flex:0 0 auto;width:54px;height:54px;border-radius:50%;border:1.5px solid var(--ember);display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:19px;color:var(--ember)}
+.step h3{margin-top:2px;font-size:16px;letter-spacing:.03em;text-transform:uppercase}
+.step p{font-size:14px;margin-top:6px}
+#board .subhead{max-width:60ch}
+.plans{margin-top:24px}
+.closing{padding:clamp(36px,5vw,64px) 0}
+footer{padding:28px 0 40px}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
+
+/* ---- In your pocket: the app, drawn in the app's own theme (tokens from the
+   live app: carbon, ember cyan, rarity chips, the real tab bar). Sizes inside
+   the phone are container units so the screen scales as one object. ---- */
+.pocket{overflow:hidden}
+.pocketgrid{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(28px,5vw,72px);align-items:center}
+.pocket .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--ember);text-transform:uppercase;margin-bottom:14px}
+.pocket .storerow{margin-top:28px}
+.pocket .weblink{margin-top:18px}
+.pocket .tagline{font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;text-align:right;margin-top:18px}
+.phonewrap{position:relative;display:flex;justify-content:center;padding:18px 0}
+.phonewrap::before{content:"";position:absolute;inset:6% 4%;background:radial-gradient(closest-side,rgba(24,183,220,.22),transparent);z-index:0;pointer-events:none}
+.phone{position:relative;z-index:1;width:min(340px,80vw);aspect-ratio:9/19;background:#050608;border-radius:48px;padding:10px;box-shadow:0 0 0 1.5px #2A2E36,0 44px 90px -34px rgba(0,0,0,.9);transform:rotate(-6deg)}
+.pscreen{container-type:inline-size;position:relative;height:100%;background:#0A0B0E;border-radius:39px;overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.06)}
+.psb{display:flex;justify-content:space-between;align-items:center;padding:5cqw 8cqw 1cqw;font:700 4cqw var(--disp);color:var(--ink)}
+.psb .bat{width:7.5cqw;height:3.6cqw;border:1.5px solid var(--ink);border-radius:1.2cqw;position:relative}
+.psb .bat::after{content:"";position:absolute;inset:1px;right:30%;background:var(--ink);border-radius:.6cqw}
+.pbrand{display:flex;justify-content:space-between;align-items:center;padding:3cqw 6cqw 0}
+.pbrand .w{font:700 7cqw 'Racing Sans One',var(--disp);text-transform:uppercase;letter-spacing:.01em;color:var(--ink)}
+.pbrand .av{width:10cqw;height:10cqw;border-radius:50%;border:2px solid var(--ember);display:grid;place-items:center;font:800 4.2cqw var(--disp);color:var(--ember)}
+.phead{padding:5cqw 6cqw 0}
+.phead .e{font:700 2.7cqw var(--mono);letter-spacing:.3em;color:var(--ember);text-transform:uppercase}
+.phead .h{font:900 9cqw var(--disp);letter-spacing:-.02em;line-height:1;margin-top:1.6cqw;color:var(--ink)}
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);margin:5cqw 6cqw 0;border:1px solid rgba(255,255,255,.08);border-radius:3.5cqw;overflow:hidden}
+.pstats div{padding:3cqw 2cqw;text-align:center;border-right:1px solid rgba(255,255,255,.08)}
+.pstats div:last-child{border-right:0}
+.pstats b{display:block;font:900 7cqw var(--disp);color:var(--ink);line-height:1}
+.pstats b.rare{color:#5E97FF}
+.pstats span{display:block;font:700 2.3cqw var(--mono);letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-top:1.4cqw}
+.phero{margin:4.5cqw 6cqw 0;background:#13151B;border:1px solid rgba(255,255,255,.08);border-radius:4cqw;overflow:hidden}
+.phero .ph{position:relative;aspect-ratio:16/9}
+.phero .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.pchip{position:absolute;left:3cqw;top:3cqw;font:800 2.5cqw var(--disp);letter-spacing:.14em;text-transform:uppercase;padding:1cqw 2.4cqw;border-radius:999px;border:1px solid;background:rgba(10,11,14,.72)}
+.pchip.classic{color:#FF8A1E;border-color:rgba(255,138,30,.55)}
+.pchip.rare{color:#5E97FF;border-color:rgba(94,151,255,.55)}
+.phero .in{display:flex;justify-content:space-between;align-items:flex-end;padding:3cqw 3.5cqw 3.4cqw}
+.phero .n{font:800 4.6cqw var(--disp);color:var(--ink);line-height:1.2}
+.phero .m{font:600 2.6cqw var(--mono);letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:1cqw}
+.phero .go{font:700 5cqw var(--disp);color:var(--ember)}
+.pthumbs{display:grid;grid-template-columns:1fr 1fr;gap:3cqw;margin:3cqw 6cqw 0;min-height:0}
+.pthumbs div{position:relative;aspect-ratio:4/3;border-radius:3cqw;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.pthumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.ptabs{margin-top:auto;display:flex;align-items:flex-end;background:rgba(10,11,14,.97);border-top:1px solid rgba(255,255,255,.08);padding:2cqw 1cqw 5.5cqw}
+.ptab{flex:1;display:flex;flex-direction:column;align-items:center;gap:1.2cqw;color:var(--muted)}
+.ptab svg{width:6.6cqw;height:6.6cqw}
+.ptab .tl{font:700 2.3cqw var(--disp);letter-spacing:.14em}
+.ptab.on{color:var(--ember)}
+.ptab.cam{margin-top:-7cqw}
+.ptab.cam .ring{width:15.5cqw;height:15.5cqw;border-radius:50%;background:#0A0B0E;border:2.5px solid var(--ember);display:grid;place-items:center;color:var(--ember);box-shadow:0 0 5cqw rgba(24,183,220,.4)}
+.ptab.cam .ring svg{width:7cqw;height:7cqw}
+@media(max-width:880px){
+  .pocketgrid{grid-template-columns:1fr}
+  .phone{transform:rotate(-3deg);width:min(310px,78vw)}
+  .pocket .tagline{text-align:center}
+}
+
+/* nav: one line at every width; lower-priority links drop out first */
+nav .wrap{max-width:1320px}
+nav .lockup{flex-shrink:0}
+nav .links{gap:22px}
+nav .links a{white-space:nowrap}
+nav .links a:not(.btn){letter-spacing:.12em}
+@media(max-width:1339px){nav .links .p5{display:none}}
+@media(max-width:1219px){nav .links .p4{display:none}}
+@media(max-width:1079px){nav .links .p3{display:none}}
+@media(max-width:979px){nav .links .p2{display:none}}
+@media(max-width:839px){nav .links .p1{display:none}}
+
+/* ================= Meet Mode page ================= */
+nav .links a[aria-current="page"]{color:var(--ink)}
+::selection{background:#18B7DC;color:#04222A}
+html{scroll-padding-top:72px}
+@media(max-width:359px){nav .links .btn .lg-only{display:none}}
+.tvstats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tvstats div{background:rgba(18,21,26,.85);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.tvstats b{display:block;font-weight:900;font-size:22px;letter-spacing:-.02em}
+.tvstats span{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-top:2px}
+@media (forced-colors: active){ :focus-visible{outline:3px solid CanvasText} }
+.rchip{display:inline-block;font-family:var(--mono);font-weight:700;font-size:9px;letter-spacing:.14em;padding:3px 8px;border-radius:999px;border:1px solid;text-transform:uppercase;white-space:nowrap}
+.rchip.everyday{color:#98A0AC;border-color:rgba(152,160,172,.5)}
+.rchip.classic{color:#FF8A1E;border-color:rgba(255,138,30,.5)}
+.rchip.rare{color:#6FA3FF;border-color:rgba(111,163,255,.55)}
+.rchip.legendary{color:#FFC24B;border-color:rgba(255,194,75,.55)}
+.rchip.first,.tile .rchip.first,.shot .rchip.first{color:#04222A;background:linear-gradient(180deg,var(--gold),var(--ember));border-color:transparent}
+.appchip{display:inline-block;font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.12em;color:var(--ember);border:1px solid rgba(24,183,220,.5);background:rgba(24,183,220,.08);border-radius:6px;padding:2px 7px;white-space:nowrap}
+
+/* hero: the rare-find takeover as it looks on the table screen */
+.tvwrap{position:relative}
+.tvlabel{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.tvframe{position:relative;border-radius:16px;overflow:hidden;background:#000;border:10px solid #14171D;box-shadow:0 30px 70px -24px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.08)}
+.tvframe img{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;display:block}
+.tvframe .kind{position:absolute;left:14px;top:14px;background:rgba(10,11,14,.78)}
+.tvframe .foot{position:absolute;left:0;right:0;bottom:0;padding:44px 18px 16px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.86) 55%)}
+.tvframe .model{font-weight:900;font-size:clamp(20px,2.6vw,30px);letter-spacing:-.01em;text-transform:uppercase;line-height:1}
+.tvframe .who{font-family:var(--mono);font-size:13px;color:var(--ember);margin-top:7px}
+.drain{height:3px;background:rgba(255,255,255,.14);border-radius:2px;margin-top:12px;overflow:hidden}
+.drain i{display:block;height:100%;width:100%;background:var(--ember);transform-origin:left;animation:drain 10s linear infinite}
+@keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.tvnote{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:10px}
+
+/* how it plays: the homepage's .steps cards, 2x2 */
+#play .steps{grid-template-columns:repeat(2,1fr)}
+@media(max-width:760px){#play .steps{grid-template-columns:1fr}}
+#play .step p{line-height:1.65}
+
+/* the scoring ladder */
+.ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:end;margin-top:40px}
+.rung{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.rung img{width:100%;height:auto;aspect-ratio:760/410;object-fit:cover;display:block}
+.rung .rb{padding:14px 16px 16px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px}
+.rung .rb .rchip{align-self:flex-start}
+.rung .val{font-weight:900;font-size:clamp(34px,4.4vw,52px);letter-spacing:-.04em;line-height:.9}
+.rung .eg{font-size:12.5px;color:var(--muted);line-height:1.4}
+/* the bars rise left to right */
+.rung.r3 .rb{min-height:172px}.rung.r5 .rb{min-height:200px}.rung.r10 .rb{min-height:228px}
+.rung.r10{border-color:rgba(255,194,75,.4)}
+.bonus{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px;border:1px solid rgba(24,183,220,.45);background:rgba(24,183,220,.06);border-radius:14px;padding:14px 18px}
+.bonus .val{font-weight:900;font-size:28px;letter-spacing:-.03em;color:var(--ember)}
+.bonus p{color:var(--ink);font-size:14px;line-height:1.5}
+.maths{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.maths div{border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.6}
+.maths b{display:block;font-size:22px;color:var(--ink);letter-spacing:-.01em}
+.maths .hit b{color:var(--ember)}
+.scorenote{color:var(--ink);font-size:clamp(15px,1.6vw,17px);line-height:1.6;margin-top:22px;max-width:60ch}
+.fineprint{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted);margin-top:10px;text-transform:uppercase}
+@media(max-width:640px){
+  .ladder{grid-template-columns:1fr;gap:10px}
+  .rung{flex-direction:row;align-items:center}
+  .rung .rb,.rung.r3 .rb,.rung.r5 .rb,.rung.r10 .rb{min-height:0}
+  .rung img{width:112px;aspect-ratio:4/3;flex:0 0 auto}
+  .rung .rb{flex-direction:row;align-items:center;justify-content:space-between;flex:1;gap:10px}
+  .rung .val{font-size:34px}
+  .rung .eg{display:none}
+  .maths{grid-template-columns:1fr}
+}
+
+/* what you get */
+.feat .ill{height:74px;color:var(--ember);margin-bottom:14px}
+.feat .ill svg{height:100%;width:auto}
+
+/* the example TV board */
+.exhead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:32px}
+.exhead .lbtabs{margin-top:0}
+.tvb{position:relative;margin-top:16px;background:radial-gradient(120% 90% at 50% 0%,#171A21 0%,#0A0B0E 70%);border:10px solid #14171D;border-radius:18px;padding:0 18px 18px;box-shadow:0 30px 70px -24px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.08);overflow:hidden}
+.ribbon{margin:0 -18px 14px;background:#FFC24B;color:#1A1204;font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.18em;text-align:center;padding:6px 10px;text-transform:uppercase}
+.tvtop{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tvtop .nm{font-weight:900;font-size:clamp(15px,2vw,20px);text-transform:uppercase;letter-spacing:.01em;flex:1;min-width:0}
+.tvtop .st{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--ember);display:flex;align-items:center;gap:8px}
+.tvtop .st i{width:8px;height:8px;border-radius:50%;background:var(--ember);animation:pulse 1.6s ease-in-out infinite}
+.tvtop .st.closed{color:#FFC24B}.tvtop .st.closed i{display:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.tvgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-top:14px}
+.tvstand{background:rgba(18,21,26,.85);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.tvstand .hd,.tvstand .row{display:grid;grid-template-columns:36px minmax(0,1fr) 64px 64px;gap:10px;align-items:center;padding:10px 14px}
+.tvstand .hd{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--line)}
+.tvstand .row{border-bottom:1px solid var(--line)}
+.tvstand .row:last-child{border-bottom:0}
+.tvstand .rk{font-family:var(--mono);font-weight:700;font-size:14px;color:var(--muted)}
+.tvstand .row:nth-child(2) .rk{color:#FFC24B}.tvstand .row:nth-child(3) .rk{color:var(--ink)}.tvstand .row:nth-child(4) .rk{color:#C9834A}
+.tvstand .tag{font-family:var(--mono);font-size:13.5px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tvstand .fs{font-family:var(--mono);font-size:12px;color:#FFC24B;text-align:right}
+.tvstand .sc{font-weight:900;font-size:19px;text-align:right;letter-spacing:-.02em}
+.tvside{display:flex;flex-direction:column;gap:12px}
+.scanp{display:flex;align-items:center;gap:14px;background:rgba(18,21,26,.85);border:1px solid var(--line);border-radius:12px;padding:12px}
+.fakeqr{flex:0 0 auto;width:84px;height:84px;background:#fff;border-radius:8px;padding:6px;display:grid;grid-template-columns:repeat(21,1fr)}
+.fakeqr i{display:block}
+.fakeqr i.on{background:#0A0B0E}
+.scanp .t{font-weight:900;font-size:15px;text-transform:uppercase}
+.scanp .c{font-family:var(--mono);font-weight:700;font-size:15px;color:#FFC24B;letter-spacing:.14em;margin-top:4px}
+.tile{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);min-height:96px}
+.tile img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.tile .cap{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:96px;padding:10px 12px;background:linear-gradient(180deg,rgba(0,0,0,.6),rgba(0,0,0,.88))}
+.tile .k{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:#FFC24B;text-transform:uppercase}
+.tile .rchip{background:rgba(10,11,14,.72)}
+.tile .n{font-weight:800;font-size:14px;margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tile .w{font-family:var(--mono);font-size:11px;color:var(--ember);margin-top:3px}
+.tvstrip{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px;margin-top:14px;overflow-x:auto;scrollbar-width:thin}
+.shot{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);aspect-ratio:4/3;min-width:150px}
+.shot img{width:100%;height:100%;object-fit:cover}
+.shot .cap{position:absolute;left:0;right:0;bottom:0;padding:18px 9px 8px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.85));font-family:var(--mono);font-size:10px;line-height:1.5}
+.shot .cap b{display:block;font-family:var(--disp);font-size:12px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shot .rchip{background:rgba(10,11,14,.72)}
+.shot.f{border-color:rgba(255,194,75,.7)}
+.podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;margin-top:14px}
+.pod{background:rgba(18,21,26,.85);border:1px solid var(--line);border-radius:12px;text-align:center;padding:14px 8px}
+.pod .p{font-family:var(--mono);font-weight:700;font-size:20px}
+.pod .h{font-family:var(--mono);font-size:13px;margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod .s{font-weight:900;font-size:22px;margin-top:4px}
+.pod.p1{padding-top:26px;border-color:rgba(255,194,75,.55)}.pod.p1 .p{color:#FFC24B}
+.pod.p2{padding-top:18px}.pod.p3 .p{color:#C9834A}
+.takeover{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:flex-end;background:#000}
+.tvb [hidden]{display:none!important}
+.takeover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.takeover .in{position:relative;padding:60px clamp(16px,3vw,32px) clamp(16px,3vw,28px);background:linear-gradient(180deg,transparent,rgba(0,0,0,.88) 50%)}
+.takeover .ex{position:absolute;top:0;left:0;right:0;background:#FFC24B;color:#1A1204;font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.18em;text-align:center;padding:6px 10px}
+.takeover .k{font-family:var(--mono);font-weight:700;font-size:clamp(11px,1.6vw,15px);letter-spacing:.18em;color:#FFC24B}
+.takeover .n{font-weight:900;font-size:clamp(26px,5.4vw,60px);line-height:1;text-transform:uppercase;margin-top:8px}
+.takeover .w{font-family:var(--mono);font-size:clamp(14px,2vw,20px);color:var(--ember);margin-top:10px}
+.takeover .x{position:absolute;right:12px;top:36px;z-index:2;background:rgba(10,11,14,.72);border-color:rgba(255,255,255,.3)}
+.excap{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted);margin-top:12px;line-height:1.6}
+.expre{margin-top:14px}
+@media(max-width:820px){
+  .tvgrid{grid-template-columns:minmax(0,1fr)}
+  .tvside{order:-1}
+  .tvstand .hd,.tvstand .row{grid-template-columns:24px minmax(0,1fr) 48px 44px;gap:8px;padding:9px 12px}
+  .tvb{border-width:6px;padding:0 12px 12px}
+  .ribbon{margin:0 -12px 12px}
+  .pod{padding-inline:4px}.pod .h{font-size:11px}.pod .p{font-size:16px}
+}
+
+/* fair play */
+.judge .rules{grid-template-columns:repeat(3,1fr)}
+@media(max-width:1000px){.judge .rules{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.judge .rules{grid-template-columns:1fr}}
+.judge .rule h3{text-transform:uppercase;letter-spacing:.02em;font-size:14px}
+
+/* set it up */
+.setup .plans{max-width:none;align-items:start;margin-top:44px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:900px){.setup .plans{grid-template-columns:minmax(0,1fr);max-width:620px}}
+.rq input,.rq select{min-width:0}
+.setup .plan .tag.plain{background:var(--panel);color:var(--ember);border:1px solid rgba(24,183,220,.55)}
+.setup .plan h3{font-size:20px;font-weight:900;letter-spacing:-.01em;margin-top:6px}
+.setup .plan > p{color:var(--muted);font-size:14px;line-height:1.6;margin-top:10px}
+.psteps{list-style:none;margin-top:16px;counter-reset:ps}
+.psteps li{position:relative;padding:9px 0 9px 42px;color:var(--muted);font-size:14px;line-height:1.55;counter-increment:ps}
+.psteps li::before{content:counter(ps,decimal-leading-zero);position:absolute;left:0;top:7px;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--ember);display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var(--ember)}
+.setup .plan .pnote{font-family:var(--mono);font-size:11px;line-height:1.6;color:var(--muted);margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+.setup .plan .btn{width:100%;margin-top:18px}
+.rq{margin-top:18px;display:grid;gap:12px}
+.rq label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.rq label .opt{letter-spacing:.06em;text-transform:none}
+.rq input,.rq textarea,.rq select{display:block;width:100%;margin-top:6px;background:var(--carbon);color:var(--ink);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:11px 12px;font:500 16px var(--disp);color-scheme:dark}
+.rq textarea{min-height:84px;resize:vertical}
+.rq input:focus-visible,.rq textarea:focus-visible,.rq select:focus-visible{outline:2px solid var(--ember);outline-offset:1px;border-color:transparent}
+.rq .three{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:10px}
+@media(max-width:480px){.rq .three{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.rq .three label:first-child{grid-column:1/-1}}
+.rq .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.rq .btn[disabled]{opacity:.6;cursor:progress;transform:none}
+.rqmsg{font-size:13.5px;line-height:1.55;min-height:1.5em;color:var(--muted)}
+.rqmsg.ok{color:#3ECF8E}.rqmsg.err{color:#FF8A8A}
+.under{font-family:var(--mono);font-size:10.5px;color:var(--muted);line-height:1.6}
+.dayof{margin-top:40px}
+.dayof h3{font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:var(--ember);text-transform:uppercase;margin-bottom:12px}
+.dayof .strip{grid-template-columns:repeat(4,1fr);margin-top:0}
+@media(max-width:960px){.dayof .strip{grid-template-columns:repeat(2,1fr)}.dayof .si{border-top:1px solid var(--line);border-left:1px solid var(--line)}}
+@media(max-width:560px){.dayof .strip{grid-template-columns:1fr}}
+.dayof .si .d{color:var(--ink);font-size:14px;line-height:1.5;margin-top:0}
+
+/* FAQ */
+.faq{max-width:760px;margin-top:32px;border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 2px;font-weight:800;font-size:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";flex:0 0 auto;font-family:var(--mono);font-size:20px;color:var(--ember);transition:transform .2s ease}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{color:var(--muted);font-size:14.5px;line-height:1.65;padding:0 2px 18px;max-width:64ch}
+@media (prefers-reduced-motion: reduce){ .drain i,.tvtop .st i{animation:none} .faq summary::after{transition:none} .btn,.feat,.storebtn{transition:none} }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "What does it cost?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Nothing for organizers. There's no paid organizer plan. Hunters play free with 30 judged photos a day, and Hunter's Edition ($4.99/month) raises that to 150. The daily limit applies at meets too."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Does my crowd have to download anything?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "No. The poster's QR, the meet link or the 4-character code opens the game in the phone's browser. Hunters sign in with their email and a 6-digit code, then pick a tag, the name the board shows."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Twenty people will shoot the same car. Is that a problem?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Not on a checked meet. Everyone can photograph the same car without it counting as a copy (only a re-upload of the same picture does), and shots a few seconds apart are fine. On a meet we haven't checked, two people shooting the same car from the same spot can be flagged as a copy. Either way, only the first hunter to file a model gets FIRST HERE."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Our lot has weak signal. What happens to shots taken offline?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Shots saved offline at the show can still arrive in the hour after the close, while results are provisional, as long as at least one of that hunter's shots reached the board before it closed. Then they lock."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "We meet every month. Do I set it up once?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Each meet is scheduled on its own today, with its own code, poster and board, and scores start from zero. Run it as often as you meet."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Do you provide prizes?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "No. Prizes are your call, whether that's a trophy, a free coffee or just bragging rights. The app shows the standings."
+   }
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+  <symbol id="th-mark" viewBox="-110 -110 220 220"><mask id="thmcut" maskUnits="userSpaceOnUse" x="-110" y="-110" width="220" height="220"><rect x="-110" y="-110" width="220" height="220" fill="#fff"/><path d="M96.02 16.93L100.94 17.8M92.19 31.74L96.92 33.37M67.73 70.14L71.2 73.73M55.92 79.87L58.79 83.96M13.57 96.55L14.27 101.5M-45.77 86.09L-48.12 90.5M-58.68 77.87L-61.69 81.86M-87.63 42.74L-92.13 44.93M-93.24 28.51L-98.02 29.97M-96.02 -16.93L-100.94 -17.8M-92.19 -31.74L-96.92 -33.37M-67.73 -70.14L-71.2 -73.73M-55.92 -79.87L-58.79 -83.96M-13.57 -96.55L-14.27 -101.5M45.77 -86.09L48.12 -90.5M58.68 -77.87L61.69 -81.86M87.63 -42.74L92.13 -44.93M93.24 -28.51L98.02 -29.97" fill="none" stroke="#000" stroke-width="4"/><path d="M-86.15 -12.11A75.9 75.9 0 0 1 -18.09 -85.1A104.4 104.4 0 0 0 -86.15 -12.11Z" fill="#000"/></mask><circle r="86" fill="none" stroke="currentColor" stroke-width="28" mask="url(#thmcut)"/><circle r="58.5" fill="none" stroke="currentColor" stroke-width="7"/><path d="M42 0H110M-42 0H-110M0 42V110M0 -42V-110" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/><circle r="15" fill="#1FA8FF"/></symbol>
+</svg>
+<nav>
+  <div class="wrap row">
+    <a class="lockup" href="index.html" aria-label="Tyre Hunt home">
+      <svg class="mk" viewBox="-110 -110 220 220" aria-hidden="true"><use href="#th-mark" x="-110" y="-110" width="220" height="220"/></svg>
+      <span class="wd">Tyre Hunt</span>
+    </a>
+    <div class="links">
+      <a href="registry.html">The Registry</a>
+      <a class="p3" href="lot.html">The Lot</a>
+      <a class="p2" href="today.html">Car of the Day</a>
+      <a class="p5" href="car.html">Star Cars</a>
+      <a href="meets.html" aria-current="page">Cars &amp; Coffee</a>
+      <a class="p4" href="index.html#how">How it works</a>
+      <a class="p1" href="index.html#edition" translate="no">Hunter's Edition</a>
+      <a class="btn hot" href="#setup">Set up<span class="lg-only"> your meet</span></a>
+    </div>
+  </div>
+</nav>
+
+<main>
+<header class="hero" id="top">
+  <div class="wrap herogrid">
+    <div>
+      <div class="eyebrow">Meet Mode · for Cars &amp; Coffee organizers</div>
+      <h1>Turn your Cars &amp; Coffee into a <em>car hunt</em>.</h1>
+      <p class="lede">Your crowd scans a poster and works the rows, photographing cars. The judge names each one in a few seconds and scores it by rarity. A live board at your table shows who's ahead, and the first shot of a rare car can take over the screen. At the close, you read out the winners.</p>
+      <div class="herocta">
+        <a class="btn hot lg" href="#setup">Set up your meet — free</a>
+        <a class="linkcta" href="#example">See an example board →</a>
+      </div>
+    </div>
+    <figure class="tvwrap" style="margin:0">
+      <div class="tvlabel" aria-hidden="true">Example · rare-find takeover</div>
+      <div class="tvframe">
+        <picture>
+          <source srcset="car-hero.webp" type="image/webp">
+          <img src="car-hero.jpg" width="760" height="410" decoding="async" fetchpriority="high"
+               alt="Example of the TV board's rare-find takeover: a red Holden Torana GTR XU-1 credited to the made-up tag @earlybird_k.">
+        </picture>
+        <span class="kind rchip rare" aria-hidden="true">First at the meet · Rare</span>
+        <div class="foot" aria-hidden="true">
+          <div class="model">Holden Torana GTR XU-1</div>
+          <div class="who">@earlybird_k</div>
+          <div class="drain"><i></i></div>
+        </div>
+      </div>
+      <figcaption class="tvnote">On your screen for 10 seconds</figcaption>
+    </figure>
+  </div>
+
+  <div class="wrap">
+    <div class="strip">
+      <div class="si"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.5v-8h8L21 14l-8 8-9.5-9.5Z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg></span><div><div class="t">Free for organizers</div><div class="d">No paid organizer plan. Your crowd plays free too.</div></div></div>
+      <div class="si"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2h-2zM18 14h2M14 18h2M18 18h2v2" stroke-linecap="round"/></svg></span><div><div class="t">Scan and play</div><div class="d">The poster's QR opens the game in the phone's browser. Nothing to download.</div></div></div>
+      <div class="si"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="12" rx="1.6"/><path d="M8.5 20h7M12 16.5V20"/></svg></span><div><div class="t">Live at your table</div><div class="d">A countdown, photos as they land, and rare-find takeovers on your screen.</div></div></div>
+    </div>
+  </div>
+</header>
+
+<section id="play">
+  <div class="wrap">
+    <div class="sechead">How it plays</div>
+    <h2>Every row is in play.</h2>
+    <p class="subhead">Your crowd already walks the rows with a phone out. Now each new model they find counts.</p>
+    <div class="steps">
+      <div class="step"><div class="num" aria-hidden="true">01</div><div>
+        <h3>Scan in at the coffee line</h3>
+        <p>The poster's QR, the meet link or your 4-character code opens the game in the phone's browser. Sign in with an email and a 6-digit code, pick a tag, go.</p>
+      </div></div>
+      <div class="step"><div class="num" aria-hidden="true">02</div><div>
+        <h3>Work the rows</h3>
+        <p>Shoot a car and the judge names it (make, model and years) in a few seconds. Each result reads <span class="appchip">ON THE MEET BOARD</span>, and hunters see their rank and the time left. <span class="appchip">STILL OUT THERE</span> lists models others have found at your meet that they haven't: make and rarity, never where it's parked.</p>
+      </div></div>
+      <div class="step"><div class="num" aria-hidden="true">03</div><div>
+        <h3>Race to the rare one</h3>
+        <p>The first hunter at the meet to file a model gets <span class="appchip">FIRST HERE</span> and +2. If that first find is rare or legendary, their photo can take over the screen at your table for 10 seconds, tag and all. The screen allows one takeover every few minutes.</p>
+      </div></div>
+      <div class="step"><div class="num" aria-hidden="true">04</div><div>
+        <h3>Podium at the close</h3>
+        <p>When the meet closes, the standings stay up on your screen, and the live board shows the podium, the rarest find and the best shot. You read out the winners.</p>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<section id="scoring">
+  <div class="wrap">
+    <div class="sechead">The scoring</div>
+    <h2>Rare pays. Repeats don't.</h2>
+    <p class="subhead">Each different model a hunter files at your meet counts once, scored by the judge's rarity grade. Every meet starts from zero.</p>
+    <div class="ladder" role="list" aria-label="Show score by rarity">
+      <div class="rung r1" role="listitem"><img src="car-subaru.jpg" alt="" loading="lazy"><div class="rb"><span class="rchip everyday">Everyday</span><div class="val">1</div><div class="eg">like a Subaru GL</div></div></div>
+      <div class="rung r3" role="listitem"><img src="car-cadillac.jpg" alt="" loading="lazy"><div class="rb"><span class="rchip classic">Classic</span><div class="val">3</div><div class="eg">like a Cadillac Fleetwood Brougham</div></div></div>
+      <div class="rung r5" role="listitem"><img src="car-hero.jpg" alt="" loading="lazy"><div class="rb"><span class="rchip rare">Rare</span><div class="val">5</div><div class="eg">like a Holden Torana GTR XU-1</div></div></div>
+      <div class="rung r10" role="listitem"><img src="car-lykan.jpg" alt="" loading="lazy"><div class="rb"><span class="rchip legendary">Legendary</span><div class="val">10</div><div class="eg">like the Lykan HyperSport</div></div></div>
+    </div>
+    <div class="bonus"><span class="rchip first">First here</span><span class="val">+2</span><p>The first hunter at the meet to file a model.</p></div>
+    <div class="maths">
+      <div class="hit"><b>5 + 2 = 7</b>One rare find, first here</div>
+      <div><b>1</b>Forty shots of the same everyday model (3 if first)</div>
+    </div>
+    <p class="scorenote">One hunter who finds the only Lancia Integrale can beat someone who shot 40 Miatas. Get there early. Walk the far rows.</p>
+    <p class="fineprint">Ties go to whoever got there first.</p>
+  </div>
+</section>
+
+<section id="organizer">
+  <div class="wrap">
+    <div class="sechead">What you get</div>
+    <h2>A poster, a screen, a live board and a podium.</h2>
+    <p class="subhead">Something to announce before the meet, a screen at your table while it runs, and winners to read out at the close. It costs you nothing.</p>
+    <div class="feats">
+      <div class="feat">
+        <div class="ill" aria-hidden="true"><svg viewBox="0 0 60 74" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="3" width="48" height="68" rx="3"/><rect x="18" y="16" width="24" height="24" rx="1.5"/><path d="M22 20h5v5h-5zM33 20h5v5h-5zM22 31h5v5h-5zM33 32h2M37 35h1M33 36h1"/><rect x="16" y="50" width="28" height="9" rx="1.5"/><path d="M21 54.5h18" stroke-dasharray="2.5 2"/></svg></div>
+        <div class="k">The poster · 11x17</div>
+        <p>An 11x17 poster with a QR code and your meet's 4-character code. Tape it at the coffee line, the entrance and your table. Print it from the app, or we send it to you.</p>
+      </div>
+      <div class="feat">
+        <div class="ill" aria-hidden="true"><svg viewBox="0 0 96 74" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="4" y="4" width="88" height="54" rx="3"/><path d="M48 58v10M34 70h28"/><path d="M14 16h40M14 25h32M14 34h36M14 43h26"/><rect x="62" y="14" width="20" height="20" rx="1.5"/><path d="M62 44h20"/></svg></div>
+        <div class="k">The TV board · at your table</div>
+        <p>The board full screen on a tablet or TV: the standings, a big SCAN TO PLAY QR and the code, a countdown and the photo strip. Rare and legendary first finds take over the screen for 10 seconds with the hunter's tag, one every few minutes. It keeps the screen awake.</p>
+      </div>
+      <div class="feat">
+        <div class="ill" aria-hidden="true"><svg viewBox="0 0 100 74" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="30" y="8" width="62" height="42" rx="3"/><path d="M22 58h78"/><path d="M40 20h28M40 29h22M40 38h26"/><rect x="4" y="22" width="24" height="46" rx="4"/><path d="M11 32h10M11 39h8M11 46h10"/></svg></div>
+        <div class="k">The live board · any phone or laptop</div>
+        <p>A web page anyone can open: standings by show score with first counts, the rarest find and best shot so far, a live grid of the photos landing, and how many hunters are shooting now. Share it before the meet and it shows when it opens.</p>
+      </div>
+      <div class="feat">
+        <div class="ill" aria-hidden="true"><svg viewBox="0 0 90 74" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M31 30h28v40H31zM4 44h27v26H4zM59 52h27v18H59z"/><path d="M45 8l3.5 7 7.5 1-5.5 5 1.5 7.5-7-3.8-7 3.8 1.5-7.5-5.5-5 7.5-1z"/></svg></div>
+        <div class="k">The results · at the close</div>
+        <p>On the live board: the podium, the rarest find and the best shot, ready to read out. Hunters can share a recap card of their meet with a QR back to your board.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="example">
+  <div class="wrap">
+    <div class="sechead">Example board</div>
+    <h2>What's on the screen at your table.</h2>
+    <p class="subhead">This is the TV board for a made-up meet with made-up hunters, filled with the site's own car photos. The live board on any phone or laptop shows the same standings, plus the rarest find, the best shot and, after the close, the podium.</p>
+    <div class="exhead">
+      <div class="lbtabs" role="group" aria-label="Example board state">
+        <button type="button" class="on" aria-pressed="true" data-ex="during">DURING</button>
+        <button type="button" aria-pressed="false" data-ex="after">AFTER THE CLOSE</button>
+      </div>
+    </div>
+    <div class="tvb" id="tvb" role="region" aria-label="Example TV board with made-up hunters and scores">
+      <div class="ribbon">Example · made-up meet and hunters</div>
+      <div class="tvtop">
+        <div class="nm">Example Cars &amp; Coffee · 8:00–10:00 AM</div>
+        <div class="st" id="exStatus"><i aria-hidden="true"></i><span id="exStatusText">LIVE · <span id="exLeft">38:12</span> LEFT</span></div>
+      </div>
+      <div class="tvgrid">
+        <div>
+          <div class="tvstand" id="exStand">
+            <div class="hd"><span>#</span><span>Hunter</span><span style="text-align:right">Firsts</span><span style="text-align:right">Show score</span></div>
+            <div class="row"><span class="rk">1</span><span class="tag">@backrowben</span><span class="fs">★3</span><span class="sc">31</span></div>
+            <div class="row"><span class="rk">2</span><span class="tag">@earlybird_k</span><span class="fs">★4</span><span class="sc">29</span></div>
+            <div class="row"><span class="rk">3</span><span class="tag">@gridwalker</span><span class="fs">★1</span><span class="sc">19</span></div>
+            <div class="row"><span class="rk">4</span><span class="tag">@targa_tuesday</span><span class="fs">★1</span><span class="sc">12</span></div>
+            <div class="row"><span class="rk">5</span><span class="tag">@fortymiatas</span><span class="fs">★1</span><span class="sc">3</span></div>
+          </div>
+        </div>
+        <div class="tvside">
+          <div class="scanp" id="exScan"><div class="fakeqr" id="fakeqr" aria-hidden="true"></div><div><div class="t">Scan to play</div><div class="c">CODE DEMO</div></div></div>
+          <div class="tvstats"><div><b>41</b><span>Cars filed</span></div><div><b>23</b><span>Models</span></div><div><b>14</b><span>Hunters</span></div><div><b id="exLive">6</b><span>Shooting now</span></div></div>
+        </div>
+      </div>
+      <div class="tvstrip" id="exStrip" role="region" tabindex="0" aria-label="Latest photos">
+        <div class="shot"><img src="car-subaru.jpg" alt="" loading="lazy"><div class="cap"><b>Subaru GL</b><span class="rchip everyday">Everyday</span> @gridwalker</div></div>
+        <div class="shot"><img src="car-cadillac.jpg" alt="" loading="lazy"><div class="cap"><b>Cadillac Fleetwood Brougham</b><span class="rchip classic">Classic</span> @backrowben</div></div>
+        <div class="shot f"><img src="car-hero.jpg" alt="" loading="lazy"><div class="cap"><b>Holden Torana GTR XU-1</b><span class="rchip rare">Rare</span> <span class="rchip first">First here</span> @earlybird_k</div></div>
+        <div class="shot"><img src="car-911targa.jpg" alt="" loading="lazy"><div class="cap"><b>Porsche 911 Targa</b><span class="rchip classic">Classic</span> @targa_tuesday</div></div>
+      </div>
+      <div class="takeover" id="exTake" hidden role="dialog" aria-modal="false" aria-label="Example rare-find takeover">
+        <img src="car-lykan.jpg" alt="">
+        <div class="ex">Example</div>
+        <button type="button" class="btn x" id="exTakeClose">Close</button>
+        <div class="in"><div class="k">FIRST AT THE MEET · LEGENDARY</div><div class="n">Lykan HyperSport</div><div class="w">@backrowben</div></div>
+      </div>
+    </div>
+    <div class="expre"><button type="button" class="btn" id="exTakeBtn">Preview a takeover</button></div>
+    <p class="excap">Example only. The meet, tags, scores and times are made up, the photos are the site's own, and the QR won't scan.</p>
+  </div>
+</section>
+
+<section class="judge" id="fair">
+  <div class="wrap">
+    <div class="sechead">Fair play and privacy</div>
+    <h2>Only your lot. Only your hours.</h2>
+    <p class="subhead" style="color:#9FB0C4">Built for the organizer who asks, "Can't someone just game it?" The board ranks photos taken on your lot during your meet. Nothing else.</p>
+    <div class="rules">
+      <div class="rule"><h3>Inside the fence, inside the hours</h3><p>Only photos taken inside the fence pinned around your lot (300 meters by default, about 1,000 feet) during meet hours rank. Photos from home, or from last month's show, don't.</p></div>
+      <div class="rule"><h3>Location on to rank</h3><p>Location has to be on for a photo to rank. Without it, the photo still goes to the hunter's Registry, just not to the board.</p></div>
+      <div class="rule"><h3>Real cars, not screens</h3><p>The judge rejects photos of screens and prints. Press shots don't count either.</p></div>
+      <div class="rule"><h3>Provisional, then locked</h3><p>Results stay provisional until an hour after the close, so offline shots from hunters already on the board can still arrive. Then they lock.</p></div>
+      <div class="rule"><h3>Tags, never emails</h3><p>Every photo on the board is credited to the tag of the attendee who shot it. Handles only.</p></div>
+      <div class="rule"><h3>Never where the car is</h3><p>The board never shows where a car was found. STILL OUT THERE lists make and rarity, not location.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="setup" id="setup">
+  <div class="wrap">
+    <div class="sechead">Set it up</div>
+    <h2>Two ways to set it up. Both free.</h2>
+    <p class="subhead">Schedule it yourself in the app today, or tell us about your meet and we'll set it up with you. Anyone who joins through the poster, the link or the code lands on the same board.</p>
+    <div class="plans">
+      <div class="plan">
+        <div class="tag plain">TODAY</div>
+        <div class="nm">Path A</div>
+        <h3>Yourself, in the app</h3>
+        <ol class="psteps">
+          <li>Sign in at hunt.tyrehunt.app and open <span class="appchip">MEETS</span>.</li>
+          <li>Tap <span class="appchip">HOST A MEET</span>. Add the name, place, date, and start and end time. Share the link.</li>
+          <li>At the lot, stand in the middle and tap <span class="appchip">PIN IT AT THE LOT</span>. That sets the fence.</li>
+          <li>Tap <span class="appchip">PRINT POSTER</span> for your 11x17 poster.</li>
+          <li>On the day, open the app on the tablet at your table and tap <span class="appchip">TV BOARD ↗</span> on your meet.</li>
+        </ol>
+        <p class="pnote">On a meet we haven't checked, two people shooting the same car from the same spot can be flagged as a copy. Expecting a crowd? Have us set it up instead.</p>
+        <a class="btn" href="https://hunt.tyrehunt.app">Schedule your meet in the app</a>
+      </div>
+      <div class="plan best" id="request">
+        <div class="tag">BUILT FOR A CROWD</div>
+        <div class="nm">Path B</div>
+        <h3>We set it up with you</h3>
+        <p>We pin your lot, set the times, mark it a checked meet, and send you the poster and the TV link.</p>
+        <p>A checked meet is built for a crowd: everyone can photograph the same car without it counting as a copy (only a re-upload of the same picture does), and shots a few seconds apart are fine.</p>
+        <form class="rq" id="rqForm" novalidate>
+          <label>Your name<input name="organizer" autocomplete="name" maxlength="80" required></label>
+          <label>Your email<input name="contact" type="email" autocomplete="email" inputmode="email" maxlength="120" required></label>
+          <label>Meet name<input name="meet_name" maxlength="80" required placeholder="Sunday Cars &amp; Coffee"></label>
+          <label>Lot name and address<input name="city" maxlength="200" autocomplete="off" required></label>
+          <div class="three">
+            <label>Date<input name="date" type="date" required></label>
+            <label>Start time<input name="start" type="time" required value="08:00"></label>
+            <label>End time<input name="end" type="time" required value="11:00"></label>
+          </div>
+          <label>About how many cars <span class="opt">(optional)</span><select name="cars"><option value="">Not sure</option><option>Under 50</option><option>50–150</option><option>150–300</option><option>300+</option></select></label>
+          <label>Anything we should know? <span class="opt">(optional)</span><textarea name="note" maxlength="600"></textarea></label>
+          <div class="hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+          <button class="btn hot" type="submit" id="rqGo">Request a checked meet</button>
+          <p class="rqmsg" id="rqMsg" role="status" aria-live="polite"></p>
+          <p class="under">Free. We'll email you to confirm the lot and times, then send your poster and TV link.</p>
+        </form>
+      </div>
+    </div>
+
+    <div class="dayof">
+      <h3>On the day: your whole job</h3>
+      <div class="strip">
+        <div class="si"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="5" width="12" height="16" rx="1.4"/><path d="M8.5 3.5h7v3h-7z"/></svg></span><div><div class="d">Tape up the poster at the coffee line, the entrance and your table.</div></div></div>
+        <div class="si"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="4.5" y="3" width="15" height="18" rx="2"/><path d="M10.5 17.8h3" stroke-linecap="round"/></svg></span><div><div class="d">Put the TV board on a tablet or screen at your table.</div></div></div>
+        <div class="si"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12.5" r="8"/><path d="M12 8v4.5l3 2"/></svg></span><div><div class="d">Tell the crowd when the board closes.</div></div></div>
+        <div class="si"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h3l6 4V6L7 10H4Z"/><path d="M16.5 9a4 4 0 0 1 0 6M18.8 6.8a7 7 0 0 1 0 10.4" stroke-linecap="round"/></svg></span><div><div class="d">Read out the winners. Prizes, if any, are your call.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="sechead">Questions</div>
+    <h2>Before you tape up the poster.</h2>
+    <div class="faq">
+      <details open><summary>What does it cost?</summary><p>Nothing for organizers. There's no paid organizer plan. Hunters play free with 30 judged photos a day, and Hunter's Edition ($4.99/month) raises that to 150. The daily limit applies at meets too.</p></details>
+      <details><summary>Does my crowd have to download anything?</summary><p>No. The poster's QR, the meet link or the 4-character code opens the game in the phone's browser. Hunters sign in with their email and a 6-digit code, then pick a tag, the name the board shows.</p></details>
+      <details><summary>Twenty people will shoot the same car. Is that a problem?</summary><p>Not on a checked meet. Everyone can photograph the same car without it counting as a copy (only a re-upload of the same picture does), and shots a few seconds apart are fine. On a meet we haven't checked, two people shooting the same car from the same spot can be flagged as a copy. Either way, only the first hunter to file a model gets <span class="appchip">FIRST HERE</span>.</p></details>
+      <details><summary>Our lot has weak signal. What happens to shots taken offline?</summary><p>Shots saved offline at the show can still arrive in the hour after the close, while results are provisional, as long as at least one of that hunter's shots reached the board before it closed. Then they lock.</p></details>
+      <details><summary>We meet every month. Do I set it up once?</summary><p>Each meet is scheduled on its own today, with its own code, poster and board, and scores start from zero. Run it as often as you meet.</p></details>
+      <details><summary>Do you provide prizes?</summary><p>No. Prizes are your call, whether that's a trophy, a free coffee or just bragging rights. The app shows the standings.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap">
+    <svg class="mk" viewBox="-110 -110 220 220" aria-hidden="true"><use href="#th-mark" x="-110" y="-110" width="220" height="220"/></svg>
+    <h2>Give your crowd a reason to walk every row.</h2>
+    <p class="subhead" style="margin-inline:auto">Free for organizers. Tape up a poster, put the board on a screen, read out the winners.</p>
+    <div class="herocta" style="justify-content:center;align-items:center">
+      <a class="btn hot lg" href="#request">Have us set it up</a>
+      <a class="linkcta" href="https://hunt.tyrehunt.app">Schedule it yourself in the app →</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap row">
+    <div>
+      <span class="wd">Tyre Hunt</span>
+      <div class="fine">Spot real cars. Build a verified Registry.<br>Operated by Curators of Speed LLC · Washington, USA</div>
+    </div>
+    <div class="lks">
+      <a href="index.html">Home</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="car.html">Star Cars</a>
+      <a href="https://hunt.tyrehunt.app">Open the app</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* ---- the example board: during / after the close ---- */
+  var tabs = document.querySelectorAll("[data-ex]");
+  function setState(which){
+    var after = which === "after";
+    tabs.forEach(function(b){ var on = b.dataset.ex === which; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false"); });
+    // the real TV keeps the standings, QR and strip after the close; nobody is shooting any more
+    var st = $("exStatus"); st.classList.toggle("closed", after);
+    $("exStatusText").innerHTML = after ? "CLOSED · RESULTS LOCK AT 11:00 AM" : 'LIVE · <span id="exLeft">' + fmt(left) + '</span> LEFT';
+    $("exLive").textContent = after ? "0" : "6";
+  }
+  tabs.forEach(function(b){ b.addEventListener("click", function(){ setState(b.dataset.ex); }); });
+
+  /* a countdown that runs down and starts again: it's an example */
+  var left = 38 * 60 + 12;
+  function fmt(s){ return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+  setInterval(function(){ left = left > 0 ? left - 1 : 38 * 60 + 12; var el = $("exLeft"); if (el) el.textContent = fmt(left); }, 1000);
+
+  /* a decorative QR look-alike: corner squares and a fixed scatter. It is not a code. */
+  var q = $("fakeqr"), cells = [], seed = 7;
+  function rnd(){ seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+  function finder(x, y, ox, oy){ var dx = x - ox, dy = y - oy; if (dx < 0 || dy < 0 || dx > 6 || dy > 6) return null; return dx === 0 || dy === 0 || dx === 6 || dy === 6 || (dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4); }
+  for (var y = 0; y < 21; y++) for (var x = 0; x < 21; x++){
+    var f = finder(x, y, 0, 0); if (f === null) f = finder(x, y, 14, 0); if (f === null) f = finder(x, y, 0, 14);
+    var on = f === null ? ((x > 7 || y > 7) && !(x > 13 && y < 8) && !(x < 8 && y > 13) && rnd() > .52) : f;
+    cells.push('<i' + (on ? ' class="on"' : '') + '></i>');
+  }
+  q.innerHTML = cells.join("");
+
+  /* the takeover preview: ten seconds, Esc or Close, focus comes back */
+  var take = $("exTake"), btn = $("exTakeBtn"), timer = null;
+  var covered = document.querySelectorAll("#tvb > .tvtop, #tvb > .tvgrid, #tvb > .tvstrip");
+  function setCovered(on){ covered.forEach(function(el){ if (on) el.setAttribute("inert", ""); else el.removeAttribute("inert"); }); }
+  function closeTake(byUser){
+    if (take.hidden) return;
+    var inside = take.contains(document.activeElement);
+    take.hidden = true; setCovered(false); clearTimeout(timer);
+    if (inside) btn.focus({ preventScroll: !byUser });
+  }
+  btn.addEventListener("click", function(){ take.hidden = false; setCovered(true); $("exTakeClose").focus(); clearTimeout(timer); timer = setTimeout(function(){ closeTake(false); }, 10000); });
+  $("exTakeClose").addEventListener("click", function(){ closeTake(true); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !take.hidden && take.contains(document.activeElement)) closeTake(true); });
+
+  /* ---- "we set it up with you" ---- */
+  var BASE = "https://kokxlzygppakgcebkygc.supabase.co";
+  var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtva3hsenlncHBha2djZWJreWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMTM5ODgsImV4cCI6MjA5OTg4OTk4OH0.c8N8aevxB-etS_b8HhG3M4BNlV3lM2gX3BO12vJRQCo";
+  var form = $("rqForm"), msg = $("rqMsg"), go = $("rqGo");
+  var today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+  form.date.min = today.toISOString().slice(0, 10);
+  function say(text, kind){ msg.textContent = text; msg.className = "rqmsg" + (kind ? " " + kind : ""); }
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if (form.website.value) { say("Request sent. We'll email you to confirm the lot and times, then send your poster and TV link.", "ok"); return; }
+    var bad = Array.prototype.find.call(form.querySelectorAll("[required]"), function(el){ return !el.value.trim() || !el.checkValidity(); });
+    if (bad){ say(bad.type === "email" ? "Check the email address." : bad.validity && bad.validity.rangeUnderflow ? "Pick today or a later date." : "Fill in " + bad.parentNode.firstChild.textContent.trim().toLowerCase() + ".", "err"); bad.focus(); return; }
+    if (form.end.value <= form.start.value){ say("The end time has to be after the start.", "err"); form.end.focus(); return; }
+    var row = {
+      organizer: form.organizer.value.trim(), contact: form.contact.value.trim(), meet_name: form.meet_name.value.trim(),
+      city: form.city.value.trim(), schedule: form.date.value + " · " + form.start.value + "–" + form.end.value,
+      cars: form.cars.value || null, note: form.note.value.trim() || null
+    };
+    if (row.meet_name.length < 2){ say("Give the meet's name.", "err"); form.meet_name.focus(); return; }
+    if (row.city.length < 2){ say("Give the lot's name and address.", "err"); form.city.focus(); return; }
+    go.disabled = true; say("Sending…");
+    fetch(BASE + "/rest/v1/meet_requests", { method: "POST",
+      headers: { "Content-Type": "application/json", apikey: ANON, Authorization: "Bearer " + ANON, Prefer: "return=minimal" },
+      body: JSON.stringify(row) })
+    .then(function(r){
+      if (r.ok){ form.reset(); form.date.min = today.toISOString().slice(0, 10); say("Request sent. We'll email you to confirm the lot and times, then send your poster and TV link.", "ok"); return; }
+      return r.json().catch(function(){ return {}; }).then(function(j){
+        say(j && j.code === "53400"
+          ? (j.hint === "contact" ? "You've already sent a few requests today. We'll be in touch." : "We're getting a lot of requests right now. Email hello@curatorsofspeed.com and we'll set it up.")
+          : "That didn't send. Check your connection and try again.", "err");
+      });
+    })
+    .catch(function(){ say("That didn't send. Check your connection and try again.", "err"); })
+    .then(function(){ go.disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>

@@ -350,6 +350,7 @@ table.data th{font:700 9px var(--disp);letter-spacing:.14em;color:var(--muted);t
         </div>
       </div>
       <div id="mtList"><div class="empty">Loading…</div></div>
+      <div id="mtRequests" style="margin-top:22px"></div>
     </section>
 
     <!-- MAP -->
@@ -781,7 +782,32 @@ function mtLocal(iso){
   const d = new Date(iso), p = n => String(n).padStart(2, "0");
   return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + "T" + p(d.getHours()) + ":" + p(d.getMinutes());
 }
+/* Organizers asking us to set up their meet (the form on www.tyrehunt.app/meets.html). */
+async function loadMeetRequests(){
+  const box = $("mtRequests");
+  try{
+    const { data, error } = await sb.rpc("admin_meet_requests");
+    if(error) throw error;
+    const rows = data || [], open = rows.filter(r => !r.handled).length;
+    box.innerHTML = '<div class="t" style="margin:0 0 8px">Requests from organizers <span class="pill' + (open ? ' gold' : '') + '">' + open + ' open</span></div>' +
+      (rows.length ? rows.map(r => '<div class="row"' + (r.handled ? ' style="opacity:.55"' : '') + '><div class="grow"><div class="t">' + esc(r.meet_name) + ' · ' + esc(r.city) +
+        (r.handled ? ' <span class="pill">handled</span>' : '') + '</div>' +
+        '<div class="d">' + [r.schedule, r.cars ? r.cars + " cars" : "", r.organizer].filter(Boolean).map(esc).join(" · ") + (r.schedule || r.cars || r.organizer ? " · " : "") +
+        '<b style="color:var(--ink)">' + esc(r.contact) + '</b> · ' + esc(new Date(r.created_at).toLocaleString()) + '</div>' +
+        (r.note ? '<div class="d" style="margin-top:4px">' + esc(r.note) + '</div>' : '') + '</div>' +
+        '<button class="btn sm" data-mtreq="' + r.id + '" data-handled="' + (r.handled ? 0 : 1) + '">' + (r.handled ? 'REOPEN' : 'MARK HANDLED') + '</button></div>').join("")
+       : '<div class="empty">No requests yet. They arrive from the "We set it up with you" form on the Cars &amp; Coffee page (www.tyrehunt.app/meets.html).</div>');
+  }catch(e){ box.innerHTML = ""; }
+}
+$("mtRequests").addEventListener("click", async e => {
+  const b = e.target.closest("[data-mtreq]"); if(!b) return;
+  b.disabled = true;
+  const { error } = await sb.rpc("admin_meet_request_handled", { p_id: +b.dataset.mtreq, p_handled: b.dataset.handled === "1" });
+  if(error){ toast("Couldn't update that request"); b.disabled = false; return; }
+  loadMeetRequests();
+});
 async function loadMeets(){
+  loadMeetRequests();
   const box = $("mtList"); box.innerHTML = '<div class="empty">Loading…</div>';
   try{
     const { data, error } = await sb.rpc("admin_hunts");
